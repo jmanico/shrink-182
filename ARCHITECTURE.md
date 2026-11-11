@@ -2,6 +2,8 @@
 
 This file owns HOW the system is built: components, boundaries, technology, and data flow. WHAT the system must do is in `REQUIREMENTS.md`, and how it looks is in `DESIGN.md`. Detailed security controls belong to `SECURITY.md`. IDs (`DR-n`, `AQ-n`) are permanent and are never renumbered or reused.
 
+Changes that came from the threat model (`THREAT_MODEL.md`) cite its threat ID, for example T-005.
+
 Versions were checked on 2026-11-11 against the npm registry and the Node.js release schedule (`nodejs/Release` `schedule.json`).
 
 > **Note on answers:** The project owner asked for the open questions to be answered as best as possible. Those answers are marked *(proposed default)* so the owner can review them.
@@ -45,32 +47,47 @@ No router library, state library, ORM, or CSS framework is proposed. The UI has 
 |---|---|---|---|---|---|
 | Web client (React SPA) | Screens for sign-up, login, links, tokens, account, admin. Calls the JSON API. | None authoritative. It repeats validation only for friendly messages. | None (no browser storage of secrets) | FR-5.1, FR-5.5, DESIGN.md | SUPPORTED |
 | HTTP layer (Fastify routes) | Routing, request schema validation, JSON error shape, static files, cookie handling | Request shape and size limits; rate limits (NFR-1.3); uniform JSON errors | None | FR-5.2 to FR-5.4 | SUPPORTED |
-| Auth module | Passkey registration and login, sessions, logout, expiry, API tokens, caller identity | FR-1.3, FR-1.4, FR-1.8 (no recovery path), FR-1.10, FR-5.6, FR-5.7 | Users, passkey credentials, sessions, API tokens | FR-1.1 to FR-1.10, FR-5.5 to FR-5.8 | SUPPORTED |
+| Auth module | Passkey registration and login, sessions, logout, expiry, API tokens, caller identity | FR-1.3, FR-1.4, FR-1.8 (no recovery path), FR-1.10, FR-5.6, FR-5.7 | Users (random, never-reused internal IDs: FR-7.9, T-004), passkey credentials, sessions, API tokens | FR-1.1 to FR-1.10, FR-5.5 to FR-5.9, FR-7.9 | SUPPORTED |
 | Links module | Create, list, edit, delete links; code generation; URL rules; ownership | FR-2.4 to FR-2.11, FR-4.3, FR-4.6, FR-4.9 to FR-4.12 | Short links, retired short codes | FR-2.x, FR-4.x | SUPPORTED |
 | Redirect handler | Resolve a short code, count the click, return 302 or not-found | FR-3.3 to FR-3.8; no visitor data stored | None (asks Links module to increment count) | FR-3.1 to FR-3.8 | SUPPORTED |
 | Admin module | List all links and users, delete any link, delete other users | FR-7.3 to FR-7.6; admin cannot edit others' links or delete self | None (uses Links and Auth modules) | FR-7.x | SUPPORTED |
-| Account deletion | Delete a user with their links and tokens | FR-1.11, FR-5.8, FR-4.12 (codes stay retired) | None (coordinates Auth and Links) | FR-1.11, FR-5.8, FR-7.5 | SUPPORTED |
+| Account deletion | Delete a user with their links, tokens, and sessions in one SQLite transaction (FR-1.12, T-014) | FR-1.11, FR-1.12, FR-5.8, FR-4.12 (codes stay retired) | None (coordinates Auth and Links) | FR-1.11, FR-1.12, FR-5.8, FR-7.5 | SUPPORTED |
 | Configuration | Admin list (internal user IDs), site origin (also the WebAuthn relying-party ID), database path. Read from environment variables at startup. *(proposed default, from AQ-3 and AQ-5)* | FR-7.2; FR-2.10 needs the site's own domain | Deployment config | FR-7.2, FR-2.10 | SUPPORTED |
 | SQLite store | Durable storage | Unique short codes (FR-2.6), never-reused codes (FR-4.12) | All persistent data | NFR-1.1, NFR-1.2 | SUPPORTED |
 
 ### Main data flows
 
-1. **Sign up / log in (passkey):** Browser asks API for options → server creates a one-time challenge → browser runs WebAuthn → server verifies the response, then creates a user (sign-up) or finds the user (login) → server creates a session and sets the cookie. A failed check creates no session (FR-1.3).
-2. **Create a link:** Web UI (cookie) or API client (token) sends URL and title → HTTP layer validates the shape → Auth module resolves the caller → Links module applies URL rules, generates a 7-character code not already used or retired, and stores it with the owner → short URL returned.
+1. **Sign up / log in (passkey):** Browser asks API for options → server creates a one-time challenge and ties it to that browser with a short-lived ceremony cookie (SC-011, T-002) → browser runs WebAuthn → server verifies the response, then creates a user (sign-up) or finds the user (login) → server creates a session and sets the cookie. A failed check creates no session (FR-1.3).
+2. **Create a link:** Web UI (cookie) or API client (token) sends URL and title → HTTP layer validates the shape → Auth module resolves the caller → Links module applies URL rules and normalizes the URL (FR-2.12 to FR-2.14, T-008), generates a 7-character code not already used or retired, and stores it with the owner → short URL returned.
 3. **Follow a short link:** Anonymous `GET /<code>` → Redirect handler looks up the code → if found, increments the click count and returns 302 to the target; otherwise returns not-found. Nothing about the visitor is stored (FR-3.5).
 4. **Manage own links:** List, edit, delete calls → Auth resolves caller → Links module filters or checks by owner. "Not owned" and "does not exist" give the same not-found result (FR-4.13).
-5. **API tokens:** Created in the web UI (session only) and shown once (FR-5.5); storage and transport rules are in `SECURITY.md` SC-014. API requests send the token as a bearer header; Auth module looks up the hash and rejects revoked or unknown tokens.
+5. **API tokens:** Created in the web UI (session only) and shown once (FR-5.5); storage and transport rules are in `SECURITY.md` SC-014. API requests send the token as a bearer header; Auth module looks up the hash and rejects revoked or unknown tokens. Tokens work only on the link routes (FR-5.9, T-005).
 6. **Admin actions:** Session caller → Auth checks whether the caller's internal user ID is in the configured admin list. The ID is shown on the user's own account page (FR-7.7). → Admin module calls Links or Account deletion.
 
 ### Trust boundaries and enforcement points
 
-- **TB-1 Internet → server (all requests):** untrusted input. **Validation** is enforced in the HTTP layer (request schemas) and again in the Links module (business rules). Clients are never trusted to validate.
-- **TB-2 Anonymous → authenticated:** **Authentication** is enforced once, in the Auth module, before any route except sign-up, login, the redirect handler, the signed-out page, and static files. Session cookies are accepted for the web UI; bearer tokens are accepted for the JSON API.
+- **TB-1 Internet → server (all requests):** untrusted input. **Validation** is enforced in the HTTP layer (request schemas) and again in the Links module (business rules). Clients are never trusted to validate. Requests that do not name the configured site host are refused first (SC-026, T-003).
+- **TB-2 Anonymous → authenticated:** **Authentication** is enforced once, in the Auth module, before any route except sign-up, login, the redirect handler, the signed-out page, and static files. Session cookies are accepted for the web UI; bearer tokens are accepted only for the link routes of the JSON API, and no route accepts both (see the route map; T-005). Sign-up and login routes are unauthenticated but still pass the same-origin check (SC-015; T-002, T-003).
 - **TB-3 User → another user's data:** **Authorization** (ownership) is enforced in the Links module on every read, edit, and delete, not in the routes or the UI.
-- **TB-4 User → admin:** **Authorization** (role) is enforced in the Admin module entry point using the configured admin list.
+- **TB-4 User → admin:** **Authorization** (role) is enforced in the Admin module entry point using the configured admin list. The list holds random, never-reused internal user IDs, so a later sign-up cannot inherit an admin entry (SC-027, T-004).
 - **TB-5 Server → browser (rendering):** user titles and URLs are output as plain text by React. Detailed output rules are owned by `SECURITY.md`.
 - **TB-6 Server → SQLite file:** trusted local store. Queries use bound parameters only. File protection is owned by `SECURITY.md`.
-- **TB-7 Redirect → external target:** the system sends visitors to user-supplied URLs. Only `http`/`https` targets that are not shrink-182's own domain are allowed (FR-2.8, FR-2.10).
+- **TB-7 Redirect → external target:** the system sends visitors to user-supplied URLs. Only `http`/`https` targets that are not shrink-182's own domain, under any of its names, and that carry no username or password are allowed (FR-2.8, FR-2.10, FR-2.12; T-008, T-010). Exposure beyond localhost waits on SECURITY.md OD-008 (T-009, T-017).
+
+### Route map and accepted credentials
+
+Each surface accepts one kind of credential (SECURITY.md SC-028, from THREAT_MODEL.md T-005). Paths under `/api/` are examples of the prefix; exact paths are set when routes are written. *(proposed default)*
+
+| Surface | Path prefix | Credential | Origin check (SC-015) |
+|---|---|---|---|
+| Short-link redirect | `GET /<7-character code>` | None | No |
+| SPA shell, signed-out page, static files | `/` and the static asset folder | None | No |
+| Sign-up and login (options, verify) | `/api/auth/` | None; ceremony cookie (SC-011) | Yes |
+| Links (create, list, edit, delete) | `/api/links` | Session cookie **or** bearer token, never both | Yes for cookie requests |
+| Account, passkeys, API tokens, logout | `/api/account`, `/api/tokens` | Session cookie only | Yes |
+| Admin | `/api/admin/` | Session cookie only, plus the admin check (TB-4) | Yes |
+
+No SPA screen or static file may use a path that matches the short-code pattern `^[A-Za-z0-9]{7}$`. Every request must name the configured site host (SC-026).
 
 ## Dependency Rules
 
@@ -78,7 +95,7 @@ No router library, state library, ORM, or CSS framework is proposed. The UI has 
 - **DR-2** Business rules (URL rules, code generation, ownership, roles, session expiry) live only in the domain modules. Routes, React components, and the database layer contain no business rules.
 - **DR-3** The Auth module alone owns users, passkey credentials, sessions, and API tokens. Other modules ask it for the caller's identity and role and never read those tables.
 - **DR-4** The Links module alone owns short links and retired codes. Other modules change links only through it.
-- **DR-5** Admin and Account deletion own no data. They coordinate Auth and Links through those modules' functions.
+- **DR-5** Admin and Account deletion own no data. They coordinate Auth and Links through those modules' functions. Account deletion opens one store transaction and passes it to both, so the deletion is all-or-nothing (T-014).
 - **DR-6** Vendor code (`@simplewebauthn/*`, `node:sqlite`, Fastify plugins) is used only behind the module that needs it: WebAuthn inside Auth, SQLite inside the store, Fastify inside the HTTP layer.
 - **DR-7** The web client depends on the JSON API only. It shares no code with the server except, optionally, request and response type definitions.
 - **DR-8** The Redirect handler depends on the Links module only and must not depend on Auth.
@@ -106,8 +123,8 @@ flowchart LR
   DB[(SQLite file)]
 
   V -- "TB-1 GET /code" --> H
-  B -- "TB-1 JSON + cookie" --> H
-  C -- "TB-1 JSON + bearer token" --> H
+  B -- "TB-1 JSON + cookie<br/>(all /api routes)" --> H
+  C -- "TB-1 JSON + bearer token<br/>(link routes only)" --> H
   H --> R
   H -- "TB-2 authenticate" --> A
   H --> L
@@ -155,11 +172,11 @@ sequenceDiagram
   participant DB as SQLite
   B->>H: request login options
   H->>A: new challenge
-  A-->>B: options + challenge
+  A-->>B: options + challenge + ceremony cookie
   B->>B: WebAuthn with passkey
-  B->>H: signed assertion
+  B->>H: signed assertion + ceremony cookie
   H->>A: verify
-  A->>DB: load credential, check counter
+  A->>DB: delete challenge (single use), load credential, check counter
   alt valid
     A->>DB: create session
     A-->>B: Set-Cookie session

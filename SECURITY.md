@@ -7,6 +7,7 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 ## Secure-Coding Inputs
 
 - **Documents read:** `REQUIREMENTS.md` (FR-1 to FR-7, NFR-1), `DESIGN.md` (security-relevant interactions), `ARCHITECTURE.md` (stack, components, TB-1 to TB-7, DR-1 to DR-8). No earlier `SECURITY.md` existed.
+- **Threat model:** `THREAT_MODEL.md` (Grim Prompter deep web and API run, 2026-11-11, threats T-001 to T-017). Rules that it changed or added cite the threat ID in their Evidence line.
 - **Owner notes:** demo, keep it simple; passkeys are the only authentication; two roles, user and admin. These match FR-1.4 and FR-7.1.
 - **Confirmed components and versions:** see [`ARCHITECTURE.md` → Stack](ARCHITECTURE.md#stack).
 - **Applicability decisions:**
@@ -45,10 +46,10 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 
 **SC-003 — Target URL rules in the Links module**
 - **Status:** ACTIVE
-- **Rule:** The Links module MUST parse target URLs with the WHATWG `URL` class and MUST accept only `http:`/`https:` schemes, length ≤ 2,048, and a host different from the configured site host, on both create and edit.
+- **Rule:** The Links module MUST parse target URLs with the WHATWG `URL` class and MUST accept only `http:`/`https:` schemes, length ≤ 2,048, and a host different from the configured site host, on both create and edit. The host comparison MUST use the parsed, lower-cased hostname with any trailing dot removed, and while the site host is a loopback name it MUST treat `localhost`, any `*.localhost` name, `127.0.0.0/8`, and `[::1]` on any port as the site host (T-010). The module MUST reject a URL whose parsed `username` or `password` is not empty, MUST store and return the parser's serialized `href` (so an internationalized host is kept in its ASCII form), and MUST reject a title containing Unicode control (Cc) or bidirectional formatting characters (T-008).
 - **Enforcement:** Links module (DR-2), independent of route schemas.
-- **Evidence:** FR-2.8 to FR-2.10, FR-4.10; ARCHITECTURE.md TB-7. S3 "Validate URLs before rendering" (scheme allow-list); S2 "Perform input validation".
-- **Verification:** Unit tests reject `javascript:alert(1)`, `data:text/html,x`, `ftp://a.b`, a 2,049-character URL, and a URL on the site's own host; `https://example.com` is accepted.
+- **Evidence:** FR-2.8 to FR-2.10, FR-2.12 to FR-2.14, FR-4.10; ARCHITECTURE.md TB-7; THREAT_MODEL.md T-008, T-010. S3 "Validate URLs before rendering" (scheme allow-list); S2 "Perform input validation".
+- **Verification:** Unit tests reject `javascript:alert(1)`, `data:text/html,x`, `ftp://a.b`, a 2,049-character URL, and a URL on the site's own host; `https://example.com` is accepted. They also reject `https://example.com@other.example/`, `http://127.0.0.1:9/x` and `http://LOCALHOST./x` on a localhost site, and a title containing U+202E; an internationalized host is stored in its `xn--` form.
 
 **SC-004 — No regex backtracking on input**
 - **Status:** ACTIVE
@@ -89,7 +90,7 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Status:** ACTIVE
 - **Rule:** The web client MUST render titles, target URLs, and tokens only as JSX text; it MUST NOT use `dangerouslySetInnerHTML`, `innerHTML`/`outerHTML`/`insertAdjacentHTML`, or spread server objects into element props, and MUST NOT put target URLs in `href`.
 - **Enforcement:** Web client components (TB-5).
-- **Evidence:** DESIGN.md "User-supplied content" and Don'ts (no live links); ARCHITECTURE.md TB-5. S3 "Avoid unsafe HTML injection", "Avoid direct DOM manipulation", "Avoid prop injection via spread syntax". Not linking targets is a project decision from DESIGN.md.
+- **Evidence:** DESIGN.md "User-supplied content" and Don'ts (no live links); ARCHITECTURE.md TB-5; THREAT_MODEL.md T-007 (admin views and dialogs are in scope of this rule). S3 "Avoid unsafe HTML injection", "Avoid direct DOM manipulation", "Avoid prop injection via spread syntax". Not linking targets is a project decision from DESIGN.md.
 - **Verification:** A link titled `<img src=x onerror=alert(1)>` shows as literal text; grep finds none of the banned APIs; the list's DOM has no `<a>` whose `href` is a target URL.
 
 **SC-010 — Security headers**
@@ -101,10 +102,10 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 
 **SC-011 — Passkey ceremony verification**
 - **Status:** ACTIVE
-- **Rule:** The Auth module MUST verify every registration and login with `@simplewebauthn/server`, passing a server-stored single-use challenge (expiring after 5 minutes), `expectedOrigin` and `expectedRPID` from configuration, and `requireUserVerification: true` (with `userVerification: 'required'` in the options sent to the browser), and MUST create no user or session when verification fails.
+- **Rule:** The Auth module MUST verify every registration and login with `@simplewebauthn/server`, passing a server-stored single-use challenge (expiring after 5 minutes), `expectedOrigin` and `expectedRPID` from configuration, and `requireUserVerification: true` (with `userVerification: 'required'` in the options sent to the browser), and MUST create no user or session when verification fails. Each challenge MUST be bound to the browser that requested it through a short-lived `__Host-ceremony` cookie (`HttpOnly`, `Secure`, `SameSite=Strict`, `Path=/`) holding a random ceremony ID, stored hashed with the challenge; the verify step MUST delete the stored challenge before it verifies the response, so a challenge is used at most once even under concurrent requests (T-002).
 - **Enforcement:** Auth module (DR-6).
-- **Evidence:** FR-1.1 to FR-1.3, FR-1.7; ARCHITECTURE.md data flow 1 and Configuration. S6 Registration and Authentication. The 5-minute expiry and required user verification are project decisions (OD-002, resolved as a proposed default).
-- **Verification:** Replaying a used challenge, using a wrong origin, an expired challenge, or an assertion without the user-verified flag returns the generic failure and creates no session row.
+- **Evidence:** FR-1.1 to FR-1.3, FR-1.7; ARCHITECTURE.md data flow 1 and Configuration. S6 Registration and Authentication. The 5-minute expiry and required user verification are project decisions (OD-002, resolved as a proposed default). Challenge binding and delete-before-verify are project decisions from THREAT_MODEL.md T-002.
+- **Verification:** Replaying a used challenge, using a wrong origin, an expired challenge, or an assertion without the user-verified flag returns the generic failure and creates no session row. A verify request without the matching ceremony cookie fails, and of two simultaneous verify requests for one challenge at most one succeeds.
 
 **SC-012 — Passkey credential binding and counter**
 - **Status:** ACTIVE
@@ -129,16 +130,16 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 
 **SC-015 — CSRF for cookie-authenticated requests**
 - **Status:** ACTIVE
-- **Rule:** For every non-GET route authenticated by the session cookie, the server MUST reject the request unless `Sec-Fetch-Site` is `same-origin` (or, when absent, `Origin` exactly equals the configured site origin) and `Content-Type` is `application/json`; no GET route MAY change state.
-- **Enforcement:** HTTP layer `onRequest` hook, before the Auth module.
-- **Evidence:** ARCHITECTURE.md TB-2. S4 Fetch Metadata, Verify Origin, SameSite, Disallowing simple requests; S2 "Use anti-CSRF tokens" (don't rely on SameSite alone). No CORS is enabled, so cross-origin scripts cannot send JSON with credentials.
-- **Verification:** A POST with `Sec-Fetch-Site: cross-site`, with `Origin: null`, or with `Content-Type: text/plain` gets 403 and changes nothing; the same request from the SPA succeeds.
+- **Rule:** For every non-GET route authenticated by the session cookie, and for the sign-up and login routes (options and verify), the server MUST reject the request unless `Sec-Fetch-Site` is `same-origin` (or, when absent, `Origin` exactly equals the configured site origin) and `Content-Type` is `application/json`. The check MUST run before rate-limit counting (SC-018), so a rejected request does not use up the allowance. No GET route MAY change state, except that following a short link increases its click count (FR-3.4).
+- **Enforcement:** HTTP layer `onRequest` hook, before the rate limiter and the Auth module. Bearer-token routes are exempt because they never accept the cookie (SC-028).
+- **Evidence:** ARCHITECTURE.md TB-2; THREAT_MODEL.md T-001, T-002, T-003 and conflict CF-002. S4 Fetch Metadata, Verify Origin, SameSite, Disallowing simple requests; S2 "Use anti-CSRF tokens" (don't rely on SameSite alone). No CORS is enabled, so cross-origin scripts cannot send JSON with credentials.
+- **Verification:** A POST with `Sec-Fetch-Site: cross-site`, with `Origin: null`, or with `Content-Type: text/plain` gets 403 and changes nothing; the same request from the SPA succeeds. The same three requests to a login or sign-up route get 403, and 20 of them in a minute do not cause a 429 for a following same-origin login.
 
 **SC-016 — Ownership and role checks on the server**
 - **Status:** ACTIVE
 - **Rule:** The Links module MUST filter or check by the caller's user ID on every link read, edit, and delete, returning the same not-found result for "missing" and "not yours"; the Admin module MUST check the caller's ID against the configured admin list on every admin action and MUST NOT accept a role from the client.
 - **Enforcement:** Links module (TB-3), Admin module entry (TB-4).
-- **Evidence:** FR-4.3, FR-4.6, FR-4.13, FR-7.1 to FR-7.6; ARCHITECTURE.md TB-3, TB-4. S3 "Authentication and authorization"; S2 "Use access control lists".
+- **Evidence:** FR-4.3, FR-4.6, FR-4.13, FR-7.1 to FR-7.6; ARCHITECTURE.md TB-3, TB-4; THREAT_MODEL.md T-006. Whether an admin may delete their own account through FR-1.11 is open (OD-011). S3 "Authentication and authorization"; S2 "Use access control lists".
 - **Verification:** User B's edit/delete of user A's link returns the same 404 body as a random code, and the link is unchanged; a non-admin calling an admin route gets 403; an admin cannot edit another user's link or delete themself.
 
 **SC-017 — Errors**
@@ -150,10 +151,10 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 
 **SC-018 — Rate limits on sign-up, login, and API**
 - **Status:** ACTIVE
-- **Rule:** The HTTP layer MUST apply NFR-1.3 with `@fastify/rate-limit` using its in-memory store: sign-up and login routes (options and verify) keyed by the socket address, and API routes keyed by the SHA-256 token hash already computed for lookup. The address key MUST stay in memory only, MUST NOT be logged or written to the database, and MUST expire with the 1-minute window. The redirect handler MUST NOT be rate-limited. `trustProxy` stays `false`.
+- **Rule:** The HTTP layer MUST apply NFR-1.3 with `@fastify/rate-limit` using its in-memory store: sign-up and login routes (options and verify) keyed by the socket address, and API routes keyed by the SHA-256 token hash of a token that matched a stored, unrevoked token. An API request with a missing, unknown, or revoked token MUST be keyed by the socket address instead, at 60 per minute (T-011). The address key MUST stay in memory only, MUST NOT be logged or written to the database, and MUST expire with the 1-minute window. The redirect handler MUST NOT be rate-limited. `trustProxy` stays `false`.
 - **Enforcement:** HTTP layer.
-- **Evidence:** NFR-1.3; FR-3.5; SC-019. S2 "Take precautions against brute-forcing". The limits and keys are project decisions (OD-001, resolved as a proposed default).
-- **Verification:** The 11th login-options request in a minute from one address gets 429 with a JSON error; the 61st API call with one token gets 429; 100 redirects in a minute all succeed; the logs and database contain no address.
+- **Evidence:** NFR-1.3; FR-3.5; SC-019; THREAT_MODEL.md T-003, T-011. S2 "Take precautions against brute-forcing". The limits and keys are project decisions (OD-001, resolved as a proposed default).
+- **Verification:** The 11th login-options request in a minute from one address gets 429 with a JSON error; the 61st API call with one token gets 429; the 61st API call in a minute using a different random token each time gets 429; 100 redirects in a minute all succeed; the logs and database contain no address.
 
 **SC-019 — Logging without visitor data or secrets**
 - **Status:** ACTIVE
@@ -199,10 +200,73 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 
 **SC-025 — Security events follow the ledger**
 - **Status:** ACTIVE
-- **Rule:** Security events MUST be emitted only through one helper that builds each record from the per-event allowlist in `SECURITY_EVENTS.md` (Event Contract), and MUST never throw into the request. They MUST be written as described in [Security Event Policy](#security-event-policy).
+- **Rule:** Security events MUST be emitted only through one helper that builds each record from the per-event allowlist in `SECURITY_EVENTS.md` (Event Contract), and MUST never throw into the request. The helper MUST write at most 60 records per minute for each event name whose outcome is `denied` or `failure`, count the rest, and report the count in `logging.health` (T-011). Events with `audit_required=true` MUST NOT be suppressed. They MUST be written as described in [Security Event Policy](#security-event-policy).
 - **Enforcement:** Event helper used by the Auth, Links, Admin, and Account deletion modules, and by the process entry point.
-- **Evidence:** `SECURITY_EVENTS.md`; Dread Ledger `7d38c75` event contract.
-- **Verification:** Contract tests per event: presence and absence, field allowlist, secret canaries, CR/LF and oversize input, and helper failure leaving the business result unchanged.
+- **Evidence:** `SECURITY_EVENTS.md`; Dread Ledger `7d38c75` event contract; THREAT_MODEL.md T-011. The ceiling of 60 is a project decision *(proposed default)*.
+- **Verification:** Contract tests per event: presence and absence, field allowlist, secret canaries, CR/LF and oversize input, and helper failure leaving the business result unchanged. 500 rejected API calls in a minute produce at most 60 `auth.api_token_rejected` records and a `logging.health` record with `suppressed` ≥ 440.
+
+**SC-026 — Host header check**
+- **Status:** ACTIVE
+- **Rule:** The HTTP layer MUST reject, before rate limiting and routing, any request whose `Host` header is not the configured site host and port.
+- **Enforcement:** HTTP layer `onRequest` hook, ahead of SC-015 and SC-018.
+- **Evidence:** THREAT_MODEL.md T-003, T-017; SC-022 (configured origin). S1 "DNS rebinding". Applying it to every route is a project decision.
+- **Verification:** A request with `Host: other.example` gets 400 on `/`, an API route, and a short link, and does not count against any rate limit.
+
+**SC-027 — Internal user IDs**
+- **Status:** ACTIVE
+- **Rule:** The Auth module MUST create each internal user ID from at least 128 bits of `crypto.randomBytes` or `crypto.randomUUID()`, MUST NOT derive it from a database row number, and MUST NOT issue an ID that was ever used before, including by a deleted account. At startup, Configuration MUST report how many admin-list entries match no current user.
+- **Enforcement:** Auth module (DR-3); Configuration.
+- **Evidence:** FR-7.2, FR-7.7, FR-7.9; THREAT_MODEL.md T-004. The ID size is a project decision.
+- **Verification:** After deleting a user, 1,000 new sign-ups never receive that ID; a restart with a stale admin ID emits a `config.admins_loaded` record with `reason_code=admin_unmatched` and a non-zero `count`; no new account gains admin access.
+
+**SC-028 — One credential type per route**
+- **Status:** ACTIVE
+- **Rule:** Each route MUST accept exactly one credential type. Bearer API tokens MUST be accepted only on the link routes of FR-5.2. Account, passkey, API-token, and admin routes MUST accept only the session cookie. A request that carries both a session cookie and an `Authorization` header MUST be rejected, and the server MUST NOT fall back from one credential to the other.
+- **Enforcement:** Auth module caller resolution (TB-2), using a per-route setting declared with the route (see ARCHITECTURE.md route map).
+- **Evidence:** FR-5.2, FR-5.9; ARCHITECTURE.md data flows 5 and 6; SC-014; THREAT_MODEL.md T-005.
+- **Verification:** A valid token on an account, token, or admin route gets 401/403; a request with both a cookie and a token gets 400 or 401 and changes nothing; a token on a link route still works.
+
+**SC-029 — Short-code generation**
+- **Status:** ACTIVE
+- **Rule:** The Links module MUST draw each of the 7 short-code characters with `crypto.randomInt` (or an equally unbiased use of `crypto.randomBytes`) and MUST NOT use `Math.random` or any value derived from time, counters, or user input.
+- **Enforcement:** Links module (DR-2).
+- **Evidence:** FR-2.7; SEC-061; THREAT_MODEL.md T-013. S1 "Timing attacks" does not apply; this is a project decision on predictability.
+- **Verification:** Code review finds only `node:crypto` in code generation; a 100,000-code sample shows each of the 62 characters within chance of equal frequency.
+
+**SC-030 — Atomic account deletion**
+- **Status:** ACTIVE
+- **Rule:** Account deletion MUST remove the user, passkeys, sessions, API tokens, and links, and retire their short codes, inside one SQLite transaction that rolls back completely on any error. Caller identity MUST be resolved inside the request after the store is opened, so a request cannot act for an account whose deletion has committed.
+- **Enforcement:** Account deletion component, through Auth and Links functions that share one transaction (DR-5); SQLite store.
+- **Evidence:** FR-1.11, FR-1.12, FR-5.8; SEC-052 (`rolled_back`); THREAT_MODEL.md T-014.
+- **Verification:** A forced store error midway leaves every record intact and emits `account.deleted` with `outcome=rolled_back`; after a successful deletion the old session, token, and links all fail.
+
+**SC-031 — No browser storage of API responses**
+- **Status:** ACTIVE
+- **Rule:** Every JSON API response MUST carry `Cache-Control: no-store`, set in the same `onSend` hook as SC-010.
+- **Enforcement:** HTTP layer hook.
+- **Evidence:** FR-5.5 (token shown once); SC-020; THREAT_MODEL.md T-016. S3 "Minimize sensitive data".
+- **Verification:** A test checks the header on the link list, the token-create response, and an admin list; after logout, browser back navigation shows no earlier data.
+
+**SC-032 — Deployment beyond localhost**
+- **Status:** BLOCKED
+- **Rule:** Pending OD-008. Until it is answered, Configuration MUST refuse to start when the configured site origin is not `http://localhost` with a port.
+- **Enforcement:** Configuration at startup.
+- **Evidence:** SC-010 (no HSTS), SC-013 (`Secure` on localhost), SC-018 (socket-address key, `trustProxy` false); FR-1.5; THREAT_MODEL.md T-009, T-017.
+- **Verification:** Starting with a non-localhost origin exits with an error and emits `config.loaded` with `reason_code=origin_not_local`.
+
+**SC-033 — Passkey management and re-verification**
+- **Status:** BLOCKED
+- **Rule:** Pending OD-009. No rule is set yet for listing or removing passkeys, or for a fresh passkey check before adding a passkey, creating an API token, or deleting an account.
+- **Enforcement:** Not decided. Would sit in the Auth module.
+- **Evidence:** FR-1.6, FR-1.8; SEC-008; THREAT_MODEL.md T-015.
+- **Verification:** Not defined until OD-009 is answered.
+
+**SC-034 — Redirect load**
+- **Status:** BLOCKED
+- **Rule:** Pending OD-010. No rule is set yet for bounding the cost of anonymous redirect requests. NFR-1.3 (redirects are not rate-limited) and FR-3.7 stay in force.
+- **Enforcement:** Not decided. Would sit in the Redirect handler or HTTP layer.
+- **Evidence:** FR-3.4, FR-3.7, NFR-1.3; SC-005 (`node:sqlite` is synchronous); THREAT_MODEL.md T-012.
+- **Verification:** Not defined until OD-010 is answered.
 
 ## Security Event Policy
 
@@ -215,4 +279,11 @@ The owner asked for these decisions (OD-004 to OD-007) to be answered as best as
 
 ## Open Security Decisions
 
-None open. Resolved and removed: OD-001 (rate limits, SC-018, NFR-1.3), OD-004 to OD-007 (see [Security Event Policy](#security-event-policy)), OD-002 (passkey user verification is required, SC-011) and OD-003 (Node permission model not used in the demo, SC-024). The owner asked for these to be answered as best as possible, so all are *(proposed default)* answers for the owner to review.
+These decisions were raised by `THREAT_MODEL.md` and are for the owner. Rules marked BLOCKED wait on them.
+
+- **OD-008 — Deployment beyond localhost.** Before shrink-182 is reachable by anyone outside the team: how are sign-up and link targets constrained (invitations, a warning page before leaving, an allow-list, or accepted as is), and what replaces the localhost-only choices (TLS and HSTS, proxy trust, the rate-limit key)? Blocks SC-032. Driven by T-009 and T-017.
+- **OD-009 — Passkey management.** Should a user be able to list and remove passkeys, and should adding a passkey, creating an API token, or deleting an account need a fresh passkey check? Today a session alone is enough and an unwanted passkey cannot be removed. Blocks SC-033. Driven by T-015.
+- **OD-010 — Redirect load.** Is unlimited anonymous redirect traffic, with one synchronous database write per request, accepted for the demo, or must it be bounded without storing visitor data? Blocks SC-034. Driven by T-012.
+- **OD-011 — Admin self-deletion.** FR-1.11 lets any logged-in user delete their own account, while SC-016's verification and SEC-049 say an admin cannot delete themself. Which holds on the admin's own account page? Blocks no rule; until answered, SC-016 applies to admin routes only. Raised by THREAT_MODEL.md conflict CF-001 and related to T-004.
+
+Resolved and removed earlier: OD-001 (rate limits, SC-018, NFR-1.3), OD-004 to OD-007 (see [Security Event Policy](#security-event-policy)), OD-002 (passkey user verification is required, SC-011) and OD-003 (Node permission model not used in the demo, SC-024). The owner asked for these to be answered as best as possible, so all are *(proposed default)* answers for the owner to review.

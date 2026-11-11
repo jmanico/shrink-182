@@ -14,4 +14,5 @@ Nothing is built yet. The project is in the design phase.
 
 - [`REQUIREMENTS.md`](REQUIREMENTS.md): what the system must do.
 - [`DESIGN.md`](DESIGN.md): the visual design system: tokens, components, and rules.
+- [`THREAT_MODEL.md`](THREAT_MODEL.md): the design-level threat model of the specs (threats T-001 to T-017).
 - [`design/preview.html`](design/preview.html): a static preview of the palette, type, components, and home screen. Open it in a browser.
