@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="logo.svg" alt="Snip logo" width="96" height="96">
+  <img src="logo.svg" alt="shrink-182 logo" width="96" height="96">
 </p>
 
-<h1 align="center">Snip</h1>
+<h1 align="center">shrink-182</h1>
 
 <p align="center"><em>All the small links.</em></p>
 
-Snip is a small link shortener for a team. Sign in with a passkey, paste a long URL, and get a short link anyone can follow. You can see how many times each of your links was clicked, and edit or delete them. There's a web UI and a JSON API for the same actions.
+shrink-182 is a small link shortener for a team. Sign in with a passkey, paste a long URL, and get a short link anyone can follow. You can see how many times each of your links was clicked, and edit or delete them. There's a web UI and a JSON API for the same actions.
 
 Nothing is built yet. The project is in the design phase.
 
