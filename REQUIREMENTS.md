@@ -30,6 +30,7 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-1.9** The system MUST allow a logged-in user to log out, after which their session MUST no longer be accepted. *(proposed default)*
 - **FR-1.10** The system MUST end a logged-in session after 24 hours without activity, and MUST end any session 7 days after login regardless of activity. *(proposed default)*
 - **FR-1.11** The system MUST allow a logged-in user to delete their own account. Deleting an account MUST also delete all links that user owns, and those short links MUST then behave as not found (FR-3.3). *(proposed default)*
+- **FR-1.12** Deleting an account MUST be all-or-nothing. If any part fails, the account and its links, API tokens, and sessions MUST stay as they were. After a successful deletion, none of them may work. *(proposed default, T-014)*
 
 ### Creating short links
 
@@ -42,8 +43,11 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-2.7** The system MUST generate the short code itself as 7 random letters and digits (A–Z, a–z, 0–9). Users MUST NOT be able to choose a custom short code. *(proposed default)*
 - **FR-2.8** The system MUST accept only target URLs that start with `http://` or `https://` and are well-formed, and MUST reject any other target URL, telling the user why. *(proposed default)*
 - **FR-2.9** The system MUST reject a target URL longer than 2,048 characters, telling the user why. *(proposed default)*
-- **FR-2.10** The system MUST reject a target URL that points at shrink-182's own domain, telling the user why. *(proposed default)*
+- **FR-2.10** The system MUST reject a target URL that points at shrink-182's own domain, telling the user why. This covers every name that reaches the shrink-182 server itself, not only the configured one. *(proposed default; widened by T-010)*
 - **FR-2.11** The system MUST reject a title longer than 200 characters, telling the user why. *(proposed default)*
+- **FR-2.12** The system MUST reject a target URL that contains a username or password, telling the user why. *(proposed default, T-008)*
+- **FR-2.13** The system MUST reject a title that contains control characters or text-direction override characters, telling the user why. *(proposed default, T-008)*
+- **FR-2.14** The system MUST store and show a target URL in its normalized form, so the host a user sees is the host the redirect goes to. *(proposed default, T-008)*
 
 ### Following short links
 
@@ -67,7 +71,7 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-4.7** The system MUST reject list, edit, and delete requests from a user who is not logged in.
 - **FR-4.8** After a link is deleted, it MUST no longer appear in its owner's list.
 - **FR-4.9** When editing a link, the owner MUST be able to change the title and the target URL. The short code MUST NOT be changeable. *(proposed default)*
-- **FR-4.10** An edited target URL or title MUST pass the same validation as on creation (FR-2.8 to FR-2.11). *(proposed default)*
+- **FR-4.10** An edited target URL or title MUST pass the same validation as on creation (FR-2.8 to FR-2.14). *(proposed default)*
 - **FR-4.11** Editing a link MUST NOT reset its click count. *(proposed default)*
 - **FR-4.12** After a link is deleted, its short link MUST respond as not found, and its short code MUST NOT ever be assigned to a new link. *(proposed default)*
 - **FR-4.13** When a user asks to view, edit, or delete a link that does not exist or that they do not own, the system MUST give the same not-found response in both cases, so it never confirms that another user's link exists. *(proposed default, moved from a DESIGN.md assumption)*
@@ -82,6 +86,7 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-5.6** The system MUST allow a user to list and revoke their own API tokens. A revoked token MUST no longer be accepted. *(proposed default)*
 - **FR-5.7** The JSON API MUST identify the caller by API token and MUST act as the token's owner. Requests with a missing, invalid, or revoked token MUST be rejected. *(proposed default)*
 - **FR-5.8** Deleting a user account MUST revoke all of that user's API tokens. *(proposed default)*
+- **FR-5.9** An API token MUST be accepted only for creating, listing, editing, and deleting the token owner's links (FR-5.2). Account, passkey, API-token, and admin actions MUST require a logged-in session and MUST reject an API token. *(proposed default, T-005)*
 
 ### Out of scope
 
@@ -98,13 +103,14 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-7.6** The system MUST reject admin actions from anyone who does not have the admin role.
 - **FR-7.7** The system MUST show a logged-in user their own internal user ID on their account page, so the operator can copy it into the admin configuration (FR-7.2). *(proposed default, moved from ARCHITECTURE.md AQ-5)*
 - **FR-7.8** Signed-in screens MUST identify the user only as "Signed in". The admin user list MUST show each user's internal user ID and sign-up date. Users have no display name or email. *(proposed default, resolves DQ-1)*
+- **FR-7.9** An internal user ID MUST NOT be guessable and MUST NOT ever be given to another account, including after the account is deleted. *(proposed default, T-004)*
 
 ## Non-Functional Requirements
 
 - **NFR-1.1** The system MUST support up to 100 registered users.
 - **NFR-1.2** The system MUST run as a single deployment.
-- **NFR-1.3** The system MUST limit sign-up and login to 10 attempts per minute from one network address, and JSON API calls to 60 per minute per API token. A request over the limit MUST be refused with HTTP 429 and a JSON or on-screen message saying to wait and try again. Following short links MUST NOT be rate-limited. Sign-ups are not capped at a fixed number of accounts. *(proposed default, resolves OQ-15)*
+- **NFR-1.3** The system MUST limit sign-up and login to 10 attempts per minute from one network address, and JSON API calls to 60 per minute per API token. JSON API calls that carry no valid API token MUST be limited to 60 per minute from one network address (T-011). A request over the limit MUST be refused with HTTP 429 and a JSON or on-screen message saying to wait and try again. Following short links MUST NOT be rate-limited. Sign-ups are not capped at a fixed number of accounts. *(proposed default, resolves OQ-15)*
 
 ## Open Questions
 
-None open. OQ-15 was resolved by NFR-1.3; no uptime or redirect-speed targets are set for the demo. *(proposed default)*
+None open here. Decisions raised by the threat model (`THREAT_MODEL.md`) are tracked as OD-008 to OD-011 in `SECURITY.md`. OQ-15 was resolved by NFR-1.3; no uptime or redirect-speed targets are set for the demo. *(proposed default)*

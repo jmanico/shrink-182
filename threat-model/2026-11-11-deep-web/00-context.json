@@ -1,0 +1,851 @@
+{
+ "schema_version": "1.0",
+ "artifact_type": "TM_CONTEXT",
+ "model_id": "shrink-182-specs",
+ "revision": "r00",
+ "parent_revision": null,
+ "status": "complete",
+ "analysis_depth": "deep",
+ "architecture_ids": [
+  "web",
+  "api"
+ ],
+ "selected_methods": [],
+ "processed_inputs": [
+  {
+   "id": "IN-sur",
+   "locator": "threat-model/2026-11-11-deep-web/SYSTEM_UNDER_REVIEW.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; evidence bundle built in this run, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-requirements",
+   "locator": "REQUIREMENTS.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-110, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-architecture",
+   "locator": "ARCHITECTURE.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-177, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-security",
+   "locator": "SECURITY.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-218, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-security-events",
+   "locator": "SECURITY_EVENTS.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-165, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-design",
+   "locator": "DESIGN.md",
+   "access": "partial",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 181-330 full read; lines 1-180 (design-token front matter) read as key names and a URL search only",
+   "reason": "Token values are visual constants and were not needed for the security model."
+  },
+  {
+   "id": "IN-agents",
+   "locator": "AGENTS.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-62, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-readme",
+   "locator": "README.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-17, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-preview",
+   "locator": "design/preview.html",
+   "access": "partial",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; pattern search for external references only; all other content unread",
+   "reason": "Static visual preview; only its external-resource surface was relevant."
+  }
+ ],
+ "unprocessed_inputs": [
+  {
+   "id": "IN-req-template",
+   "locator": "REQUIREMENT_TEMPLATE.md",
+   "access": "skipped",
+   "coverage": "not inspected in this run",
+   "reason": "Issue template, not system evidence."
+  },
+  {
+   "id": "IN-logo",
+   "locator": "logo.svg",
+   "access": "skipped",
+   "coverage": "not inspected in this run",
+   "reason": "Small image, not system evidence."
+  },
+  {
+   "id": "IN-sources",
+   "locator": "External sources S1-S6 cited by SECURITY.md",
+   "access": "unavailable",
+   "coverage": "not inspected in this run",
+   "reason": "No network use is authorized."
+  },
+  {
+   "id": "IN-code",
+   "locator": "Application source, tests and runtime configuration",
+   "access": "unavailable",
+   "coverage": "nothing to inspect at revision 10b7ddf",
+   "reason": "None exists (E-035)."
+  }
+ ],
+ "attachments": [],
+ "continuation": null,
+ "model": {
+  "scope": {
+   "description": "Specification-level threat model of shrink-182, a team link shortener, before any code exists. Web is the primary architecture; API is a bounded secondary for the JSON API.",
+   "in_scope": [
+    "React SPA and browser session",
+    "Fastify HTTP layer and JSON API (session cookie and bearer token)",
+    "Auth, Links, Redirect, Admin and Account deletion modules",
+    "Configuration, SQLite store, security event file",
+    "Anonymous short-link redirect"
+   ],
+   "out_of_scope": [
+    "Application code (none exists)",
+    "Host OS, GitHub repository settings and CI",
+    "A hosted deployment (only a localhost demo is specified)",
+    "Privacy review scope (not requested)",
+    "Supply-chain architecture analysis beyond what the web and API lenses touch",
+    "REQUIREMENT_TEMPLATE.md and logo.svg (not system evidence)"
+   ],
+   "objectives": [
+    "Find design-level threats in the specifications",
+    "Give supported findings stable T-nnn IDs so they can be folded back into the specs",
+    "Leave a JSON baseline for later change reviews"
+   ],
+   "assumptions": [
+    "The five specification documents at revision 10b7ddf are the intended design",
+    "The demo runs on a developer machine at http://localhost, as ARCHITECTURE.md states"
+   ],
+   "limitations": [
+    "Nothing is implemented; every statement about a control describes a design, not behavior",
+    "No risk rubric, prior model, method fragment or secure-coding pack was supplied",
+    "Working-tree cleanliness was not checked with Git because of the runbook's filter rule",
+    "Absent surfaces are recorded as not applicable: uploads, payments, shared caches, third-party resources, background jobs, callbacks, federation, multi-tenancy"
+   ]
+  },
+  "evidence": [
+   {
+    "id": "E-001",
+    "locator": "REQUIREMENTS.md:22-32",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-1: passkey-only sign-up and login, open sign-up, additional passkeys, no recovery, logout, 24 h idle and 7 day absolute session expiry, self-service account deletion that removes the user's links.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-002",
+    "locator": "REQUIREMENTS.md:36-46",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-2: a logged-in user creates links; the server generates a 7-character random code; only well-formed http/https targets up to 2,048 characters and not on the site's own domain; title up to 200 characters.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-003",
+    "locator": "REQUIREMENTS.md:50-57",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-3: anonymous 302 redirect; every request counts as a click; no visitor-identifying data stored; repeat and automated visits are not filtered; links never expire.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-004",
+    "locator": "REQUIREMENTS.md:61-73",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-4: own-link list, edit and delete; other users' links are rejected and unchanged; the same not-found for missing and not-owned; deleted codes are never reused.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-005",
+    "locator": "REQUIREMENTS.md:77-84",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-5: web UI and JSON API with the same rules; personal API tokens shown once, listable and revocable; the API identifies the caller by token; account deletion revokes tokens.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-006",
+    "locator": "REQUIREMENTS.md:88-89",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-6: no payments and no file uploads.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-007",
+    "locator": "REQUIREMENTS.md:93-100",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-7: two roles; admin is assigned only in deployment configuration by internal user ID; an admin lists all links and users, deletes any link and deletes other users; a user's internal ID is shown on their account page.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-008",
+    "locator": "REQUIREMENTS.md:104-106",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "NFR-1: up to 100 users; single deployment; 10 sign-up/login attempts per minute per network address and 60 API calls per minute per token; redirects are not rate-limited; sign-ups are not capped.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-009",
+    "locator": "ARCHITECTURE.md:9-21",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "One Node.js process at http://localhost; one JSON API serves the web UI (session cookie) and API clients (bearer token); server-side sessions; one SQLite file.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-010",
+    "locator": "ARCHITECTURE.md:23-40",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Stack: Node 24, Fastify 5, React 19, node:sqlite, @simplewebauthn, @fastify/cookie, @fastify/static, @fastify/rate-limit, Vite, TypeScript, Vitest.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-011",
+    "locator": "ARCHITECTURE.md:42-54",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Component table with responsibilities, rules enforced and data owned.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-012",
+    "locator": "ARCHITECTURE.md:56-63",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Six main data flows: passkey sign-up/login, create link, follow link, manage own links, API tokens (created with a session only), admin actions (session caller checked against the configured admin list).",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-013",
+    "locator": "ARCHITECTURE.md:65-73",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Trust boundaries TB-1 to TB-7 and their enforcement points.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-014",
+    "locator": "ARCHITECTURE.md:75-84",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Dependency rules DR-1 to DR-8.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-015",
+    "locator": "ARCHITECTURE.md:86-169",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Component and trust-boundary flowchart; redirect and passkey-login sequence diagrams.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-016",
+    "locator": "SECURITY.md:7-19",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Applicability decisions; passwords, uploads, payments, SSR, SSRF, recovery and proxies are declared not applicable; trustProxy stays false.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-017",
+    "locator": "SECURITY.md:32-65",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-001 to SC-005: body and time limits, a schema on every route, WHATWG URL parsing with scheme, length and own-host checks, no backtracking regexes, no event-loop blocking.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-018",
+    "locator": "SECURITY.md:67-86",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-006 to SC-008: bound parameters, prototype-pollution safety, no dynamic code execution.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-019",
+    "locator": "SECURITY.md:88-100",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-009 and SC-010: plain-text rendering, no target URL in href, a CSP limited to 'self', nosniff, no-referrer.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-020",
+    "locator": "SECURITY.md:102-114",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-011 and SC-012: ceremony verification with a server-stored single-use 5-minute challenge, configured origin and RP ID, required user verification; credential lookup by ID, counter handling, excludeCredentials.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-021",
+    "locator": "SECURITY.md:116-121",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-013: random session ID in a __Host-session cookie (HttpOnly, Secure, SameSite=Lax), stored hashed, new at login, deleted at logout, idle and absolute expiry.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-022",
+    "locator": "SECURITY.md:123-128",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-014: 32-byte tokens, shown once, stored hashed, bearer header only, rejected when revoked or when the owner is deleted, never created with a token.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-023",
+    "locator": "SECURITY.md:130-135",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-015: non-GET routes authenticated by the session cookie require Sec-Fetch-Site same-origin (or a matching Origin when absent) and a JSON content type; no GET changes state; no CORS.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-024",
+    "locator": "SECURITY.md:137-142",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-016: ownership filter in the Links module with a uniform not-found; admin check against the configured list on every admin action; its verification says an admin cannot delete themself.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-025",
+    "locator": "SECURITY.md:144-149",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-017: uniform JSON errors without internals.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-026",
+    "locator": "SECURITY.md:151-156",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-018: in-memory rate limits; sign-up and login keyed by socket address; API routes keyed by the token hash already computed for lookup; redirects are not limited.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-027",
+    "locator": "SECURITY.md:158-170",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-019 and SC-020: logs omit IP, user agent, cookies, authorization and bodies; the redirect returns 302 only to a stored target with Cache-Control: no-store.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-028",
+    "locator": "SECURITY.md:172-198",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-021 to SC-024: response schemas, validated environment configuration, dependency and install rules, database file outside the static root with mode 0600.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-029",
+    "locator": "SECURITY.md:200-216",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-025 and the security event policy: one local JSON-lines file rotating at 10 MiB x 5, best-effort audit events with counted loss; no open decisions.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-030",
+    "locator": "SECURITY_EVENTS.md:13-69",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Event contract: envelope, allowlisted conditional fields, 2 KiB limit, never-log list.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-031",
+    "locator": "SECURITY_EVENTS.md:71-161",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Ledger SEC-001 to SEC-099 and SEC-APP-001/002; every applicable event is 'missing' because nothing is built.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-032",
+    "locator": "DESIGN.md:296-326",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Security-relevant interactions: signed-in state, confirmed destructive actions, uniform error wording, user content as plain text, target URLs not live links.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-033",
+    "locator": "DESIGN.md:232; DESIGN.md:286-289",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Fonts are self-hosted; link rows show the full host, shorten long paths in the middle and show the full URL as a tooltip.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-034",
+    "locator": "README.md:11",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "The README states that nothing is built yet and the project is in the design phase.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-035",
+    "locator": "tracked-file listing at 10b7ddf",
+    "source_kind": "repository",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "The repository tracks only eight Markdown documents, design/preview.html and logo.svg. There is no application source, manifest, lockfile, test or configuration file.",
+    "status": "observation",
+    "purpose": "implementation",
+    "access": "read",
+    "limitations": "A file listing; it shows absence of code at this revision only.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-036",
+    "locator": "caller request for this run (session)",
+    "source_kind": "caller",
+    "source_revision": "10b7ddf",
+    "date": "2026-11-11",
+    "statement": "The caller states that nothing is implemented, asks for that to be recorded as an evidence gap, and asks for a deep web and API run with one report and one set of T-nnn IDs.",
+    "status": "claim",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Caller statement; not independently verified beyond E-035.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-037",
+    "locator": "design/preview.html (pattern search)",
+    "source_kind": "repository",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "A search for URLs, src=, href=, <script, @import and url( found only example URL strings in form fields and one href=\"#\"; no external resource load was found by that search.",
+    "status": "observation",
+    "purpose": "description",
+    "access": "partial",
+    "limitations": "Pattern search only; markup and styles otherwise unread.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-038",
+    "locator": "SECURITY_EVENTS.md:6-9",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "The event ledger targets specifications only; both gates are NOT RUN.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   }
+  ],
+  "system": {
+   "assets": [],
+   "actors": [],
+   "data": [],
+   "zones": [],
+   "boundaries": [],
+   "flows": [],
+   "entry_points": [],
+   "states": [],
+   "dependencies": []
+  },
+  "methods": [],
+  "threats": [],
+  "controls": [],
+  "requirements": [],
+  "risks": [],
+  "attack_trees": [],
+  "attack_paths": [],
+  "visualizations": [],
+  "coverage": [
+   {
+    "id": "COV-run-config",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "run-configuration",
+    "status": "not_applicable",
+    "reason": "MODE=deep; REVIEW_SCOPE=security; ARCHITECTURES=web (primary), api (secondary); METHODS=[] so there is no method schedule; PRIVACY_PROFILES=[]; library revision d7c9082; project revision 10b7ddf. Configuration only; this is not analysis coverage."
+   },
+   {
+    "id": "COV-inspection",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "inspection-coverage",
+    "status": "partial",
+    "reason": "Six documents read in full; DESIGN.md front matter and design/preview.html partly read; REQUIREMENT_TEMPLATE.md and logo.svg skipped; cited external sources and any implementation unavailable. All reads were made fresh in stage 00 of this run at revision 10b7ddf."
+   },
+   {
+    "id": "COV-registry",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "architecture-registry",
+    "status": "not_assessed",
+    "reason": "No library registry was supplied. The identities 'web' and 'api' were checked only against the library's deep/ and quick/ file listing."
+   }
+  ],
+  "conflicts": [],
+  "gaps": [
+   {
+    "id": "G-001",
+    "kind": "evidence",
+    "description": "No implementation exists, so no specified control can be observed working.",
+    "needed": "Source code and test results once the system is built.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-034",
+     "E-035",
+     "E-036"
+    ]
+   },
+   {
+    "id": "G-002",
+    "kind": "topology",
+    "description": "The URL namespace is not specified: how short codes, SPA screens, static files and API routes are kept apart.",
+    "needed": "A route map with the path prefix for each surface.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-012",
+     "E-030"
+    ]
+   },
+   {
+    "id": "G-003",
+    "kind": "evidence",
+    "description": "The specs do not say how a WebAuthn challenge is tied to the browser that requested it, or that it is consumed atomically.",
+    "needed": "A rule for challenge binding and one-time consumption.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-020"
+    ]
+   },
+   {
+    "id": "G-004",
+    "kind": "evidence",
+    "description": "The format of the internal user ID, how it is generated and whether it can be reused after deletion are not specified.",
+    "needed": "A rule for user ID generation and reuse.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-007"
+    ]
+   },
+   {
+    "id": "G-005",
+    "kind": "evidence",
+    "description": "The specs do not list which routes accept a bearer token and which accept only a session, or what happens when a request carries both.",
+    "needed": "A per-route credential map.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-009",
+     "E-012",
+     "E-022"
+    ]
+   },
+   {
+    "id": "G-006",
+    "kind": "technology",
+    "description": "No exact, resolved secure-coding pack was supplied for the stack, so technology-specific prescriptions stay unverified.",
+    "needed": "A resolved pack with group, technology, version and resolver provenance.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-010"
+    ]
+   },
+   {
+    "id": "G-007",
+    "kind": "evidence",
+    "description": "The rate-limit key for API calls with a missing or unknown token, and for API calls made with a session cookie, is not specified.",
+    "needed": "A rule naming the key for each case.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-008",
+     "E-026"
+    ]
+   },
+   {
+    "id": "G-008",
+    "kind": "evidence",
+    "description": "The specs do not say whether account deletion across the Auth and Links modules is one transaction.",
+    "needed": "A rule or design for the deletion's atomicity.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-001",
+     "E-011"
+    ]
+   },
+   {
+    "id": "G-009",
+    "kind": "evidence",
+    "description": "Nothing is specified about a hosted deployment (TLS, proxy, HSTS, real client addresses). Hosted exposure is out of scope.",
+    "needed": "A deployment design, if the system is ever hosted.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-009",
+     "E-016"
+    ]
+   },
+   {
+    "id": "G-010",
+    "kind": "evidence",
+    "description": "The specs do not say whether login uses discoverable credentials, although users have no username.",
+    "needed": "The registration and login option settings.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-020"
+    ]
+   }
+  ],
+  "treatments": [],
+  "verification": [],
+  "decisions": [],
+  "changes": [],
+  "identity_map": []
+ }
+}

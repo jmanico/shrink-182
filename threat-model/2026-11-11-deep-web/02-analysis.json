@@ -1,0 +1,3958 @@
+{
+ "schema_version": "1.0",
+ "artifact_type": "TM_ANALYSIS",
+ "model_id": "shrink-182-specs",
+ "revision": "r02",
+ "parent_revision": "r01",
+ "status": "complete",
+ "analysis_depth": "deep",
+ "architecture_ids": [
+  "web",
+  "api"
+ ],
+ "selected_methods": [],
+ "processed_inputs": [
+  {
+   "id": "IN-sur",
+   "locator": "threat-model/2026-11-11-deep-web/SYSTEM_UNDER_REVIEW.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; evidence bundle built in this run, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-requirements",
+   "locator": "REQUIREMENTS.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-110, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-architecture",
+   "locator": "ARCHITECTURE.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-177, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-security",
+   "locator": "SECURITY.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-218, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-security-events",
+   "locator": "SECURITY_EVENTS.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-165, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-design",
+   "locator": "DESIGN.md",
+   "access": "partial",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 181-330 full read; lines 1-180 (design-token front matter) read as key names and a URL search only",
+   "reason": "Token values are visual constants and were not needed for the security model."
+  },
+  {
+   "id": "IN-agents",
+   "locator": "AGENTS.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-62, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-readme",
+   "locator": "README.md",
+   "access": "read",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; lines 1-17, full read",
+   "reason": null
+  },
+  {
+   "id": "IN-preview",
+   "locator": "design/preview.html",
+   "access": "partial",
+   "coverage": "collected by deep stage 00 of this run at revision 10b7ddf; pattern search for external references only; all other content unread",
+   "reason": "Static visual preview; only its external-resource surface was relevant."
+  }
+ ],
+ "unprocessed_inputs": [
+  {
+   "id": "IN-req-template",
+   "locator": "REQUIREMENT_TEMPLATE.md",
+   "access": "skipped",
+   "coverage": "not inspected in this run",
+   "reason": "Issue template, not system evidence."
+  },
+  {
+   "id": "IN-logo",
+   "locator": "logo.svg",
+   "access": "skipped",
+   "coverage": "not inspected in this run",
+   "reason": "Small image, not system evidence."
+  },
+  {
+   "id": "IN-sources",
+   "locator": "External sources S1-S6 cited by SECURITY.md",
+   "access": "unavailable",
+   "coverage": "not inspected in this run",
+   "reason": "No network use is authorized."
+  },
+  {
+   "id": "IN-code",
+   "locator": "Application source, tests and runtime configuration",
+   "access": "unavailable",
+   "coverage": "nothing to inspect at revision 10b7ddf",
+   "reason": "None exists (E-035)."
+  }
+ ],
+ "attachments": [
+  {
+   "id": "att-prior-changes-shrink-182-specs-r01",
+   "kind": "other",
+   "origin": "shrink-182-specs revision r01",
+   "access": "available",
+   "namespace": "prior-changes",
+   "content": {
+    "model_id": "shrink-182-specs",
+    "revision": "r01",
+    "changes": [
+     {
+      "id": "CH-r01-mod-G-002",
+      "kind": "modified",
+      "current_refs": [
+       "G-002"
+      ],
+      "previous_ids": [
+       "G-002"
+      ],
+      "rationale": "Linked the gap to the system records it affects.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-mod-G-003",
+      "kind": "modified",
+      "current_refs": [
+       "G-003"
+      ],
+      "previous_ids": [
+       "G-003"
+      ],
+      "rationale": "Linked the gap to the system records it affects.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-mod-G-004",
+      "kind": "modified",
+      "current_refs": [
+       "G-004"
+      ],
+      "previous_ids": [
+       "G-004"
+      ],
+      "rationale": "Linked the gap to the system records it affects.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-mod-G-005",
+      "kind": "modified",
+      "current_refs": [
+       "G-005"
+      ],
+      "previous_ids": [
+       "G-005"
+      ],
+      "rationale": "Linked the gap to the system records it affects.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-mod-G-006",
+      "kind": "modified",
+      "current_refs": [
+       "G-006"
+      ],
+      "previous_ids": [
+       "G-006"
+      ],
+      "rationale": "Linked the gap to the system records it affects.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-mod-G-007",
+      "kind": "modified",
+      "current_refs": [
+       "G-007"
+      ],
+      "previous_ids": [
+       "G-007"
+      ],
+      "rationale": "Linked the gap to the system records it affects.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-mod-G-008",
+      "kind": "modified",
+      "current_refs": [
+       "G-008"
+      ],
+      "previous_ids": [
+       "G-008"
+      ],
+      "rationale": "Linked the gap to the system records it affects.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-mod-G-009",
+      "kind": "modified",
+      "current_refs": [
+       "G-009"
+      ],
+      "previous_ids": [
+       "G-009"
+      ],
+      "rationale": "Linked the gap to the system records it affects.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-mod-G-010",
+      "kind": "modified",
+      "current_refs": [
+       "G-010"
+      ],
+      "previous_ids": [
+       "G-010"
+      ],
+      "rationale": "Linked the gap to the system records it affects.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-assets",
+      "kind": "added",
+      "current_refs": [
+       "AS-spa",
+       "AS-http",
+       "AS-auth",
+       "AS-links",
+       "AS-redirect",
+       "AS-admin",
+       "AS-acct-del",
+       "AS-config",
+       "AS-db",
+       "AS-event-log",
+       "AS-vendor"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to assets by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-actors",
+      "kind": "added",
+      "current_refs": [
+       "ACT-visitor",
+       "ACT-user",
+       "ACT-admin",
+       "ACT-api-client",
+       "ACT-operator",
+       "ACT-other-origin"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to actors by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-data",
+      "kind": "added",
+      "current_refs": [
+       "D-session",
+       "D-passkey",
+       "D-token",
+       "D-challenge",
+       "D-link",
+       "D-user-id",
+       "D-admin-list",
+       "D-events"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to data by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-zones",
+      "kind": "added",
+      "current_refs": [
+       "Z-internet",
+       "Z-browser",
+       "Z-server",
+       "Z-host",
+       "Z-external"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to zones by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-boundaries",
+      "kind": "added",
+      "current_refs": [
+       "TB-1",
+       "TB-2",
+       "TB-3",
+       "TB-4",
+       "TB-5",
+       "TB-6",
+       "TB-7"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to boundaries by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-flows",
+      "kind": "added",
+      "current_refs": [
+       "F-1",
+       "F-2",
+       "F-3",
+       "F-4",
+       "F-5",
+       "F-6",
+       "F-7",
+       "F-8",
+       "F-9",
+       "F-10",
+       "F-11",
+       "F-12"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to flows by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-entry_points",
+      "kind": "added",
+      "current_refs": [
+       "EP-redirect",
+       "EP-static",
+       "EP-ceremony",
+       "EP-api-links",
+       "EP-api-account",
+       "EP-api-admin"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to entry_points by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-states",
+      "kind": "added",
+      "current_refs": [
+       "ST-signed-out",
+       "ST-signed-in",
+       "ST-session-ended",
+       "ST-account-deleted",
+       "ST-token-revoked",
+       "ST-link-deleted"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to states by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-dependencies",
+      "kind": "added",
+      "current_refs": [
+       "DEP-1",
+       "DEP-2",
+       "DEP-3",
+       "DEP-4"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to dependencies by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-controls",
+      "kind": "added",
+      "current_refs": [
+       "CTL-SC-001",
+       "CTL-SC-002",
+       "CTL-SC-003",
+       "CTL-SC-009",
+       "CTL-SC-010",
+       "CTL-SC-011",
+       "CTL-SC-012",
+       "CTL-SC-013",
+       "CTL-SC-014",
+       "CTL-SC-015",
+       "CTL-SC-016",
+       "CTL-SC-018",
+       "CTL-SC-019",
+       "CTL-SC-020",
+       "CTL-SC-021",
+       "CTL-SC-022",
+       "CTL-SC-024",
+       "CTL-SC-025"
+      ],
+      "previous_ids": [],
+      "rationale": "Supplied control claims recorded at status designed.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-requirements",
+      "kind": "added",
+      "current_refs": [
+       "RQ-FR-1.8",
+       "RQ-FR-1.11",
+       "RQ-FR-2.10",
+       "RQ-FR-3.5",
+       "RQ-FR-3.7",
+       "RQ-FR-4.13",
+       "RQ-FR-5.7",
+       "RQ-FR-7.2",
+       "RQ-NFR-1.3"
+      ],
+      "previous_ids": [],
+      "rationale": "Supplied requirements that later stages reference.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-coverage",
+      "kind": "added",
+      "current_refs": [
+       "COV-model-web",
+       "COV-model-api"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to coverage by this stage.",
+      "evidence_refs": []
+     },
+     {
+      "id": "CH-r01-add-gaps",
+      "kind": "added",
+      "current_refs": [
+       "G-011",
+       "G-012"
+      ],
+      "previous_ids": [],
+      "rationale": "Records added to gaps by this stage.",
+      "evidence_refs": []
+     }
+    ]
+   },
+   "locator": null,
+   "limitations": "Change declarations of the parent revision, kept as history only.",
+   "redaction": {
+    "status": "none_found",
+    "notes": []
+   }
+  }
+ ],
+ "continuation": null,
+ "model": {
+  "scope": {
+   "description": "Specification-level threat model of shrink-182, a team link shortener, before any code exists. Web is the primary architecture; API is a bounded secondary for the JSON API.",
+   "in_scope": [
+    "React SPA and browser session",
+    "Fastify HTTP layer and JSON API (session cookie and bearer token)",
+    "Auth, Links, Redirect, Admin and Account deletion modules",
+    "Configuration, SQLite store, security event file",
+    "Anonymous short-link redirect"
+   ],
+   "out_of_scope": [
+    "Application code (none exists)",
+    "Host OS, GitHub repository settings and CI",
+    "A hosted deployment (only a localhost demo is specified)",
+    "Privacy review scope (not requested)",
+    "Supply-chain architecture analysis beyond what the web and API lenses touch",
+    "REQUIREMENT_TEMPLATE.md and logo.svg (not system evidence)"
+   ],
+   "objectives": [
+    "Find design-level threats in the specifications",
+    "Give supported findings stable T-nnn IDs so they can be folded back into the specs",
+    "Leave a JSON baseline for later change reviews"
+   ],
+   "assumptions": [
+    "The five specification documents at revision 10b7ddf are the intended design",
+    "The demo runs on a developer machine at http://localhost, as ARCHITECTURE.md states"
+   ],
+   "limitations": [
+    "Nothing is implemented; every statement about a control describes a design, not behavior",
+    "No risk rubric, prior model, method fragment or secure-coding pack was supplied",
+    "Working-tree cleanliness was not checked with Git because of the runbook's filter rule",
+    "Absent surfaces are recorded as not applicable: uploads, payments, shared caches, third-party resources, background jobs, callbacks, federation, multi-tenancy",
+    "The system model is reconstructed from specification text and diagrams only; elements have basis proposed_design",
+    "Threats are grounded design hypotheses about the specifications; none is an evidenced weakness, and none is rated"
+   ]
+  },
+  "evidence": [
+   {
+    "id": "E-001",
+    "locator": "REQUIREMENTS.md:22-32",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-1: passkey-only sign-up and login, open sign-up, additional passkeys, no recovery, logout, 24 h idle and 7 day absolute session expiry, self-service account deletion that removes the user's links.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-002",
+    "locator": "REQUIREMENTS.md:36-46",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-2: a logged-in user creates links; the server generates a 7-character random code; only well-formed http/https targets up to 2,048 characters and not on the site's own domain; title up to 200 characters.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-003",
+    "locator": "REQUIREMENTS.md:50-57",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-3: anonymous 302 redirect; every request counts as a click; no visitor-identifying data stored; repeat and automated visits are not filtered; links never expire.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-004",
+    "locator": "REQUIREMENTS.md:61-73",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-4: own-link list, edit and delete; other users' links are rejected and unchanged; the same not-found for missing and not-owned; deleted codes are never reused.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-005",
+    "locator": "REQUIREMENTS.md:77-84",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-5: web UI and JSON API with the same rules; personal API tokens shown once, listable and revocable; the API identifies the caller by token; account deletion revokes tokens.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-006",
+    "locator": "REQUIREMENTS.md:88-89",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-6: no payments and no file uploads.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-007",
+    "locator": "REQUIREMENTS.md:93-100",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "FR-7: two roles; admin is assigned only in deployment configuration by internal user ID; an admin lists all links and users, deletes any link and deletes other users; a user's internal ID is shown on their account page.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-008",
+    "locator": "REQUIREMENTS.md:104-106",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "NFR-1: up to 100 users; single deployment; 10 sign-up/login attempts per minute per network address and 60 API calls per minute per token; redirects are not rate-limited; sign-ups are not capped.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-009",
+    "locator": "ARCHITECTURE.md:9-21",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "One Node.js process at http://localhost; one JSON API serves the web UI (session cookie) and API clients (bearer token); server-side sessions; one SQLite file.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-010",
+    "locator": "ARCHITECTURE.md:23-40",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Stack: Node 24, Fastify 5, React 19, node:sqlite, @simplewebauthn, @fastify/cookie, @fastify/static, @fastify/rate-limit, Vite, TypeScript, Vitest.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-011",
+    "locator": "ARCHITECTURE.md:42-54",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Component table with responsibilities, rules enforced and data owned.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-012",
+    "locator": "ARCHITECTURE.md:56-63",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Six main data flows: passkey sign-up/login, create link, follow link, manage own links, API tokens (created with a session only), admin actions (session caller checked against the configured admin list).",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-013",
+    "locator": "ARCHITECTURE.md:65-73",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Trust boundaries TB-1 to TB-7 and their enforcement points.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-014",
+    "locator": "ARCHITECTURE.md:75-84",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Dependency rules DR-1 to DR-8.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-015",
+    "locator": "ARCHITECTURE.md:86-169",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Component and trust-boundary flowchart; redirect and passkey-login sequence diagrams.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-016",
+    "locator": "SECURITY.md:7-19",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Applicability decisions; passwords, uploads, payments, SSR, SSRF, recovery and proxies are declared not applicable; trustProxy stays false.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-017",
+    "locator": "SECURITY.md:32-65",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-001 to SC-005: body and time limits, a schema on every route, WHATWG URL parsing with scheme, length and own-host checks, no backtracking regexes, no event-loop blocking.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-018",
+    "locator": "SECURITY.md:67-86",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-006 to SC-008: bound parameters, prototype-pollution safety, no dynamic code execution.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-019",
+    "locator": "SECURITY.md:88-100",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-009 and SC-010: plain-text rendering, no target URL in href, a CSP limited to 'self', nosniff, no-referrer.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-020",
+    "locator": "SECURITY.md:102-114",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-011 and SC-012: ceremony verification with a server-stored single-use 5-minute challenge, configured origin and RP ID, required user verification; credential lookup by ID, counter handling, excludeCredentials.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-021",
+    "locator": "SECURITY.md:116-121",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-013: random session ID in a __Host-session cookie (HttpOnly, Secure, SameSite=Lax), stored hashed, new at login, deleted at logout, idle and absolute expiry.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-022",
+    "locator": "SECURITY.md:123-128",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-014: 32-byte tokens, shown once, stored hashed, bearer header only, rejected when revoked or when the owner is deleted, never created with a token.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-023",
+    "locator": "SECURITY.md:130-135",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-015: non-GET routes authenticated by the session cookie require Sec-Fetch-Site same-origin (or a matching Origin when absent) and a JSON content type; no GET changes state; no CORS.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-024",
+    "locator": "SECURITY.md:137-142",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-016: ownership filter in the Links module with a uniform not-found; admin check against the configured list on every admin action; its verification says an admin cannot delete themself.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-025",
+    "locator": "SECURITY.md:144-149",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-017: uniform JSON errors without internals.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-026",
+    "locator": "SECURITY.md:151-156",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-018: in-memory rate limits; sign-up and login keyed by socket address; API routes keyed by the token hash already computed for lookup; redirects are not limited.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-027",
+    "locator": "SECURITY.md:158-170",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-019 and SC-020: logs omit IP, user agent, cookies, authorization and bodies; the redirect returns 302 only to a stored target with Cache-Control: no-store.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-028",
+    "locator": "SECURITY.md:172-198",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-021 to SC-024: response schemas, validated environment configuration, dependency and install rules, database file outside the static root with mode 0600.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-029",
+    "locator": "SECURITY.md:200-216",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "SC-025 and the security event policy: one local JSON-lines file rotating at 10 MiB x 5, best-effort audit events with counted loss; no open decisions.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-030",
+    "locator": "SECURITY_EVENTS.md:13-69",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Event contract: envelope, allowlisted conditional fields, 2 KiB limit, never-log list.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-031",
+    "locator": "SECURITY_EVENTS.md:71-161",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Ledger SEC-001 to SEC-099 and SEC-APP-001/002; every applicable event is 'missing' because nothing is built.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-032",
+    "locator": "DESIGN.md:296-326",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Security-relevant interactions: signed-in state, confirmed destructive actions, uniform error wording, user content as plain text, target URLs not live links.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-033",
+    "locator": "DESIGN.md:232; DESIGN.md:286-289",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "Fonts are self-hosted; link rows show the full host, shorten long paths in the middle and show the full URL as a tooltip.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-034",
+    "locator": "README.md:11",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "The README states that nothing is built yet and the project is in the design phase.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-035",
+    "locator": "tracked-file listing at 10b7ddf",
+    "source_kind": "repository",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "The repository tracks only eight Markdown documents, design/preview.html and logo.svg. There is no application source, manifest, lockfile, test or configuration file.",
+    "status": "observation",
+    "purpose": "implementation",
+    "access": "read",
+    "limitations": "A file listing; it shows absence of code at this revision only.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-036",
+    "locator": "caller request for this run (session)",
+    "source_kind": "caller",
+    "source_revision": "10b7ddf",
+    "date": "2026-11-11",
+    "statement": "The caller states that nothing is implemented, asks for that to be recorded as an evidence gap, and asks for a deep web and API run with one report and one set of T-nnn IDs.",
+    "status": "claim",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Caller statement; not independently verified beyond E-035.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-037",
+    "locator": "design/preview.html (pattern search)",
+    "source_kind": "repository",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "A search for URLs, src=, href=, <script, @import and url( found only example URL strings in form fields and one href=\"#\"; no external resource load was found by that search.",
+    "status": "observation",
+    "purpose": "description",
+    "access": "partial",
+    "limitations": "Pattern search only; markup and styles otherwise unread.",
+    "excerpt": null,
+    "derived_from": []
+   },
+   {
+    "id": "E-038",
+    "locator": "SECURITY_EVENTS.md:6-9",
+    "source_kind": "document",
+    "source_revision": "10b7ddf",
+    "date": null,
+    "statement": "The event ledger targets specifications only; both gates are NOT RUN.",
+    "status": "proposal",
+    "purpose": "description",
+    "access": "read",
+    "limitations": "Specification text describing a proposed design; not an implementation or runtime observation.",
+    "excerpt": null,
+    "derived_from": []
+   }
+  ],
+  "system": {
+   "assets": [
+    {
+     "id": "AS-spa",
+     "kind": "component",
+     "description": "React single-page app: sign-up, login, links, tokens, account and admin screens.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-011",
+      "E-032"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-http",
+     "kind": "component",
+     "description": "Fastify HTTP layer: routing, schemas, cookies, static files, rate limits, headers, error shape.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-011",
+      "E-017"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-auth",
+     "kind": "component",
+     "description": "Auth module: passkeys, sessions, API tokens, caller identity and role.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-011",
+      "E-014"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-links",
+     "kind": "component",
+     "description": "Links module: create, list, edit, delete, code generation, URL rules, ownership.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-011",
+      "E-014"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-redirect",
+     "kind": "component",
+     "description": "Redirect handler: resolves a code, counts the click, returns 302 or not-found.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-011",
+      "E-027"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-admin",
+     "kind": "component",
+     "description": "Admin module: role check, list all links and users, delete links and other users.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-011",
+      "E-024"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-acct-del",
+     "kind": "component",
+     "description": "Account deletion: removes a user with their links, tokens and sessions by coordinating Auth and Links.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-011",
+      "E-001"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-config",
+     "kind": "component",
+     "description": "Configuration read from environment variables at startup: admin list, site origin (also the RP ID), database path.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-011",
+      "E-028"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-db",
+     "kind": "store",
+     "description": "One SQLite file holding users, passkeys, sessions, tokens, links and retired codes.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-009",
+      "E-028"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-event-log",
+     "kind": "store",
+     "description": "Local JSON-lines security event file (mode 0600, rotating 10 MiB x 5).",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-029",
+      "E-030"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "AS-vendor",
+     "kind": "third-party code",
+     "description": "Third-party packages running in the process or the page: Fastify and its plugins, @simplewebauthn, React; plus the built-in node:sqlite (release candidate).",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-010"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    }
+   ],
+   "actors": [
+    {
+     "id": "ACT-visitor",
+     "kind": "actor",
+     "description": "Anonymous visitor who follows short links or opens the signed-out page.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-003"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ACT-user",
+     "kind": "actor",
+     "description": "Signed-in user who owns links, passkeys and API tokens.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-001",
+      "E-004"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ACT-admin",
+     "kind": "actor",
+     "description": "User whose internal ID is in the configured admin list; can list everything and delete links and other users.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-007"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ACT-api-client",
+     "kind": "actor",
+     "description": "Program calling the JSON API with a user's bearer token.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-005",
+      "E-022"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ACT-operator",
+     "kind": "actor",
+     "description": "Project owner who sets environment configuration and reads the security event file.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-007",
+      "E-029"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ACT-other-origin",
+     "kind": "actor",
+     "description": "A page from another origin open in the user's browser, able to send cross-site requests to the server.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-023"
+     ],
+     "rationale": "SC-015 names this actor's capability as the reason for the CSRF rule.",
+     "related_refs": []
+    }
+   ],
+   "data": [
+    {
+     "id": "D-session",
+     "kind": "credential",
+     "description": "Session ID (cookie value; stored as a SHA-256 hash).",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-021"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "D-passkey",
+     "kind": "credential",
+     "description": "Passkey credential record: credential ID, public key, counter.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-020"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "D-token",
+     "kind": "credential",
+     "description": "API token (shown once; stored as a SHA-256 hash).",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-022"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "D-challenge",
+     "kind": "credential",
+     "description": "Single-use WebAuthn challenge, valid 5 minutes.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-020"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "D-link",
+     "kind": "user content",
+     "description": "Short link: code, target URL, optional title, owner, click count.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-002",
+      "E-004"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "D-user-id",
+     "kind": "identifier",
+     "description": "Internal user ID; shown to its owner, listed to admins, used in the admin list and in events.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-007",
+      "E-029"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "D-admin-list",
+     "kind": "configuration",
+     "description": "Admin list of internal user IDs in deployment configuration.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-007",
+      "E-028"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "D-events",
+     "kind": "audit record",
+     "description": "Security events with opaque actor and target references.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-030",
+      "E-031"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    }
+   ],
+   "zones": [
+    {
+     "id": "Z-internet",
+     "kind": "zone",
+     "description": "Untrusted network side: anything that can send a request to the server.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013",
+      "E-015"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "Z-browser",
+     "kind": "zone",
+     "description": "The user's browser running the React SPA, alongside pages from other origins.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-011",
+      "E-023"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "Z-server",
+     "kind": "zone",
+     "description": "The single Node.js process (Fastify and the domain modules).",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-009",
+      "E-011"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "Z-host",
+     "kind": "zone",
+     "description": "Local host resources the process uses: SQLite file, event and diagnostic log files, environment configuration.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-028",
+      "E-029"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "Z-external",
+     "kind": "zone",
+     "description": "External target sites that short links redirect to.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    }
+   ],
+   "boundaries": [
+    {
+     "id": "TB-1",
+     "kind": "trust boundary",
+     "description": "Internet to server: all requests are untrusted input; validated in the HTTP layer and again in the Links module.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [],
+     "side_refs": [
+      "Z-internet",
+      "Z-server"
+     ],
+     "owner_architecture": "web",
+     "gap_refs": [
+      "G-002"
+     ]
+    },
+    {
+     "id": "TB-2",
+     "kind": "trust boundary",
+     "description": "Anonymous to authenticated: authentication is enforced once in the Auth module; session cookies for the web UI, bearer tokens for the JSON API.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [],
+     "side_refs": [
+      "Z-browser",
+      "AS-auth"
+     ],
+     "owner_architecture": "web",
+     "gap_refs": []
+    },
+    {
+     "id": "TB-3",
+     "kind": "trust boundary",
+     "description": "User to another user's data: ownership is enforced in the Links module on every read, edit and delete.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013",
+      "E-024"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [],
+     "side_refs": [
+      "AS-http",
+      "AS-links"
+     ],
+     "owner_architecture": "api",
+     "gap_refs": []
+    },
+    {
+     "id": "TB-4",
+     "kind": "trust boundary",
+     "description": "User to admin: the role is enforced at the Admin module entry using the configured admin list.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013",
+      "E-024"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [],
+     "side_refs": [
+      "AS-http",
+      "AS-admin"
+     ],
+     "owner_architecture": "api",
+     "gap_refs": []
+    },
+    {
+     "id": "TB-5",
+     "kind": "trust boundary",
+     "description": "Server to browser rendering: user titles and URLs are output as plain text by React.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013",
+      "E-019"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [],
+     "side_refs": [
+      "Z-server",
+      "Z-browser"
+     ],
+     "owner_architecture": "web",
+     "gap_refs": []
+    },
+    {
+     "id": "TB-6",
+     "kind": "trust boundary",
+     "description": "Server to SQLite file: trusted local store, bound parameters only.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013",
+      "E-018"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [],
+     "side_refs": [
+      "Z-server",
+      "AS-db"
+     ],
+     "owner_architecture": "api",
+     "gap_refs": []
+    },
+    {
+     "id": "TB-7",
+     "kind": "trust boundary",
+     "description": "Redirect to external target: visitors are sent to user-supplied http/https URLs that are not the site's own domain.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013",
+      "E-017"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [],
+     "side_refs": [
+      "AS-redirect",
+      "Z-external"
+     ],
+     "owner_architecture": "web",
+     "gap_refs": []
+    }
+   ],
+   "flows": [
+    {
+     "id": "F-1",
+     "description": "Passkey sign-up or login: options request, challenge, WebAuthn in the browser, verify, session cookie set.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-012",
+      "E-015",
+      "E-020"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-visitor",
+     "target_ref": "EP-ceremony",
+     "data_refs": [
+      "D-challenge",
+      "D-passkey",
+      "D-session",
+      "D-user-id"
+     ],
+     "boundary_refs": [
+      "TB-1",
+      "TB-2"
+     ],
+     "gap_refs": [
+      "G-003",
+      "G-010"
+     ]
+    },
+    {
+     "id": "F-2",
+     "description": "Create a link from the web UI (cookie) or an API client (token).",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-012"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-user",
+     "target_ref": "EP-api-links",
+     "data_refs": [
+      "D-link",
+      "D-session",
+      "D-token"
+     ],
+     "boundary_refs": [
+      "TB-1",
+      "TB-2"
+     ],
+     "gap_refs": [
+      "G-005"
+     ]
+    },
+    {
+     "id": "F-3",
+     "description": "Follow a short link: look up the code, increment the count, 302 to the target or not-found.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-012",
+      "E-015",
+      "E-027"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-visitor",
+     "target_ref": "EP-redirect",
+     "data_refs": [
+      "D-link"
+     ],
+     "boundary_refs": [
+      "TB-1",
+      "TB-7"
+     ],
+     "gap_refs": []
+    },
+    {
+     "id": "F-4",
+     "description": "List, edit and delete own links; not-owned and missing give the same not-found.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-012",
+      "E-024"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-user",
+     "target_ref": "EP-api-links",
+     "data_refs": [
+      "D-link",
+      "D-session",
+      "D-token"
+     ],
+     "boundary_refs": [
+      "TB-1",
+      "TB-2",
+      "TB-3"
+     ],
+     "gap_refs": [
+      "G-005"
+     ]
+    },
+    {
+     "id": "F-5",
+     "description": "Create (session only), list and revoke API tokens; the value is shown once.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-012",
+      "E-022"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-user",
+     "target_ref": "EP-api-account",
+     "data_refs": [
+      "D-token",
+      "D-session"
+     ],
+     "boundary_refs": [
+      "TB-1",
+      "TB-2",
+      "TB-5"
+     ],
+     "gap_refs": []
+    },
+    {
+     "id": "F-6",
+     "description": "Admin actions: list all links and users, delete a link, delete another user.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-012",
+      "E-024"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-admin",
+     "target_ref": "EP-api-admin",
+     "data_refs": [
+      "D-link",
+      "D-user-id",
+      "D-session",
+      "D-admin-list"
+     ],
+     "boundary_refs": [
+      "TB-1",
+      "TB-2",
+      "TB-4",
+      "TB-5"
+     ],
+     "gap_refs": [
+      "G-005"
+     ]
+    },
+    {
+     "id": "F-7",
+     "description": "API client calls the links API with a bearer token.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-005",
+      "E-022"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-api-client",
+     "target_ref": "EP-api-links",
+     "data_refs": [
+      "D-token",
+      "D-link"
+     ],
+     "boundary_refs": [
+      "TB-1",
+      "TB-2",
+      "TB-3"
+     ],
+     "gap_refs": [
+      "G-005",
+      "G-007"
+     ]
+    },
+    {
+     "id": "F-8",
+     "description": "Delete an account: remove the user, their links, tokens and sessions.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-001",
+      "E-005",
+      "E-011"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-user",
+     "target_ref": "EP-api-account",
+     "data_refs": [
+      "D-user-id",
+      "D-link",
+      "D-token",
+      "D-session",
+      "D-passkey"
+     ],
+     "boundary_refs": [
+      "TB-1",
+      "TB-2",
+      "TB-6"
+     ],
+     "gap_refs": [
+      "G-008"
+     ]
+    },
+    {
+     "id": "F-9",
+     "description": "Modules write security events to the local event file.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-029",
+      "E-030"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "AS-auth",
+     "target_ref": "AS-event-log",
+     "data_refs": [
+      "D-events",
+      "D-user-id"
+     ],
+     "boundary_refs": [],
+     "gap_refs": []
+    },
+    {
+     "id": "F-10",
+     "description": "Operator sets the admin list, origin and database path; the process reads them at startup.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-007",
+      "E-028"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-operator",
+     "target_ref": "AS-config",
+     "data_refs": [
+      "D-admin-list"
+     ],
+     "boundary_refs": [],
+     "gap_refs": []
+    },
+    {
+     "id": "F-11",
+     "description": "A page from another origin sends a cross-site request to the server from the user's browser.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-023"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "ACT-other-origin",
+     "target_ref": "AS-http",
+     "data_refs": [
+      "D-session"
+     ],
+     "boundary_refs": [
+      "TB-1",
+      "TB-2"
+     ],
+     "gap_refs": []
+    },
+    {
+     "id": "F-12",
+     "description": "The SPA renders user-supplied titles and target URLs in the owner's list and in the admin list.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-019",
+      "E-032",
+      "E-033"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "AS-http",
+     "target_ref": "AS-spa",
+     "data_refs": [
+      "D-link",
+      "D-user-id"
+     ],
+     "boundary_refs": [
+      "TB-5"
+     ],
+     "gap_refs": []
+    }
+   ],
+   "entry_points": [
+    {
+     "id": "EP-redirect",
+     "kind": "route",
+     "description": "Anonymous GET /<code> short-link redirect.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-003",
+      "E-012"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [
+      "AS-redirect"
+     ]
+    },
+    {
+     "id": "EP-static",
+     "kind": "route",
+     "description": "Static files and the SPA shell, including the signed-out page.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-010",
+      "E-013"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [
+      "AS-http"
+     ]
+    },
+    {
+     "id": "EP-ceremony",
+     "kind": "route",
+     "description": "Unauthenticated sign-up and login routes (options and verify).",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-012",
+      "E-020"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [
+      "AS-auth"
+     ]
+    },
+    {
+     "id": "EP-api-links",
+     "kind": "route",
+     "description": "JSON API for creating, listing, editing and deleting links; session cookie or bearer token.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-005",
+      "E-012"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [
+      "AS-links"
+     ]
+    },
+    {
+     "id": "EP-api-account",
+     "kind": "route",
+     "description": "Account routes: logout, add passkey, create/list/revoke tokens, delete account.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-001",
+      "E-005"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [
+      "AS-auth",
+      "AS-acct-del"
+     ]
+    },
+    {
+     "id": "EP-api-admin",
+     "kind": "route",
+     "description": "Admin routes: list all links and users, delete any link, delete another user.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-007",
+      "E-012"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": [
+      "AS-admin"
+     ]
+    }
+   ],
+   "states": [
+    {
+     "id": "ST-signed-out",
+     "kind": "session state",
+     "description": "No session; only sign-up, login, redirect, signed-out page and static files are reachable.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-013"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ST-signed-in",
+     "kind": "session state",
+     "description": "Valid session within the idle and absolute limits.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-001",
+      "E-021"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ST-session-ended",
+     "kind": "session state",
+     "description": "Session ended by logout, idle expiry or absolute expiry; the ID is no longer accepted.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-001",
+      "E-021"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ST-account-deleted",
+     "kind": "account state",
+     "description": "Account deleted by its owner or an admin; links removed, tokens revoked, codes stay retired.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-001",
+      "E-005"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ST-token-revoked",
+     "kind": "credential state",
+     "description": "API token revoked by its owner or by account deletion.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-005",
+      "E-022"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    },
+    {
+     "id": "ST-link-deleted",
+     "kind": "object state",
+     "description": "Link deleted; its code answers not-found and is never reassigned.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-004"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "related_refs": []
+    }
+   ],
+   "dependencies": [
+    {
+     "id": "DEP-1",
+     "description": "Auth relies on @simplewebauthn/server for attestation and assertion verification.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-010",
+      "E-020"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "AS-auth",
+     "target_ref": "AS-vendor",
+     "gap_refs": []
+    },
+    {
+     "id": "DEP-2",
+     "description": "The HTTP layer relies on Fastify, @fastify/cookie, @fastify/static and @fastify/rate-limit.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-010",
+      "E-026"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "AS-http",
+     "target_ref": "AS-vendor",
+     "gap_refs": []
+    },
+    {
+     "id": "DEP-3",
+     "description": "The store relies on node:sqlite, a release-candidate built-in.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-010"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "AS-db",
+     "target_ref": "AS-vendor",
+     "gap_refs": []
+    },
+    {
+     "id": "DEP-4",
+     "description": "Admin authority depends on the admin list in configuration.",
+     "basis": "proposed_design",
+     "evidence_refs": [
+      "E-007",
+      "E-012"
+     ],
+     "rationale": "Taken from the specification as proposed design; nothing is built.",
+     "source_ref": "AS-admin",
+     "target_ref": "AS-config",
+     "gap_refs": []
+    }
+   ]
+  },
+  "methods": [],
+  "threats": [
+   {
+    "id": "T-001",
+    "scenario": "A page from another origin makes the signed-in user's browser send a state-changing request (create, edit or delete a link, revoke a token, delete the account, an admin delete) that the server accepts on the strength of the session cookie alone.",
+    "objective": "Integrity of the user's links, tokens and account; for an admin, of every user's links and accounts.",
+    "affected_refs": [
+     "ACT-other-origin",
+     "F-11",
+     "EP-api-links",
+     "EP-api-account",
+     "EP-api-admin",
+     "TB-2",
+     "D-session"
+    ],
+    "prerequisites": [
+     "The victim has a valid session",
+     "The victim opens an attacker-controlled page in the same browser",
+     "The fetch-metadata/Origin and content-type check is missing or bypassable on the targeted route"
+    ],
+    "actor_assumptions": [
+     "Can host a web page and get the victim to open it",
+     "Cannot read the session cookie"
+    ],
+    "evidence_refs": [
+     "E-021",
+     "E-023"
+    ],
+    "method_refs": [],
+    "confidence": "low",
+    "confidence_rationale": "SC-015 and SameSite=Lax (SC-013) are specified and would defeat this. Nothing is built, so neither is observed. A test that sends cross-site and wrong-content-type requests to each non-GET route would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-001"
+    ],
+    "related_threat_refs": [
+     "T-002",
+     "T-003"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web"
+    ]
+   },
+   {
+    "id": "T-002",
+    "scenario": "Sign-up and login routes are not authenticated by the session cookie, so the wording of SC-015 does not cover them. A cross-site page submits a login completion for the attacker's own account, or a second party completes a ceremony against a challenge issued to someone else. The victim ends up signed in as the attacker and saves links (target URLs) into the attacker's account.",
+    "objective": "Confidentiality of URLs the victim shortens; integrity of which account a browser is signed in to.",
+    "affected_refs": [
+     "ACT-other-origin",
+     "EP-ceremony",
+     "F-1",
+     "D-challenge",
+     "TB-2"
+    ],
+    "prerequisites": [
+     "The ceremony routes accept a cross-site request",
+     "A challenge is not tied to the browser that requested it, or can be used twice under concurrent requests",
+     "The attacker has their own registered passkey"
+    ],
+    "actor_assumptions": [
+     "Can host a web page and get the victim to open it",
+     "Holds a valid account and passkey"
+    ],
+    "evidence_refs": [
+     "E-020",
+     "E-023"
+    ],
+    "method_refs": [],
+    "confidence": "low",
+    "confidence_rationale": "Supported by the scope wording of SC-015 and by the silence on challenge binding (G-003). Against it: with no CORS a cross-site page cannot send a JSON content type without a preflight, if the ceremony routes insist on JSON; SC-011 requires a single-use challenge. The route rules and challenge design would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-003"
+    ],
+    "related_threat_refs": [
+     "T-001",
+     "T-003"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web"
+    ]
+   },
+   {
+    "id": "T-003",
+    "scenario": "Sign-up and login are limited to 10 attempts per minute per socket address. On the localhost demo every browser tab and local process shares the loopback address, and the ceremony routes are reachable cross-site. Any page the user visits, or any local process, can spend the allowance and keep the user locked out of login.",
+    "objective": "Availability of sign-up and login.",
+    "affected_refs": [
+     "ACT-other-origin",
+     "EP-ceremony",
+     "AS-http",
+     "F-11"
+    ],
+    "prerequisites": [
+     "Ceremony option or verify requests count against the limit before any origin check",
+     "The attacker's requests arrive from the same socket address as the user's"
+    ],
+    "actor_assumptions": [
+     "Can host a web page the user opens, or run a process on the same host or behind the same address"
+    ],
+    "evidence_refs": [
+     "E-008",
+     "E-023",
+     "E-026"
+    ],
+    "method_refs": [],
+    "confidence": "medium",
+    "confidence_rationale": "Supported by SC-018 (key is the socket address) and by SC-015 not covering ceremony routes. Nothing argues against it for the localhost demo. Whether cross-site requests are rejected before the limiter counts them would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-012"
+    ],
+    "related_threat_refs": [
+     "T-001",
+     "T-002",
+     "T-011"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "T-004",
+    "scenario": "Admin authority is granted to whoever holds an internal user ID listed in configuration. The specs do not say how IDs are generated or that they are never reused. If IDs are sequential or reusable, a new sign-up can receive an ID that is still in the admin list after the original admin account was deleted, and becomes an admin. Reuse would also mis-attribute retained security events.",
+    "objective": "Admin authority (TB-4): every user's links and accounts; attribution in the event file.",
+    "affected_refs": [
+     "D-user-id",
+     "D-admin-list",
+     "AS-config",
+     "AS-admin",
+     "TB-4",
+     "DEP-4"
+    ],
+    "prerequisites": [
+     "An ID in the admin list no longer belongs to the intended person (the account was deleted, or the ID was listed in advance)",
+     "A new account can obtain that ID"
+    ],
+    "actor_assumptions": [
+     "Can sign up (sign-up is open to anyone who reaches the site)"
+    ],
+    "evidence_refs": [
+     "E-007",
+     "E-024",
+     "E-029"
+    ],
+    "method_refs": [],
+    "confidence": "medium",
+    "confidence_rationale": "Supported by FR-7.2/FR-7.7 (authority by ID), FR-1.11 (accounts can be deleted) and the absence of any ID rule (G-004). An unguessable, never-reused ID would defeat it. The ID generation rule decides it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-004"
+    ],
+    "related_threat_refs": [],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "api",
+     "web"
+    ]
+   },
+   {
+    "id": "T-005",
+    "scenario": "One JSON API accepts a session cookie or a bearer token, but the specs do not list which routes accept which. A leaked or over-shared API token could reach account, passkey, token-management or admin routes, and a request carrying both credentials could be checked under one and acted on under the other.",
+    "objective": "Limit of a token's authority to link management; integrity of account and admin functions.",
+    "affected_refs": [
+     "D-token",
+     "EP-api-account",
+     "EP-api-admin",
+     "EP-api-links",
+     "AS-auth",
+     "TB-2",
+     "TB-4",
+     "F-7"
+    ],
+    "prerequisites": [
+     "A token is obtained by someone other than its owner, or a request carries both a cookie and a token",
+     "A non-link route accepts the bearer credential, or the CSRF check is skipped when an Authorization header is present"
+    ],
+    "actor_assumptions": [
+     "Holds a valid API token, their own or a leaked one"
+    ],
+    "evidence_refs": [
+     "E-005",
+     "E-009",
+     "E-012",
+     "E-022"
+    ],
+    "method_refs": [],
+    "confidence": "medium",
+    "confidence_rationale": "Supported by ARCHITECTURE.md describing one API for both credentials and by G-005. Against it: FR-5.2 lists only link operations for the API, data flows 5 and 6 name the session for tokens and admin, and SC-014 forbids creating tokens with a token. A per-route credential rule would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-005"
+    ],
+    "related_threat_refs": [
+     "T-006"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "api",
+     "web"
+    ]
+   },
+   {
+    "id": "T-006",
+    "scenario": "A signed-in user or API client changes the short code in a view, edit or delete call to reach a link owned by someone else, or calls an admin route without the admin role. The admin list-all route is the one bulk path; it returns every user's links and IDs.",
+    "objective": "Confidentiality and integrity of other users' links (TB-3); admin-only functions (TB-4).",
+    "affected_refs": [
+     "EP-api-links",
+     "EP-api-admin",
+     "AS-links",
+     "AS-admin",
+     "TB-3",
+     "TB-4",
+     "D-link",
+     "F-4",
+     "F-6"
+    ],
+    "prerequisites": [
+     "The ownership filter or role check is missing on one route or one operation",
+     "Or a response returns fields beyond the allowed set"
+    ],
+    "actor_assumptions": [
+     "Has an account or a valid token",
+     "Knows or guesses a 7-character code"
+    ],
+    "evidence_refs": [
+     "E-004",
+     "E-007",
+     "E-024",
+     "E-028"
+    ],
+    "method_refs": [],
+    "confidence": "low",
+    "confidence_rationale": "SC-016 places the ownership check in the Links module for every read, edit and delete with a uniform not-found, and SC-021 limits response fields. Nothing is built. A two-account comparison across every operation, by cookie and by token, would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-001"
+    ],
+    "related_threat_refs": [
+     "T-005"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "api",
+     "web"
+    ]
+   },
+   {
+    "id": "T-007",
+    "scenario": "A user stores a title or target URL crafted to be interpreted as markup or a live link. It is later shown in another user's context: the admin's list of all links, a delete-confirmation dialog that names the link and owner, or a tooltip. If interpreted, it runs with the admin's session.",
+    "objective": "Integrity of the admin's session and actions; TB-5.",
+    "affected_refs": [
+     "D-link",
+     "F-12",
+     "AS-spa",
+     "TB-5",
+     "ACT-admin",
+     "EP-api-admin"
+    ],
+    "prerequisites": [
+     "User content reaches a sink that interprets it (HTML, a URL attribute) instead of text",
+     "The CSP does not stop the result"
+    ],
+    "actor_assumptions": [
+     "Has an account and can create links"
+    ],
+    "evidence_refs": [
+     "E-019",
+     "E-032",
+     "E-033"
+    ],
+    "method_refs": [],
+    "confidence": "low",
+    "confidence_rationale": "SC-009 (text only, no target in href) and SC-010 (CSP limited to 'self') are both specified and each would defeat it. Nothing is built. Rendering hostile titles and URLs in the admin list, the dialogs and the tooltip would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-001"
+    ],
+    "related_threat_refs": [
+     "T-008"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web"
+    ]
+   },
+   {
+    "id": "T-008",
+    "scenario": "A target URL is accepted and displayed in a form that misleads the reader about where it goes: a trusted-looking name before an @ sign, an internationalized look-alike host shown in Unicode, or a title containing direction-override or control characters that reorders what is displayed. DESIGN.md relies on the visible host to expose look-alike domains.",
+    "objective": "Users' and admins' ability to judge a link's destination from the list and from confirmation dialogs.",
+    "affected_refs": [
+     "D-link",
+     "AS-links",
+     "AS-spa",
+     "F-12",
+     "TB-5",
+     "TB-7"
+    ],
+    "prerequisites": [
+     "SC-003 accepts URLs with embedded credentials, or the display shows the submitted string instead of the parsed host",
+     "Or titles may contain control or direction-override characters"
+    ],
+    "actor_assumptions": [
+     "Has an account and can create links"
+    ],
+    "evidence_refs": [
+     "E-002",
+     "E-017",
+     "E-032",
+     "E-033"
+    ],
+    "method_refs": [],
+    "confidence": "medium",
+    "confidence_rationale": "Supported by SC-003 listing only scheme, length and own-host checks, and by G-017. No specified control addresses it. A rule on normalization and allowed characters would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-017"
+    ],
+    "related_threat_refs": [
+     "T-007",
+     "T-009"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web"
+    ]
+   },
+   {
+    "id": "T-009",
+    "scenario": "Sign-up is open and uncapped, and any http/https target is allowed. Anyone who can reach the site can create an account and use shrink-182 links as a trusted-looking front for phishing or malware destinations. Removal depends on an admin noticing.",
+    "objective": "Trust in links served from the team's short-link host; safety of visitors.",
+    "affected_refs": [
+     "ACT-visitor",
+     "EP-ceremony",
+     "EP-redirect",
+     "AS-links",
+     "TB-7",
+     "D-link",
+     "F-3"
+    ],
+    "prerequisites": [
+     "The site is reachable by people outside the team",
+     "No admin has removed the link or account"
+    ],
+    "actor_assumptions": [
+     "Can reach the site and register a passkey"
+    ],
+    "evidence_refs": [
+     "E-001",
+     "E-002",
+     "E-003",
+     "E-007",
+     "E-008"
+    ],
+    "method_refs": [],
+    "confidence": "low",
+    "confidence_rationale": "FR-1.5, FR-2.8 and NFR-1.3 make this possible by design. Against it: the specified deployment is a localhost demo, so outsiders cannot reach it, and admins can delete links and users (FR-7.4, FR-7.5). It becomes live only if the system is hosted (G-009).",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-009"
+    ],
+    "related_threat_refs": [
+     "T-008",
+     "T-017"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "T-010",
+    "scenario": "FR-2.10 rejects targets on the site's own domain, and SC-003 compares the target host with the configured site host. A target that names the same server another way (a different spelling of the loopback host, a trailing dot, another port on the same host) passes the comparison and lets links point back at the service, including at each other in a loop.",
+    "objective": "The FR-2.10 rule; availability for a visitor caught in a redirect loop; inflated click counts.",
+    "affected_refs": [
+     "AS-links",
+     "EP-redirect",
+     "TB-7",
+     "D-link"
+    ],
+    "prerequisites": [
+     "The own-host comparison is an exact string match against one configured name"
+    ],
+    "actor_assumptions": [
+     "Has an account and can create links"
+    ],
+    "evidence_refs": [
+     "E-002",
+     "E-017"
+    ],
+    "method_refs": [],
+    "confidence": "medium",
+    "confidence_rationale": "Supported by the wording of SC-003 ('a host different from the configured site host'). Browsers stop redirect loops after a small number of hops, which limits harm. A rule on host normalization and loopback names would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-017"
+    ],
+    "related_threat_refs": [],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "api",
+     "web"
+    ]
+   },
+   {
+    "id": "T-011",
+    "scenario": "API rate limits are keyed by the hash of the presented token. A caller who sends a different random token on each request never reaches a limit. Each rejected request also writes an auth.api_token_rejected event, so the caller can fill the 10 MiB x 5 event file and rotate audit-required events out before the operator reads them.",
+    "objective": "Availability of the API; retention of audit evidence in the event file.",
+    "affected_refs": [
+     "EP-api-links",
+     "AS-http",
+     "AS-event-log",
+     "D-events",
+     "F-7",
+     "F-9"
+    ],
+    "prerequisites": [
+     "Requests with missing or unknown tokens are limited per token hash, or not at all",
+     "Rejection events are written without a volume bound"
+    ],
+    "actor_assumptions": [
+     "Can reach the API; needs no account"
+    ],
+    "evidence_refs": [
+     "E-008",
+     "E-026",
+     "E-029",
+     "E-031"
+    ],
+    "method_refs": [],
+    "confidence": "medium",
+    "confidence_rationale": "Supported by SC-018 (key is the token hash 'already computed for lookup'), SEC-026 (an event per rejection) and the rotation policy. G-007 and G-016 are open. A rule for unauthenticated API failures and for event volume would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-007",
+     "G-016"
+    ],
+    "related_threat_refs": [
+     "T-003",
+     "T-012"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "api"
+    ]
+   },
+   {
+    "id": "T-012",
+    "scenario": "Every anonymous request for an existing short link performs a synchronous database write to count the click, and redirects are deliberately not rate-limited. A flood of redirect requests can occupy the single process and also inflate any link's click count.",
+    "objective": "Availability of the whole service (one event loop); integrity of click counts.",
+    "affected_refs": [
+     "EP-redirect",
+     "AS-redirect",
+     "AS-db",
+     "F-3",
+     "D-link"
+    ],
+    "prerequisites": [
+     "The attacker can send requests at a rate the process cannot absorb"
+    ],
+    "actor_assumptions": [
+     "Can reach the site; needs no account"
+    ],
+    "evidence_refs": [
+     "E-003",
+     "E-008",
+     "E-017",
+     "E-026"
+    ],
+    "method_refs": [],
+    "confidence": "medium",
+    "confidence_rationale": "FR-3.7 and NFR-1.3 accept unfiltered, unlimited redirects by design, and SC-005 notes node:sqlite is synchronous. Count inflation is therefore accepted behavior; the availability effect follows from the same choices. A load observation would size it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [],
+    "related_threat_refs": [
+     "T-011"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web"
+    ]
+   },
+   {
+    "id": "T-013",
+    "scenario": "Short codes are the only thing protecting a link's target from anonymous readers. Someone guesses codes against the unlimited redirect route to harvest target URLs, which may include private document links.",
+    "objective": "Confidentiality of target URLs.",
+    "affected_refs": [
+     "EP-redirect",
+     "D-link",
+     "AS-links",
+     "F-3"
+    ],
+    "prerequisites": [
+     "Codes are predictable or drawn with bias, or the attacker can afford a very large number of requests"
+    ],
+    "actor_assumptions": [
+     "Can reach the site; needs no account"
+    ],
+    "evidence_refs": [
+     "E-002",
+     "E-003",
+     "E-031"
+    ],
+    "method_refs": [],
+    "confidence": "low",
+    "confidence_rationale": "FR-2.7 gives 62^7 possible codes for a few thousand links, so blind guessing is impractical if codes are drawn from a cryptographic source. No SC rule states that source (G-015). The generation rule decides it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-015"
+    ],
+    "related_threat_refs": [
+     "T-012"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web"
+    ]
+   },
+   {
+    "id": "T-014",
+    "scenario": "Account deletion spans the Auth module (user, passkeys, sessions, tokens) and the Links module (links, retired codes). If it is not atomic, a failure midway leaves live links without an owner or tokens and sessions that still work for a deleted user, and a request already in flight may act for an account that is being deleted.",
+    "objective": "FR-1.11 and FR-5.8: a deleted account leaves no working link, token or session.",
+    "affected_refs": [
+     "AS-acct-del",
+     "AS-auth",
+     "AS-links",
+     "AS-db",
+     "F-8",
+     "D-token",
+     "D-session",
+     "D-link"
+    ],
+    "prerequisites": [
+     "Deletion is done as separate steps without one transaction",
+     "A step fails or a concurrent request interleaves"
+    ],
+    "actor_assumptions": [
+     "Is the account owner or an admin; or simply a failure occurs"
+    ],
+    "evidence_refs": [
+     "E-001",
+     "E-005",
+     "E-011",
+     "E-014",
+     "E-031"
+    ],
+    "method_refs": [],
+    "confidence": "low",
+    "confidence_rationale": "Supported by DR-5 (coordination through two modules) and G-008. Against it: the server is one process with a synchronous store, and SEC-052 names a rolled_back outcome, which implies a transaction. A stated atomicity rule would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-008"
+    ],
+    "related_threat_refs": [],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "api"
+    ]
+   },
+   {
+    "id": "T-015",
+    "scenario": "Someone who briefly controls a signed-in browser (an unattended laptop, a stolen session) adds their own passkey. The session alone authorizes it. The owner cannot see or remove passkeys, so the intruder keeps access after the session ends; the only remedy is deleting the account. The same session can create an API token or delete the account.",
+    "objective": "Long-term control of the account.",
+    "affected_refs": [
+     "EP-api-account",
+     "D-passkey",
+     "D-session",
+     "AS-auth",
+     "ST-signed-in"
+    ],
+    "prerequisites": [
+     "The attacker can act within a valid session for a short time"
+    ],
+    "actor_assumptions": [
+     "Has temporary use of the victim's signed-in browser or session"
+    ],
+    "evidence_refs": [
+     "E-001",
+     "E-021",
+     "E-031"
+    ],
+    "method_refs": [],
+    "confidence": "medium",
+    "confidence_rationale": "Supported by FR-1.6 (a logged-in user adds passkeys), SEC-008 (no requirement to remove a passkey) and G-013. Against it: WebAuthn registration needs a user gesture in the browser, and an auth.passkey_registered event is recorded for the operator. An owner decision on passkey management decides it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-013"
+    ],
+    "related_threat_refs": [
+     "T-001"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web"
+    ]
+   },
+   {
+    "id": "T-016",
+    "scenario": "Authenticated JSON responses (the link list, the admin lists, the one-time token value) carry no cache directive. On a shared machine they may remain in the browser's cache or history after logout or session expiry.",
+    "objective": "Confidentiality of link data and of a freshly created API token after sign-out.",
+    "affected_refs": [
+     "EP-api-account",
+     "EP-api-links",
+     "EP-api-admin",
+     "D-token",
+     "D-link",
+     "ST-session-ended",
+     "Z-browser"
+    ],
+    "prerequisites": [
+     "Another person uses the same browser profile after the user signs out",
+     "The browser stored the response"
+    ],
+    "actor_assumptions": [
+     "Has later access to the same browser profile"
+    ],
+    "evidence_refs": [
+     "E-022",
+     "E-027"
+    ],
+    "method_refs": [],
+    "confidence": "low",
+    "confidence_rationale": "Supported by Cache-Control: no-store being specified only for redirects (G-014). No shared cache or proxy exists, so exposure is limited to the local browser. A header check on API responses would decide it.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-014"
+    ],
+    "related_threat_refs": [],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web"
+    ]
+   },
+   {
+    "id": "T-017",
+    "scenario": "Several controls are justified only by the localhost demo: no TLS or HSTS, a Secure cookie that works because localhost is treated as secure, trustProxy off, rate limits keyed by socket address, no Host check. If the same build is put on a network or behind a proxy without revisiting them, the controls weaken silently: all clients may share one rate-limit key, cookies travel without TLS guarantees, and open sign-up meets real outsiders.",
+    "objective": "Effectiveness of the session, rate-limit and redirect-abuse controls outside the demo.",
+    "affected_refs": [
+     "AS-http",
+     "AS-config",
+     "EP-ceremony",
+     "D-session",
+     "TB-1"
+    ],
+    "prerequisites": [
+     "The system is deployed somewhere other than a developer's localhost",
+     "The localhost-only decisions are not revisited"
+    ],
+    "actor_assumptions": [
+     "Any network attacker or outside visitor, once the system is reachable"
+    ],
+    "evidence_refs": [
+     "E-009",
+     "E-016",
+     "E-019",
+     "E-021",
+     "E-026"
+    ],
+    "method_refs": [],
+    "confidence": "low",
+    "confidence_rationale": "The specs state these assumptions openly (SC-010, SC-013, SC-018, SEC-058). A hosted deployment is out of scope (G-009), so this is a condition to guard, not a present exposure.",
+    "finding_type": "design_hypothesis",
+    "status": "open",
+    "gap_refs": [
+     "G-009",
+     "G-011",
+     "G-012"
+    ],
+    "related_threat_refs": [
+     "T-009",
+     "T-003"
+    ],
+    "resolution_evidence_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   }
+  ],
+  "controls": [
+   {
+    "id": "CTL-SC-001",
+    "description": "SC-001: request size and time limits.",
+    "affected_refs": [
+     "AS-http"
+    ],
+    "threat_refs": [
+     "T-012"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-017"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-002",
+    "description": "SC-002: JSON schema on every route, with the short-code pattern.",
+    "affected_refs": [
+     "AS-http",
+     "TB-1"
+    ],
+    "threat_refs": [
+     "T-006"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-017"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-003",
+    "description": "SC-003: target URL rules in the Links module: WHATWG parsing, http/https only, length limit, not the site's own host.",
+    "affected_refs": [
+     "AS-links",
+     "TB-7"
+    ],
+    "threat_refs": [
+     "T-008",
+     "T-009",
+     "T-010"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-017"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-009",
+    "description": "SC-009: titles, URLs and tokens rendered only as JSX text; no target URL in href.",
+    "affected_refs": [
+     "AS-spa",
+     "TB-5"
+    ],
+    "threat_refs": [
+     "T-007",
+     "T-008"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-019"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-010",
+    "description": "SC-010: CSP limited to 'self', nosniff and no-referrer on every response.",
+    "affected_refs": [
+     "AS-http",
+     "TB-5"
+    ],
+    "threat_refs": [
+     "T-007",
+     "T-017"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-019"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-011",
+    "description": "SC-011: passkey ceremony verification with a single-use 5-minute challenge, configured origin and RP ID, required user verification.",
+    "affected_refs": [
+     "AS-auth",
+     "EP-ceremony"
+    ],
+    "threat_refs": [
+     "T-002"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-020"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-012",
+    "description": "SC-012: credential lookup by ID, counter check, excludeCredentials.",
+    "affected_refs": [
+     "AS-auth"
+    ],
+    "threat_refs": [
+     "T-002"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-020"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-013",
+    "description": "SC-013: __Host-session cookie (HttpOnly, Secure, SameSite=Lax), hashed storage, new ID at login, deletion at logout, idle and absolute expiry.",
+    "affected_refs": [
+     "AS-auth",
+     "D-session"
+    ],
+    "threat_refs": [
+     "T-001",
+     "T-015",
+     "T-017"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-021"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-014",
+    "description": "SC-014: API tokens: random, shown once, hashed, bearer header only, rejected when revoked or owner deleted, not creatable with a token.",
+    "affected_refs": [
+     "AS-auth",
+     "D-token"
+    ],
+    "threat_refs": [
+     "T-005",
+     "T-016"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-022"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-015",
+    "description": "SC-015: Fetch-metadata/Origin and JSON content-type check on non-GET routes authenticated by the session cookie.",
+    "affected_refs": [
+     "AS-http",
+     "TB-2"
+    ],
+    "threat_refs": [
+     "T-001"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-023"
+    ],
+    "limitations": "Specified only (G-001). Its text covers only routes authenticated by the session cookie.",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-016",
+    "description": "SC-016: ownership filter with uniform not-found in the Links module; admin-list check on every admin action.",
+    "affected_refs": [
+     "AS-links",
+     "AS-admin",
+     "TB-3",
+     "TB-4"
+    ],
+    "threat_refs": [
+     "T-004",
+     "T-006"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-024"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-018",
+    "description": "SC-018: in-memory rate limits: sign-up/login by socket address, API by token hash; redirects unlimited.",
+    "affected_refs": [
+     "AS-http",
+     "EP-ceremony",
+     "EP-api-links"
+    ],
+    "threat_refs": [
+     "T-003",
+     "T-011",
+     "T-012"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-026"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-019",
+    "description": "SC-019: logs without client address, user agent, cookies, authorization or bodies.",
+    "affected_refs": [
+     "AS-http"
+    ],
+    "threat_refs": [],
+    "status": "designed",
+    "evidence_refs": [
+     "E-027"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-020",
+    "description": "SC-020: redirect returns 302 only to a stored target, with Cache-Control: no-store.",
+    "affected_refs": [
+     "AS-redirect",
+     "EP-redirect"
+    ],
+    "threat_refs": [
+     "T-012",
+     "T-013",
+     "T-016"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-027"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-021",
+    "description": "SC-021: response schemas listing only allowed fields.",
+    "affected_refs": [
+     "AS-http"
+    ],
+    "threat_refs": [
+     "T-006"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-028"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-022",
+    "description": "SC-022: origin, admin list and database path from validated environment variables; fail closed.",
+    "affected_refs": [
+     "AS-config"
+    ],
+    "threat_refs": [
+     "T-004"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-028"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-024",
+    "description": "SC-024: database file outside the static root with mode 0600; no inspector.",
+    "affected_refs": [
+     "AS-db"
+    ],
+    "threat_refs": [],
+    "status": "designed",
+    "evidence_refs": [
+     "E-028"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   },
+   {
+    "id": "CTL-SC-025",
+    "description": "SC-025: security events only through one allowlisting helper that never throws.",
+    "affected_refs": [
+     "AS-event-log"
+    ],
+    "threat_refs": [
+     "T-011"
+    ],
+    "status": "designed",
+    "evidence_refs": [
+     "E-029"
+    ],
+    "limitations": "Specified only; not implemented or tested (G-001).",
+    "verification_refs": [],
+    "architecture_ids": [
+     "web",
+     "api"
+    ]
+   }
+  ],
+  "requirements": [
+   {
+    "id": "RQ-FR-1.8",
+    "statement": "No account recovery path exists.",
+    "origin": "REQUIREMENTS.md FR-1.8",
+    "affected_refs": [
+     "AS-auth"
+    ],
+    "evidence_refs": [
+     "E-001"
+    ],
+    "status": "supplied"
+   },
+   {
+    "id": "RQ-FR-1.11",
+    "statement": "A logged-in user can delete their own account; their links are deleted and answer not-found.",
+    "origin": "REQUIREMENTS.md FR-1.11",
+    "affected_refs": [
+     "AS-acct-del"
+    ],
+    "evidence_refs": [
+     "E-001"
+    ],
+    "status": "supplied"
+   },
+   {
+    "id": "RQ-FR-2.10",
+    "statement": "A target URL on shrink-182's own domain is rejected.",
+    "origin": "REQUIREMENTS.md FR-2.10",
+    "affected_refs": [
+     "AS-links"
+    ],
+    "evidence_refs": [
+     "E-002"
+    ],
+    "status": "supplied"
+   },
+   {
+    "id": "RQ-FR-3.5",
+    "statement": "No visitor-identifying data is stored when a link is followed.",
+    "origin": "REQUIREMENTS.md FR-3.5",
+    "affected_refs": [
+     "AS-redirect"
+    ],
+    "evidence_refs": [
+     "E-003"
+    ],
+    "status": "supplied"
+   },
+   {
+    "id": "RQ-FR-3.7",
+    "statement": "Every request for an existing short link counts as one click, with no filtering.",
+    "origin": "REQUIREMENTS.md FR-3.7",
+    "affected_refs": [
+     "AS-redirect"
+    ],
+    "evidence_refs": [
+     "E-003"
+    ],
+    "status": "supplied"
+   },
+   {
+    "id": "RQ-FR-4.13",
+    "statement": "Missing and not-owned links give the same not-found response.",
+    "origin": "REQUIREMENTS.md FR-4.13",
+    "affected_refs": [
+     "AS-links"
+    ],
+    "evidence_refs": [
+     "E-004"
+    ],
+    "status": "supplied"
+   },
+   {
+    "id": "RQ-FR-5.7",
+    "statement": "The JSON API identifies the caller by API token and acts as its owner.",
+    "origin": "REQUIREMENTS.md FR-5.7",
+    "affected_refs": [
+     "AS-auth",
+     "EP-api-links"
+    ],
+    "evidence_refs": [
+     "E-005"
+    ],
+    "status": "supplied"
+   },
+   {
+    "id": "RQ-FR-7.2",
+    "statement": "The admin role is assigned only in deployment configuration.",
+    "origin": "REQUIREMENTS.md FR-7.2",
+    "affected_refs": [
+     "AS-config",
+     "AS-admin"
+    ],
+    "evidence_refs": [
+     "E-007"
+    ],
+    "status": "supplied"
+   },
+   {
+    "id": "RQ-NFR-1.3",
+    "statement": "Sign-up and login limited to 10 per minute per network address; API to 60 per minute per token; redirects not limited.",
+    "origin": "REQUIREMENTS.md NFR-1.3",
+    "affected_refs": [
+     "AS-http"
+    ],
+    "evidence_refs": [
+     "E-008"
+    ],
+    "status": "supplied"
+   }
+  ],
+  "risks": [],
+  "attack_trees": [],
+  "attack_paths": [],
+  "visualizations": [],
+  "coverage": [
+   {
+    "id": "COV-run-config",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "run-configuration",
+    "status": "not_applicable",
+    "reason": "MODE=deep; REVIEW_SCOPE=security; ARCHITECTURES=web (primary), api (secondary); METHODS=[] so there is no method schedule; PRIVACY_PROFILES=[]; library revision d7c9082; project revision 10b7ddf. Configuration only; this is not analysis coverage."
+   },
+   {
+    "id": "COV-inspection",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "inspection-coverage",
+    "status": "partial",
+    "reason": "Six documents read in full; DESIGN.md front matter and design/preview.html partly read; REQUIREMENT_TEMPLATE.md and logo.svg skipped; cited external sources and any implementation unavailable. All reads were made fresh in stage 00 of this run at revision 10b7ddf."
+   },
+   {
+    "id": "COV-registry",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "architecture-registry",
+    "status": "not_assessed",
+    "reason": "No library registry was supplied. The identities 'web' and 'api' were checked only against the library's deep/ and quick/ file listing."
+   },
+   {
+    "id": "COV-model-web",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "web system reconstruction",
+    "status": "assessed",
+    "reason": "Browser, server, session authority, store and external targets were mapped from the specs. No shared cache, upload path or external resource is supplied, so none was modeled."
+   },
+   {
+    "id": "COV-model-api",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "api system reconstruction",
+    "status": "assessed",
+    "reason": "API caller, token identity, backend modules and principal-owned links were mapped. No gateway, identity issuer, export worker, result store or callback worker is supplied, so none was modeled."
+   },
+   {
+    "id": "COV-lens-impersonation",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "baseline:impersonation",
+    "status": "assessed",
+    "reason": "Baseline lens applied without a registered method. Passkey ceremonies, sessions and tokens examined: T-002, T-005, T-015."
+   },
+   {
+    "id": "COV-lens-tampering",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "baseline:unauthorized-change",
+    "status": "assessed",
+    "reason": "Baseline lens applied without a registered method. State-changing requests and object ownership examined: T-001, T-006, T-010, T-014."
+   },
+   {
+    "id": "COV-lens-accountability",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "baseline:accountability",
+    "status": "assessed",
+    "reason": "Baseline lens applied without a registered method. Event file and identifier reuse examined: T-004, T-011."
+   },
+   {
+    "id": "COV-lens-disclosure",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "baseline:disclosure",
+    "status": "assessed",
+    "reason": "Baseline lens applied without a registered method. Target URLs, tokens and cached responses examined: T-002, T-013, T-016."
+   },
+   {
+    "id": "COV-lens-availability",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "baseline:availability",
+    "status": "assessed",
+    "reason": "Baseline lens applied without a registered method. Rate limits, redirect writes and event volume examined: T-003, T-011, T-012."
+   },
+   {
+    "id": "COV-lens-privilege",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "baseline:privilege-crossing",
+    "status": "assessed",
+    "reason": "Baseline lens applied without a registered method. User-to-admin and token-to-account crossings examined: T-004, T-005, T-006, T-007."
+   },
+   {
+    "id": "COV-web-1",
+    "target_ref": "TB-2",
+    "method_ref": null,
+    "lens": "web:state-changing-requests",
+    "status": "assessed",
+    "reason": "Family 1 (unintended state change through session authority): T-001, T-002, T-003."
+   },
+   {
+    "id": "COV-web-2",
+    "target_ref": "TB-3",
+    "method_ref": null,
+    "lens": "web:identity-object-binding",
+    "status": "assessed",
+    "reason": "Normal, API-token and admin routes compared: T-005, T-006."
+   },
+   {
+    "id": "COV-web-3",
+    "target_ref": "TB-5",
+    "method_ref": null,
+    "lens": "web:content-in-another-users-view",
+    "status": "assessed",
+    "reason": "Family 2 (user content in the admin's view): T-007, T-008."
+   },
+   {
+    "id": "COV-web-4",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "web:private-response-reuse",
+    "status": "assessed",
+    "reason": "Family 3. No shared cache or proxy is supplied, so recipient mismatch through a shared cache has no subject. Browser-side retention is T-016."
+   },
+   {
+    "id": "COV-web-5",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "web:upload-preview-download",
+    "status": "not_applicable",
+    "reason": "FR-6.2: the system accepts no file uploads."
+   },
+   {
+    "id": "COV-web-6",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "web:third-party-code-and-resources",
+    "status": "not_applicable",
+    "reason": "No third-party script or external resource is specified: fonts are self-hosted and the CSP allows only 'self'. The preview page search (E-037) found no external load."
+   },
+   {
+    "id": "COV-web-7",
+    "target_ref": "ST-session-ended",
+    "method_ref": null,
+    "lens": "web:signout-expiry-recovery",
+    "status": "assessed",
+    "reason": "Logout, expiry and account deletion examined: T-014, T-015, T-016. No recovery path exists (FR-1.8)."
+   },
+   {
+    "id": "COV-web-8",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "web:delegated-async-work",
+    "status": "not_applicable",
+    "reason": "The specs state there are no background jobs."
+   },
+   {
+    "id": "COV-api-1",
+    "target_ref": "TB-2",
+    "method_ref": null,
+    "lens": "api:caller-identity-and-audience",
+    "status": "assessed",
+    "reason": "Bearer and cookie identities examined: T-005, T-011. No gateway or external issuer is supplied."
+   },
+   {
+    "id": "COV-api-2",
+    "target_ref": "TB-3",
+    "method_ref": null,
+    "lens": "api:object-identifier-paths",
+    "status": "assessed",
+    "reason": "Family 1 (another owner's object): T-006. The only bulk path is the admin list; no export or deferred retrieval exists."
+   },
+   {
+    "id": "COV-api-3",
+    "target_ref": "TB-4",
+    "method_ref": null,
+    "lens": "api:object-function-property-authority",
+    "status": "assessed",
+    "reason": "Object (T-006), function (T-005, T-004) and property (SC-021 under T-006) authority considered separately."
+   },
+   {
+    "id": "COV-api-4",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "api:replay-concurrency-order",
+    "status": "partial",
+    "reason": "Family 2. Examined for challenge reuse (T-002) and account deletion (T-014). The supplied invariants are unique codes, never-reused codes and single-use challenges; no commitment-point detail is supplied, so concurrency analysis stays at the design level."
+   },
+   {
+    "id": "COV-api-5",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "api:callback-destinations",
+    "status": "not_applicable",
+    "reason": "Family 3. The server makes no outbound requests and registers no callbacks; the redirect never fetches the target."
+   },
+   {
+    "id": "COV-api-6",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "api:notification-payload-and-response",
+    "status": "not_applicable",
+    "reason": "No notifications or external status feeds are specified."
+   },
+   {
+    "id": "COV-api-7",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "api:bulk-export-and-callback-work",
+    "status": "not_applicable",
+    "reason": "No exports, jobs or retained results are specified."
+   },
+   {
+    "id": "COV-api-8",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "api:federation",
+    "status": "not_applicable",
+    "reason": "No identity federation or OAuth is specified."
+   },
+   {
+    "id": "COV-handoff-methods",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "handoff:methods",
+    "status": "not_applicable",
+    "reason": "No method was selected or supplied, so no method execution exists. The baseline lenses above carry a null method reference."
+   },
+   {
+    "id": "COV-fragments",
+    "target_ref": null,
+    "method_ref": null,
+    "lens": "method-fragments",
+    "status": "not_applicable",
+    "reason": "No THREAT_MODEL_FRAGMENT input was supplied to this stage."
+   }
+  ],
+  "conflicts": [],
+  "gaps": [
+   {
+    "id": "G-001",
+    "kind": "evidence",
+    "description": "No implementation exists, so no specified control can be observed working.",
+    "needed": "Source code and test results once the system is built.",
+    "affected_refs": [],
+    "status": "open",
+    "evidence_refs": [
+     "E-034",
+     "E-035",
+     "E-036"
+    ]
+   },
+   {
+    "id": "G-002",
+    "kind": "topology",
+    "description": "The URL namespace is not specified: how short codes, SPA screens, static files and API routes are kept apart.",
+    "needed": "A route map with the path prefix for each surface.",
+    "affected_refs": [
+     "TB-1",
+     "EP-redirect",
+     "EP-static",
+     "EP-api-links"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-012",
+     "E-030"
+    ]
+   },
+   {
+    "id": "G-003",
+    "kind": "evidence",
+    "description": "The specs do not say how a WebAuthn challenge is tied to the browser that requested it, or that it is consumed atomically.",
+    "needed": "A rule for challenge binding and one-time consumption.",
+    "affected_refs": [
+     "EP-ceremony",
+     "D-challenge"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-020"
+    ]
+   },
+   {
+    "id": "G-004",
+    "kind": "evidence",
+    "description": "The format of the internal user ID, how it is generated and whether it can be reused after deletion are not specified.",
+    "needed": "A rule for user ID generation and reuse.",
+    "affected_refs": [
+     "D-user-id",
+     "D-admin-list"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-007"
+    ]
+   },
+   {
+    "id": "G-005",
+    "kind": "evidence",
+    "description": "The specs do not list which routes accept a bearer token and which accept only a session, or what happens when a request carries both.",
+    "needed": "A per-route credential map.",
+    "affected_refs": [
+     "EP-api-links",
+     "EP-api-account",
+     "EP-api-admin",
+     "D-token"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-009",
+     "E-012",
+     "E-022"
+    ]
+   },
+   {
+    "id": "G-006",
+    "kind": "technology",
+    "description": "No exact, resolved secure-coding pack was supplied for the stack, so technology-specific prescriptions stay unverified.",
+    "needed": "A resolved pack with group, technology, version and resolver provenance.",
+    "affected_refs": [
+     "AS-vendor"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-010"
+    ]
+   },
+   {
+    "id": "G-007",
+    "kind": "evidence",
+    "description": "The rate-limit key for API calls with a missing or unknown token, and for API calls made with a session cookie, is not specified.",
+    "needed": "A rule naming the key for each case.",
+    "affected_refs": [
+     "EP-api-links",
+     "AS-http"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-008",
+     "E-026"
+    ]
+   },
+   {
+    "id": "G-008",
+    "kind": "evidence",
+    "description": "The specs do not say whether account deletion across the Auth and Links modules is one transaction.",
+    "needed": "A rule or design for the deletion's atomicity.",
+    "affected_refs": [
+     "AS-acct-del",
+     "AS-db"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-001",
+     "E-011"
+    ]
+   },
+   {
+    "id": "G-009",
+    "kind": "evidence",
+    "description": "Nothing is specified about a hosted deployment (TLS, proxy, HSTS, real client addresses). Hosted exposure is out of scope.",
+    "needed": "A deployment design, if the system is ever hosted.",
+    "affected_refs": [
+     "AS-http",
+     "AS-config"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-009",
+     "E-016"
+    ]
+   },
+   {
+    "id": "G-010",
+    "kind": "evidence",
+    "description": "The specs do not say whether login uses discoverable credentials, although users have no username.",
+    "needed": "The registration and login option settings.",
+    "affected_refs": [
+     "EP-ceremony",
+     "D-passkey"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-020"
+    ]
+   },
+   {
+    "id": "G-011",
+    "kind": "technology",
+    "description": "Whether every supported browser accepts a Secure, __Host- cookie and runs WebAuthn at http://localhost is a claim in SC-013, not an observation.",
+    "needed": "A browser test once the app runs.",
+    "affected_refs": [
+     "D-session",
+     "EP-ceremony"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-021"
+    ]
+   },
+   {
+    "id": "G-012",
+    "kind": "evidence",
+    "description": "The specs do not say how the server treats a request whose Host header is not the configured site host.",
+    "needed": "A rule for Host handling.",
+    "affected_refs": [
+     "AS-http"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-016",
+     "E-028"
+    ]
+   },
+   {
+    "id": "G-013",
+    "kind": "evidence",
+    "description": "The specs give no way to list or remove a single passkey and require no fresh passkey check before adding a passkey, creating a token or deleting the account.",
+    "needed": "An owner decision on passkey management and on re-verification for sensitive account actions.",
+    "affected_refs": [
+     "EP-api-account",
+     "D-passkey"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-001",
+     "E-031"
+    ]
+   },
+   {
+    "id": "G-014",
+    "kind": "evidence",
+    "description": "Cache directives are specified only for the redirect. Nothing says how authenticated JSON responses, including the one-time token, are kept out of the browser cache.",
+    "needed": "A rule for cache directives on API responses.",
+    "affected_refs": [
+     "EP-api-account",
+     "EP-api-links",
+     "EP-api-admin"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-027"
+    ]
+   },
+   {
+    "id": "G-015",
+    "kind": "evidence",
+    "description": "No secure-coding rule says that short codes come from a cryptographic random source with unbiased selection; only the event ledger implies it.",
+    "needed": "A rule for short-code generation.",
+    "affected_refs": [
+     "AS-links",
+     "D-link"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-002",
+     "E-031"
+    ]
+   },
+   {
+    "id": "G-016",
+    "kind": "evidence",
+    "description": "Nothing bounds how many security events one unauthenticated caller can cause, and audit-required events share one rotating file with high-volume denial events.",
+    "needed": "A rule for event volume, or a decision to separate audit events.",
+    "affected_refs": [
+     "AS-event-log",
+     "D-events"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-029",
+     "E-030"
+    ]
+   },
+   {
+    "id": "G-017",
+    "kind": "evidence",
+    "description": "SC-003 does not say what is stored and shown for a target: the submitted string or the parsed, serialized URL; nor whether embedded credentials or control characters are allowed.",
+    "needed": "A rule for target normalization and for characters allowed in titles.",
+    "affected_refs": [
+     "AS-links",
+     "AS-spa",
+     "D-link"
+    ],
+    "status": "open",
+    "evidence_refs": [
+     "E-017",
+     "E-033"
+    ]
+   }
+  ],
+  "treatments": [],
+  "verification": [],
+  "decisions": [],
+  "changes": [
+   {
+    "id": "CH-r02-mod-CTL-SC-001",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-001"
+    ],
+    "previous_ids": [
+     "CTL-SC-001"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-002",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-002"
+    ],
+    "previous_ids": [
+     "CTL-SC-002"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-003",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-003"
+    ],
+    "previous_ids": [
+     "CTL-SC-003"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-009",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-009"
+    ],
+    "previous_ids": [
+     "CTL-SC-009"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-010",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-010"
+    ],
+    "previous_ids": [
+     "CTL-SC-010"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-011",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-011"
+    ],
+    "previous_ids": [
+     "CTL-SC-011"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-012",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-012"
+    ],
+    "previous_ids": [
+     "CTL-SC-012"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-013",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-013"
+    ],
+    "previous_ids": [
+     "CTL-SC-013"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-014",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-014"
+    ],
+    "previous_ids": [
+     "CTL-SC-014"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-015",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-015"
+    ],
+    "previous_ids": [
+     "CTL-SC-015"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-016",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-016"
+    ],
+    "previous_ids": [
+     "CTL-SC-016"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-018",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-018"
+    ],
+    "previous_ids": [
+     "CTL-SC-018"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-020",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-020"
+    ],
+    "previous_ids": [
+     "CTL-SC-020"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-021",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-021"
+    ],
+    "previous_ids": [
+     "CTL-SC-021"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-022",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-022"
+    ],
+    "previous_ids": [
+     "CTL-SC-022"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-mod-CTL-SC-025",
+    "kind": "modified",
+    "current_refs": [
+     "CTL-SC-025"
+    ],
+    "previous_ids": [
+     "CTL-SC-025"
+    ],
+    "rationale": "Linked the supplied control to the threats it bears on.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-add-threats",
+    "kind": "added",
+    "current_refs": [
+     "T-001",
+     "T-002",
+     "T-003",
+     "T-004",
+     "T-005",
+     "T-006",
+     "T-007",
+     "T-008",
+     "T-009",
+     "T-010",
+     "T-011",
+     "T-012",
+     "T-013",
+     "T-014",
+     "T-015",
+     "T-016",
+     "T-017"
+    ],
+    "previous_ids": [],
+    "rationale": "Grounded design hypotheses from the baseline lenses.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-add-coverage",
+    "kind": "added",
+    "current_refs": [
+     "COV-lens-impersonation",
+     "COV-lens-tampering",
+     "COV-lens-accountability",
+     "COV-lens-disclosure",
+     "COV-lens-availability",
+     "COV-lens-privilege",
+     "COV-web-1",
+     "COV-web-2",
+     "COV-web-3",
+     "COV-web-4",
+     "COV-web-5",
+     "COV-web-6",
+     "COV-web-7",
+     "COV-web-8",
+     "COV-api-1",
+     "COV-api-2",
+     "COV-api-3",
+     "COV-api-4",
+     "COV-api-5",
+     "COV-api-6",
+     "COV-api-7",
+     "COV-api-8",
+     "COV-handoff-methods",
+     "COV-fragments"
+    ],
+    "previous_ids": [],
+    "rationale": "Records added to coverage by this stage.",
+    "evidence_refs": []
+   },
+   {
+    "id": "CH-r02-add-gaps",
+    "kind": "added",
+    "current_refs": [
+     "G-013",
+     "G-014",
+     "G-015",
+     "G-016",
+     "G-017"
+    ],
+    "previous_ids": [],
+    "rationale": "Records added to gaps by this stage.",
+    "evidence_refs": []
+   }
+  ],
+  "identity_map": []
+ }
+}

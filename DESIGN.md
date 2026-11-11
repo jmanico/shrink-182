@@ -280,7 +280,7 @@ The design is flat with no shadows. Depth comes from tone: the green mat panel s
   All buttons are 44 px tall and come in default, hover, focus, pressed, and disabled states. Disabled buttons keep their label and show a "not allowed" cursor. Labels are verbs: "Copy" becomes "Copied" for 2 seconds after use.
 - **Input:** a 1 px rule border with a label above it.
   - Helper text goes below, in slate.
-  - Error state: the field turns to the error wash with a 2 px error border, and an error message starting with "⚠" appears under the field. The message says what to fix, for example "Use a link that starts with http:// or https://" or "Titles can be up to 200 characters".
+  - Error state: the field turns to the error wash with a 2 px error border, and an error message starting with "⚠" appears under the field. The message says what to fix, for example "Use a link that starts with http:// or https://", "Titles can be up to 200 characters", "Remove the username and password from this link" (FR-2.12), "Titles can't contain hidden control characters" (FR-2.13), or "This link points back at shrink-182" (FR-2.10).
 - **Create mat:** URL and optional title inputs plus the primary button, on the gridded mat.
 - **Snipped result:** appears below the cut line after a link is created. It shows the full short URL in `code-lg` with a 4 px snip-yellow left edge, then a Copy button.
 - **Link row:**
@@ -312,6 +312,8 @@ The design is flat with no shadows. Depth comes from tone: the green mat panel s
   - Error messages never show internal details.
 - **User-supplied content** (titles and target URLs) is always shown as plain text, never as formatted or clickable rich content.
   - Target URLs in the list are shown as text, not live links. The full host is always visible, so lookalike domains can't hide.
+  - The URL shown is the normalized one the server stored (FR-2.14), never the text the user typed. An internationalized host appears in its ASCII `xn--` form, and a URL never contains a username or password (THREAT_MODEL.md T-008).
+  - The same plain-text rules apply in the admin lists, in confirmation dialogs, and in tooltips (T-007).
   - Long values are shortened with an ellipsis and are never allowed to overflow the layout.
 
 ## Do's and Don'ts
