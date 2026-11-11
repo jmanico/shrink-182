@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-labelledby="t">
+  <title id="t">Snip</title>
+  <rect width="32" height="32" rx="6" fill="#1E5A43"/>
+  <path d="M5 12.5h13.5l-3 7H5z" fill="#FFFFFF"/>
+  <path d="M20.5 12.5H27v7h-9.5z" fill="#FFD23F"/>
+</svg>
