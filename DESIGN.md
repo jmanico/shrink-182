@@ -1,7 +1,7 @@
 ---
 version: alpha
-name: Snip
-description: A cutting-mat design system for Snip, a small team link shortener. All the small links.
+name: shrink-182
+description: A cutting-mat design system for shrink-182, a small team link shortener. All the small links.
 colors:
   primary: "#1E5A43"
   primary-strong: "#15402F"
@@ -178,12 +178,12 @@ components:
     padding: 16px
 ---
 
-# Snip Design
+# shrink-182 Design
 
 ## Overview
 
 **Brief.**
-- **Subject:** Snip, a link shortener for one team (under 100 users). It cuts long URLs into 7-character codes.
+- **Subject:** shrink-182, a link shortener for one team (under 100 users). It cuts long URLs into 7-character codes.
 - **Audience:** Team members who sign in with passkeys, and anyone who follows a short link.
 - **Primary jobs:**
   - **Your links (home):** paste a long URL, get a short link to copy, and see each link's click count.
@@ -193,7 +193,7 @@ components:
 
 **First plan and what changed.** The first token plan was white pages, a single blue accent, Inter type, and each link in a rounded shadowed card with a "Copy →" button. That fits any SaaS tool equally well, so it was revised:
 
-- **Color:** the blue became **cutting-mat green**. A self-healing cutting mat is where things get trimmed, and this is Snip's subject.
+- **Color:** the blue became **cutting-mat green**. A self-healing cutting mat is where things get trimmed, and this is shrink-182's subject.
 - **Type:** Inter became **Atkinson Hyperlegible**. Codes are 7 random mixed-case letters and digits (FR-2.7), and that family is drawn so `l`/`I`/`1` and `O`/`0` can't be confused. The mono variant is used only for codes and tokens, never for labels.
 - **List:** cards became plain ruled rows. The link list is a list, not a gallery.
 
@@ -229,7 +229,7 @@ All text, component, and focus pairs above meet WCAG 2.2 AA. Color is never the 
 - **Atkinson Hyperlegible Mono** is used only where a person must read or retype exact characters: short codes, short URLs, and API tokens.
 - **Click counts** use tabular figures so the counts line up down the list.
 - **Line length:** body text stays under 75 characters.
-- **Font hosting:** Snip serves both Atkinson Hyperlegible families itself, so pages make no requests to font services. They are licensed under the SIL Open Font License. The fallback stack is the system UI font, and `ui-monospace` for codes. *(proposed default)*
+- **Font hosting:** shrink-182 serves both Atkinson Hyperlegible families itself, so pages make no requests to font services. They are licensed under the SIL Open Font License. The fallback stack is the system UI font, and `ui-monospace` for codes. *(proposed default)*
 
 ## Layout
 
@@ -241,12 +241,12 @@ All text, component, and focus pairs above meet WCAG 2.2 AA. Color is never the 
   3. "Your links" list
 
 ```
-Snip logo ............................ Signed in · Log out
+shrink-182 logo ............................ Signed in · Log out
 ┌ mat ───────────────────────────────────────────────┐
 │ Long URL [_____________________________] [Shorten link] │
 │ Title (optional) [______________]                  │
 │ - - - - - - - - - - ✂ - - - - - - - - - - - - - - -│
-│ ▌ snip.example/k7Qm2Xa      [Copy]                 │
+│ ▌ shrink-182.example/k7Qm2Xa      [Copy]                 │
 └────────────────────────────────────────────────────┘
 Your links (12)
 k7Qm2Xa   Q3 planning doc            214 clicks  Edit Delete
@@ -257,7 +257,7 @@ k7Qm2Xa   Q3 planning doc            214 clicks  Edit Delete
 - **Below 600 px:** each row stacks code, then title, then target, then a line with the count and actions.
 
 - **Theme:** light only. There is no dark theme in the first version. *(proposed default)*
-- **Signed-out root:** a visitor at the site root sees the logo, the line "All the small links.", one sentence on what Snip does, and two buttons: "Sign in with passkey" (primary) and "Sign up" (secondary). *(proposed default)*
+- **Signed-out root:** a visitor at the site root sees the logo, the line "All the small links.", one sentence on what shrink-182 does, and two buttons: "Sign in with passkey" (primary) and "Sign up" (secondary). *(proposed default)*
 
 ## Elevation & Depth
 
@@ -301,13 +301,13 @@ The design is flat with no shadows. Depth comes from tone: the green mat panel s
   - Which name or identifier to show for a user is UNKNOWN (DQ-1).
   - When a session expires (FR-1.10), the user is returned to sign-in with "Your session ended. Sign in again to continue."
 - **Destructive actions are confirmed in a dialog** that names the exact thing affected:
-  - **Delete link:** "Delete snip.example/k7Qm2Xa? It will stop working for everyone, and this code won't be reused." The buttons are "Delete link" (danger) and "Keep link". Focus starts on "Keep link".
+  - **Delete link:** "Delete shrink-182.example/k7Qm2Xa? It will stop working for everyone, and this code won't be reused." The buttons are "Delete link" (danger) and "Keep link". Focus starts on "Keep link".
   - **Revoke token:** a similar dialog.
   - **Delete account:** the dialog states the number of links that will be deleted, and that there is no recovery (FR-1.8, FR-1.11).
   - **Admin deleting another user's link or account:** the dialog also names the owner and is styled with the admin banner.
 - **What errors reveal:**
   - A link that doesn't exist and a link the user doesn't own produce the same message, "Link not found". ASSUMPTION: this avoids confirming that another user's link exists (FR-4.6).
-  - A failed passkey sign-in says only "Sign-in didn't work. Try again with a passkey saved for Snip."
+  - A failed passkey sign-in says only "Sign-in didn't work. Try again with a passkey saved for shrink-182."
   - Error messages never show internal details.
 - **User-supplied content** (titles and target URLs) is always shown as plain text, never as formatted or clickable rich content.
   - Target URLs in the list are shown as text, not live links. The full host is always visible, so lookalike domains can't hide.

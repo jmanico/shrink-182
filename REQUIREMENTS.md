@@ -1,4 +1,4 @@
-# Snip — Requirements
+# shrink-182 — Requirements
 
 This file owns WHAT the system must do. Requirement IDs are permanent and are never renumbered or reused.
 
@@ -42,7 +42,7 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-2.7** The system MUST generate the short code itself as 7 random letters and digits (A–Z, a–z, 0–9). Users MUST NOT be able to choose a custom short code. *(proposed default)*
 - **FR-2.8** The system MUST accept only target URLs that start with `http://` or `https://` and are well-formed, and MUST reject any other target URL, telling the user why. *(proposed default)*
 - **FR-2.9** The system MUST reject a target URL longer than 2,048 characters, telling the user why. *(proposed default)*
-- **FR-2.10** The system MUST reject a target URL that points at Snip's own domain, telling the user why. *(proposed default)*
+- **FR-2.10** The system MUST reject a target URL that points at shrink-182's own domain, telling the user why. *(proposed default)*
 - **FR-2.11** The system MUST reject a title longer than 200 characters, telling the user why. *(proposed default)*
 
 ### Following short links
