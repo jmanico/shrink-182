@@ -27,7 +27,7 @@ This file is the security event ledger the build has to satisfy. It records whic
 | `timestamp` | string, ISO 8601 UTC with ms, 24 chars | Server clock at the decision point | pino `timestamp: isoTime` |
 | `service` | string, `"shrink-182"` | Constant | |
 | `environment` | string, ≤ 16 chars, enum `local` \| `test` | Configuration at startup (SC-022) | Not request input |
-| `level` | pino level | Event catalog | `info` = success or attempt, `warn` = denied or failure, `error` = unknown outcome or producer fault. Not tied to wave or confidence. *(proposed default)* |
+| `level` | pino level | Event catalog | `info` = success or attempt, `warn` = denied or failure, `error` = unknown outcome or producer fault. Not tied to wave or confidence. |
 | `outcome` | enum: `success`, `failure`, `denied`, `attempted`, `rolled_back`, `unknown` | Code at the authoritative decision or commit | Meanings as in Dread Ledger: login rejection = `failure`, ownership or role rejection = `denied`, a mutation is `success` only after the SQLite commit |
 | `security_relevant` | boolean, `true` | Constant | |
 | `audit_required` | boolean | Event catalog | Set per event by [policy](SECURITY.md#security-event-policy). Never chosen by a caller and never defaulted to `false`. |
@@ -111,7 +111,7 @@ Disposition rules: `missing` = applicable to the specs but not yet built and ver
 | SEC-032 | unavailable_signal | SC-006 | Bound parameters prevent SQL injection. No injection detector exists, and none will be built. | — | — |
 | SEC-033 | unavailable_signal | SC-009, `@fastify/static` | No XSS or traversal detector. Static traversal is refused by the library and appears only as a 404. | — | — |
 | SEC-034 | missing | SC-015 / HTTP `onRequest` hook, including sign-up and login routes (T-002, T-003) | `csrf.rejected` (denied): `route_template`, `reason_code` (`fetch_site_cross` \| `origin_mismatch` \| `content_type`), `request_id`. No header values. | Operator ([policy](SECURITY.md#security-event-policy)) | 3 |
-| SEC-035 | unavailable_signal | SC-010 | CSP has no `report-to` endpoint. Adding one would be a new collection point, which needs an owner decision. | — | — |
+| SEC-035 | unavailable_signal | SC-010 | CSP has no `report-to` endpoint. The owner decided on 2026-11-11 not to add one (no new collection point for the demo); reconsider before hosting. | — | — |
 | SEC-036 | not_applicable | SECURITY.md applicability (no outbound requests) | The server never fetches a target. Reopen if link previews or URL checks that fetch are added. | — | — |
 | SEC-037 | missing | SC-001, SC-002, SC-007 / Fastify | `request.rejected` (denied): `reason_code` (`body_too_large` \| `bad_json` \| `method_not_allowed` \| `timeout` \| `rate_limited` \| `host_mismatch` from SC-026, T-003), `route_template` where matched. Smuggling: not_applicable (no proxy, `trustProxy=false`). | Operator ([policy](SECURITY.md#security-event-policy)) | 3 |
 | SEC-038 | not_applicable | FR-6.2 | No file uploads. | — | — |
@@ -165,4 +165,4 @@ Disposition rules: `missing` = applicable to the specs but not yet built and ver
 
 ## Open Decisions
 
-None open for events. OD-008 to OD-011 in `SECURITY.md` came from the threat model and are answered there as proposed defaults; OD-009 added `auth.passkey_removed` (SEC-008). OD-004 to OD-007 are answered in [SECURITY.md → Security Event Policy](SECURITY.md#security-event-policy). OD-001 (rate limits) is answered by SC-018, which feeds SEC-040.
+None open for events. OD-008 to OD-011 in `SECURITY.md` came from the threat model and are answered there; OD-009 added `auth.passkey_removed` (SEC-008). OD-004 to OD-007 are answered in [SECURITY.md → Security Event Policy](SECURITY.md#security-event-policy). OD-001 (rate limits) is answered by SC-018, which feeds SEC-040.

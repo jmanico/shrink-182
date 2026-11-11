@@ -4,40 +4,40 @@ This file owns HOW the system is built: components, boundaries, technology, and 
 
 Changes that came from the threat model (`THREAT_MODEL.md`) cite its threat ID, for example T-005.
 
-Versions were checked on 2026-11-11 against the npm registry and the Node.js release schedule (`nodejs/Release` `schedule.json`).
+Versions were checked on 2026-11-11 against the npm registry and the Node.js release schedule (`nodejs/Release` `schedule.json`). The `AGENTS.md` dependency checks for every library in the stack ran on 2026-11-11: the publishers and repositories match the official projects (`MasterKale/SimpleWebAuthn`, the `fastify` org, `vitejs`, `vitest-dev`), and none of the packages is deprecated. Resolving the full tree with Fastify 5.12.8, React 19.3.1 and TypeScript 7.0.2 gave 190 packages (103 used at runtime), and `npm audit` against the npm advisory database reported 0 advisories. The licenses are MIT, Apache-2.0, BSD, ISC, BlueOak-1.0.0 and 0BSD, plus MPL-2.0 for 12 build-only packages in the Vite/lightningcss tooling, which are never shipped. The project has no license policy.
 
-> **Note on answers:** The project owner asked for the open questions to be answered as best as possible. Those answers are marked *(proposed default)* so the owner can review them.
+> **Note on answers:** Every answer once marked as a proposed default was confirmed by the owner on 2026-11-11 and is now a decision.
 
 ## Required Architecture Inputs
 
 - **Requirements and design sources:** `REQUIREMENTS.md` (FR-1 to FR-7, NFR-1), `DESIGN.md`.
 - **Target surfaces:** Web UI and JSON API. No background jobs.
-- **Runtime and deployment environment:** Node.js, run as one process on one host (NFR-1.2). The demo runs on a developer machine at `http://localhost`; a hosted environment is not required. *(proposed default, from AQ-3)*
+- **Runtime and deployment environment:** Node.js, run as one process on one host (NFR-1.2). The demo runs on a developer machine at `http://localhost`; a hosted environment is not required. *(from AQ-3)*
 - **Server framework:** Fastify 5 (explicit choice).
 - **Client frameworks:** React 19 (explicit choice), built as a single-page app.
 - **API style:** JSON over HTTP. One JSON API serves both the web UI (session cookie) and API clients (bearer API token). Short-link redirects are plain HTTP 302 responses.
 - **Authentication and session model:** Passkeys (WebAuthn) for sign-up and login (FR-1.1 to FR-1.7). Server-side sessions keyed by an opaque cookie, with 24-hour idle and 7-day absolute expiry (FR-1.10). Personal API tokens for the JSON API (FR-5.5 to FR-5.7).
 - **Authorization model:** Two roles, user and admin (FR-7.1). Admins are listed in deployment configuration (FR-7.2). Link ownership is checked on every link read, edit, and delete (FR-4.6).
-- **Data store and expected scale:** One embedded SQLite database file. Up to 100 users (NFR-1.1). Link count and traffic are assumed to be team-scale (thousands of links, low request rates), which one SQLite file handles. *(proposed default)*
-- **Logging library or platform logger:** Fastify's built-in logger (pino). PROPOSED: it ships with Fastify, so nothing extra is needed.
+- **Data store and expected scale:** One embedded SQLite database file. Up to 100 users (NFR-1.1). Link count and traffic are assumed to be team-scale (thousands of links, low request rates), which one SQLite file handles.
+- **Logging library or platform logger:** Fastify's built-in logger (pino). CONFIRMED: it ships with Fastify, so nothing extra is needed.
 - **Security expectations:** Owned by `SECURITY.md`. This file only names the enforcement points.
 
 ## Stack
 
 | Technology | Version line | Justified by | Status |
 |---|---|---|---|
-| Node.js | 24.x LTS ("Krypton", maintenance LTS until 2028-04-30) | Explicit choice (Node.js API). 24 is installed locally and supported for longer than the demo needs. *(proposed default, from AQ-1)* | CONFIRMED |
+| Node.js | 24.x LTS ("Krypton", maintenance LTS until 2028-04-30) | Explicit choice (Node.js API). 24 is installed locally and supported for longer than the demo needs. *(from AQ-1)* | CONFIRMED |
 | Fastify | 5.x (5.12.8) | Explicit choice (server framework). Its built-in JSON schema validation and logger cover FR-2.4, FR-2.8 to FR-2.11, and FR-5.4 without extra packages. | CONFIRMED |
 | React + react-dom | 19.x (19.3.1) | Explicit choice (client). Serves FR-5.1. | CONFIRMED |
-| `node:sqlite` (built into Node) | Ships with Node 24; stability 1.2 "release candidate" | Stores users, passkeys, sessions, tokens, and links. Built in, so no package is needed. The release-candidate status is accepted for a demo. *(proposed default, from AQ-2)* | CONFIRMED |
-| `@simplewebauthn/server` | 14.x (14.1.0, needs Node ≥ 22) | FR-1.1 to FR-1.7. Node has no WebAuthn verification (attestation and assertion parsing, COSE keys), and writing it by hand is risky. | PROPOSED: the widely used maintained WebAuthn server library. |
-| `@simplewebauthn/browser` | 14.x (14.0.0) | FR-1.1, FR-1.2, FR-1.6. Wraps `navigator.credentials` and the base64url encoding the server library expects. | PROPOSED: matches the server library. |
-| `@fastify/cookie` | 11.x (11.1.5) | FR-1.9, FR-1.10 session cookie. Fastify core does not parse or set cookies. | PROPOSED |
-| `@fastify/static` | 10.x (10.1.10) | FR-5.1: serves the built React app and self-hosted fonts (DESIGN.md) from the same process. Fastify core does not serve files. | PROPOSED: keeps a single deployment (NFR-1.2). |
-| `@fastify/rate-limit` | latest stable 10.x line, verified at install | NFR-1.3. In-memory store; no Redis. | PROPOSED: Fastify's official plugin. It must pass the `AGENTS.md` dependency checks before it's added. |
-| Vite + `@vitejs/plugin-react` | 8.x (8.3.8) / 6.x (6.3.0) | Builds the React app (FR-5.1). Browsers cannot run JSX directly. | PROPOSED: the standard React build tool. |
-| TypeScript | 7.x (7.0.2) | Type-checking for the toolchain section. Development only. The server runs `.ts` files directly through Node 24's type stripping, so there is no server build step. *(proposed default, from AQ-4)* | CONFIRMED |
-| Vitest | 5.x (5.1.0) | Tests for business rules and API routes. Development only. `node:test` would also work. | PROPOSED: shares Vite's config and supports the React code. |
+| `node:sqlite` (built into Node) | Ships with Node 24; stability 1.2 "release candidate" | Stores users, passkeys, sessions, tokens, and links. Built in, so no package is needed. The release-candidate status is accepted for a demo. *(from AQ-2)* | CONFIRMED |
+| `@simplewebauthn/server` | 14.x (14.1.0, needs Node ≥ 22) | FR-1.1 to FR-1.7. Node has no WebAuthn verification (attestation and assertion parsing, COSE keys), and writing it by hand is risky. | CONFIRMED |
+| `@simplewebauthn/browser` | 14.x (14.0.0) | FR-1.1, FR-1.2, FR-1.6. Wraps `navigator.credentials` and the base64url encoding the server library expects. | CONFIRMED |
+| `@fastify/cookie` | 11.x (11.1.5) | FR-1.9, FR-1.10 session cookie. Fastify core does not parse or set cookies. | CONFIRMED |
+| `@fastify/static` | 10.x (10.1.10) | FR-5.1: serves the built React app and self-hosted fonts (DESIGN.md) from the same process. Fastify core does not serve files. | CONFIRMED |
+| `@fastify/rate-limit` | 11.x (11.2.2) | NFR-1.3. In-memory store; no Redis. Fastify's official plugin; 11.x is the latest stable line and resolves with Fastify 5. | CONFIRMED |
+| Vite + `@vitejs/plugin-react` | 8.x (8.3.8) / 6.x (6.3.0) | Builds the React app (FR-5.1). Browsers cannot run JSX directly. | CONFIRMED |
+| TypeScript | 7.x (7.0.2) | Type-checking for the toolchain section. Development only. The server runs `.ts` files directly through Node 24's type stripping, so there is no server build step. *(from AQ-4)* | CONFIRMED |
+| Vitest | 5.x (5.1.0) | Tests for business rules and API routes. Development only. `node:test` would also work. | CONFIRMED |
 
 No router library, state library, ORM, or CSS framework is proposed. The UI has a handful of screens, and the platform plus React cover them.
 
@@ -52,7 +52,7 @@ No router library, state library, ORM, or CSS framework is proposed. The UI has 
 | Redirect handler | Resolve a short code, count the click, return 302 or not-found | FR-3.3 to FR-3.8; no visitor data stored | None (asks Links module to increment count) | FR-3.1 to FR-3.8 | SUPPORTED |
 | Admin module | List all links and users, delete any link, delete other users | FR-7.3 to FR-7.6, FR-7.10; admin cannot edit others' links or delete self by any route | None (uses Links and Auth modules) | FR-7.x | SUPPORTED |
 | Account deletion | Delete a user with their links, tokens, and sessions in one SQLite transaction (FR-1.12, T-014) | FR-1.11, FR-1.12, FR-5.8, FR-4.12 (codes stay retired) | None (coordinates Auth and Links) | FR-1.11, FR-1.12, FR-5.8, FR-7.5 | SUPPORTED |
-| Configuration | Admin list (internal user IDs), site origin (also the WebAuthn relying-party ID), database path. Read from environment variables at startup. Refuses any origin other than `http://localhost` (NFR-1.4, SC-032; T-009, T-017). *(proposed default, from AQ-3 and AQ-5)* | FR-7.2; FR-2.10 needs the site's own domain | Deployment config | FR-7.2, FR-2.10 | SUPPORTED |
+| Configuration | Admin list (internal user IDs), site origin (also the WebAuthn relying-party ID), database path. Read from environment variables at startup. Refuses any origin other than `http://localhost` (NFR-1.4, SC-032; T-009, T-017). *(from AQ-3 and AQ-5)* | FR-7.2; FR-2.10 needs the site's own domain | Deployment config | FR-7.2, FR-2.10 | SUPPORTED |
 | SQLite store | Durable storage | Unique short codes (FR-2.6), never-reused codes (FR-4.12) | All persistent data | NFR-1.1, NFR-1.2 | SUPPORTED |
 
 ### Main data flows
@@ -77,7 +77,7 @@ No router library, state library, ORM, or CSS framework is proposed. The UI has 
 
 ### Route map and accepted credentials
 
-Each surface accepts one kind of credential (SECURITY.md SC-028, from THREAT_MODEL.md T-005). Paths under `/api/` are examples of the prefix; exact paths are set when routes are written. *(proposed default)*
+Each surface accepts one kind of credential (SECURITY.md SC-028, from THREAT_MODEL.md T-005). Paths under `/api/` are examples of the prefix; exact paths are set when routes are written.
 
 | Surface | Path prefix | Credential | Origin check (SC-015) |
 |---|---|---|---|
@@ -192,4 +192,4 @@ npm (ships with Node) is the package manager. Commands are owned by [`AGENTS.md`
 
 ## Open Questions
 
-None open. Resolved and removed: AQ-1 (Node 24), AQ-2 (`node:sqlite`), AQ-3 (localhost demo, origin from config), AQ-4 (TypeScript), AQ-5 (admins listed by internal user ID), AQ-6 (rate limits: NFR-1.3, `@fastify/rate-limit`). Their answers are recorded above as proposed defaults.
+None open. Resolved and removed: AQ-1 (Node 24), AQ-2 (`node:sqlite`), AQ-3 (localhost demo, origin from config), AQ-4 (TypeScript), AQ-5 (admins listed by internal user ID), AQ-6 (rate limits: NFR-1.3, `@fastify/rate-limit`). Their answers are recorded above and were confirmed by the owner on 2026-11-11.
