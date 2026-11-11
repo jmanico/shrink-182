@@ -29,8 +29,11 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-1.8** The system MUST NOT provide any account recovery path. A user who has lost access to all of their passkeys MUST NOT be able to regain that account and must sign up again as a new user.
 - **FR-1.9** The system MUST allow a logged-in user to log out, after which their session MUST no longer be accepted. *(proposed default)*
 - **FR-1.10** The system MUST end a logged-in session after 24 hours without activity, and MUST end any session 7 days after login regardless of activity. *(proposed default)*
-- **FR-1.11** The system MUST allow a logged-in user to delete their own account. Deleting an account MUST also delete all links that user owns, and those short links MUST then behave as not found (FR-3.3). *(proposed default)*
+- **FR-1.11** The system MUST allow a logged-in user to delete their own account. Deleting an account MUST also delete all links that user owns, and those short links MUST then behave as not found (FR-3.3). An admin is the one exception (FR-7.10). *(proposed default)*
 - **FR-1.12** Deleting an account MUST be all-or-nothing. If any part fails, the account and its links, API tokens, and sessions MUST stay as they were. After a successful deletion, none of them may work. *(proposed default, T-014)*
+- **FR-1.13** The system MUST show a logged-in user a list of the passkeys on their account, with the date each was added and the date it was last used. *(proposed default, resolves OD-009, T-015)*
+- **FR-1.14** The system MUST allow a logged-in user to remove a passkey from their account, after which it MUST no longer be accepted for login. The system MUST refuse to remove the last remaining passkey, because there is no recovery path (FR-1.8). *(proposed default, resolves OD-009, T-015)*
+- **FR-1.15** Before a user adds a passkey, removes a passkey, creates an API token, or deletes their own account, the system MUST require that the user authenticated with one of their passkeys within the last 5 minutes, and MUST ask them to do so again if not. *(proposed default, resolves OD-009, T-015)*
 
 ### Creating short links
 
@@ -104,13 +107,16 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-7.7** The system MUST show a logged-in user their own internal user ID on their account page, so the operator can copy it into the admin configuration (FR-7.2). *(proposed default, moved from ARCHITECTURE.md AQ-5)*
 - **FR-7.8** Signed-in screens MUST identify the user only as "Signed in". The admin user list MUST show each user's internal user ID and sign-up date. Users have no display name or email. *(proposed default, resolves DQ-1)*
 - **FR-7.9** An internal user ID MUST NOT be guessable and MUST NOT ever be given to another account, including after the account is deleted. *(proposed default, T-004)*
+- **FR-7.10** The system MUST reject an admin's attempt to delete their own account, from the account page as well as from the admin screens, for as long as their ID is in the admin configuration. The operator removes the ID first (FR-7.2); the person can then delete the account as an ordinary user. *(proposed default, resolves OD-011, T-004)*
 
 ## Non-Functional Requirements
 
 - **NFR-1.1** The system MUST support up to 100 registered users.
 - **NFR-1.2** The system MUST run as a single deployment.
 - **NFR-1.3** The system MUST limit sign-up and login to 10 attempts per minute from one network address, and JSON API calls to 60 per minute per API token. JSON API calls that carry no valid API token MUST be limited to 60 per minute from one network address (T-011). A request over the limit MUST be refused with HTTP 429 and a JSON or on-screen message saying to wait and try again. Following short links MUST NOT be rate-limited. Sign-ups are not capped at a fixed number of accounts. *(proposed default, resolves OQ-15)*
+- **NFR-1.4** The system MUST run only on a developer machine at `http://localhost` and MUST refuse to start with any other site origin. Making it reachable by other people is out of scope and needs these specifications and the threat model to be revised first. *(proposed default, resolves OD-008, T-009, T-017)*
+- **NFR-1.5** Unlimited short-link traffic (NFR-1.3, FR-3.7) is accepted for the localhost demo, including the risk that a flood of requests slows the service. *(proposed default, resolves OD-010, T-012)*
 
 ## Open Questions
 
-None open here. Decisions raised by the threat model (`THREAT_MODEL.md`) are tracked as OD-008 to OD-011 in `SECURITY.md`. OQ-15 was resolved by NFR-1.3; no uptime or redirect-speed targets are set for the demo. *(proposed default)*
+None open here. The decisions raised by the threat model (`THREAT_MODEL.md`), OD-008 to OD-011, were answered as proposed defaults: NFR-1.4, FR-1.13 to FR-1.15, NFR-1.5, and FR-7.10. OQ-15 was resolved by NFR-1.3; no uptime or redirect-speed targets are set for the demo. *(proposed default)*

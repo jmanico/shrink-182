@@ -303,8 +303,11 @@ The design is flat with no shadows. Depth comes from tone: the green mat panel s
 - **Destructive actions are confirmed in a dialog** that names the exact thing affected:
   - **Delete link:** "Delete shrink-182.example/k7Qm2Xa? It will stop working for everyone, and this code won't be reused." The buttons are "Delete link" (danger) and "Keep link". Focus starts on "Keep link".
   - **Revoke token:** a similar dialog.
-  - **Delete account:** the dialog states the number of links that will be deleted, and that there is no recovery (FR-1.8, FR-1.11).
+  - **Delete account:** the dialog states the number of links that will be deleted, and that there is no recovery (FR-1.8, FR-1.11). For an admin, the button is disabled with the helper text "Admins can't delete their own account. Ask the operator to remove your admin access first." (FR-7.10)
+  - **Remove passkey:** "Remove the passkey added on 3 March 2026? You won't be able to sign in with it again." The buttons are "Remove passkey" (danger) and "Keep passkey". The last passkey has no Remove button and shows "This is your only passkey, so it can't be removed." (FR-1.14)
   - **Admin deleting another user's link or account:** the dialog also names the owner and is styled with the admin banner.
+- **Passkeys on the account page** (FR-1.13): a plain ruled list, one row per passkey, showing "Added" and "Last used" dates, with "Add a passkey" as a secondary button below it. Passkeys have no names.
+- **Confirming it's you** (FR-1.15): when an account action needs a recent passkey check, the page shows "Confirm it's you with your passkey to continue" with one primary button, "Confirm with passkey". After it succeeds, the original action carries on without being asked for again. If it fails: "That didn't work. Try again with a passkey saved for this account."
 - **What errors reveal:**
   - A link that doesn't exist and a link the user doesn't own produce the same message, "Link not found" (FR-4.13).
   - A failed passkey sign-in says only "Sign-in didn't work. Try again with a passkey saved for shrink-182."

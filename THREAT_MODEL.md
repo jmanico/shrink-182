@@ -452,3 +452,14 @@ This section was added after the run finished. It records where each finding wen
 | CF-002 | SECURITY.md SC-015 wording. |
 
 Not folded in: G-010 (discoverable credentials), G-011 (browser behavior on localhost) and G-018 (cleanup and caps) are gaps with no threat that requires a rule yet. DEC-001 (a rating scale) and DEC-006 (a separate audit file) remain suggestions.
+
+## Owner decisions answered after the run
+
+OD-008 to OD-011 were answered as proposed defaults for the owner to review. The run's JSON still shows these threats and the conflict as open, with decisions DEC-002 to DEC-005 proposed; the next change review should reconcile them.
+
+| Decision | Answer | Spec changes | Threats |
+|---|---|---|---|
+| OD-008 | Localhost only. The server refuses any other origin; hosting needs a spec and threat-model revision first. | REQUIREMENTS.md NFR-1.4; SECURITY.md SC-032 (now ACTIVE); ARCHITECTURE.md Configuration row, TB-7. | T-009, T-017 |
+| OD-009 | Users can list and remove passkeys, except the last. Sensitive account actions need a passkey check from the last 5 minutes. | REQUIREMENTS.md FR-1.13 to FR-1.15; SECURITY.md SC-033 (now ACTIVE); ARCHITECTURE.md Auth row, data flow 7, route map; DESIGN.md account page; SECURITY_EVENTS.md SEC-001, SEC-008, SEC-015. | T-015 |
+| OD-010 | Unlimited redirect traffic is accepted for the localhost demo. The redirect is held to one database statement per request. | REQUIREMENTS.md NFR-1.5; SECURITY.md SC-034 (now ACTIVE). | T-012 |
+| OD-011 | An admin cannot delete their own account by any route while their ID is in the admin configuration. | REQUIREMENTS.md FR-1.11, FR-7.10; SECURITY.md SC-016; ARCHITECTURE.md Admin row; DESIGN.md delete-account dialog; SECURITY_EVENTS.md SEC-049. | CF-001, T-004 |

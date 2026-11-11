@@ -137,10 +137,10 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 
 **SC-016 — Ownership and role checks on the server**
 - **Status:** ACTIVE
-- **Rule:** The Links module MUST filter or check by the caller's user ID on every link read, edit, and delete, returning the same not-found result for "missing" and "not yours"; the Admin module MUST check the caller's ID against the configured admin list on every admin action and MUST NOT accept a role from the client.
+- **Rule:** The Links module MUST filter or check by the caller's user ID on every link read, edit, and delete, returning the same not-found result for "missing" and "not yours"; the Admin module MUST check the caller's ID against the configured admin list on every admin action and MUST NOT accept a role from the client. Account deletion MUST reject a caller who is in the admin list and is deleting their own account, on the account route as well as the admin route (FR-7.10).
 - **Enforcement:** Links module (TB-3), Admin module entry (TB-4).
-- **Evidence:** FR-4.3, FR-4.6, FR-4.13, FR-7.1 to FR-7.6; ARCHITECTURE.md TB-3, TB-4; THREAT_MODEL.md T-006. Whether an admin may delete their own account through FR-1.11 is open (OD-011). S3 "Authentication and authorization"; S2 "Use access control lists".
-- **Verification:** User B's edit/delete of user A's link returns the same 404 body as a random code, and the link is unchanged; a non-admin calling an admin route gets 403; an admin cannot edit another user's link or delete themself.
+- **Evidence:** FR-4.3, FR-4.6, FR-4.13, FR-7.1 to FR-7.6; ARCHITECTURE.md TB-3, TB-4; THREAT_MODEL.md T-006. FR-7.10 resolves OD-011 (conflict CF-001). S3 "Authentication and authorization"; S2 "Use access control lists".
+- **Verification:** User B's edit/delete of user A's link returns the same 404 body as a random code, and the link is unchanged; a non-admin calling an admin route gets 403; an admin cannot edit another user's link, and cannot delete themself from the admin screens or from their own account page.
 
 **SC-017 — Errors**
 - **Status:** ACTIVE
@@ -247,26 +247,26 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Evidence:** FR-5.5 (token shown once); SC-020; THREAT_MODEL.md T-016. S3 "Minimize sensitive data".
 - **Verification:** A test checks the header on the link list, the token-create response, and an admin list; after logout, browser back navigation shows no earlier data.
 
-**SC-032 — Deployment beyond localhost**
-- **Status:** BLOCKED
-- **Rule:** Pending OD-008. Until it is answered, Configuration MUST refuse to start when the configured site origin is not `http://localhost` with a port.
-- **Enforcement:** Configuration at startup.
-- **Evidence:** SC-010 (no HSTS), SC-013 (`Secure` on localhost), SC-018 (socket-address key, `trustProxy` false); FR-1.5; THREAT_MODEL.md T-009, T-017.
-- **Verification:** Starting with a non-localhost origin exits with an error and emits `config.loaded` with `reason_code=origin_not_local`.
+**SC-032 — Localhost only**
+- **Status:** ACTIVE
+- **Rule:** Configuration MUST refuse to start unless the configured site origin is `http://localhost` with a port, and the server MUST listen only on the loopback interface. Hosting the system for other people is out of scope; it requires revising these rules (TLS and HSTS, proxy trust, the rate-limit key, sign-up and target constraints) and the threat model first.
+- **Enforcement:** Configuration at startup; Fastify `listen` host.
+- **Evidence:** NFR-1.4; SC-010 (no HSTS), SC-013 (`Secure` on localhost), SC-018 (socket-address key, `trustProxy` false); FR-1.5; THREAT_MODEL.md T-009, T-017. Resolves OD-008 *(proposed default)*.
+- **Verification:** Starting with a non-localhost origin exits with an error and emits `config.loaded` with `reason_code=origin_not_local`; a connection to the machine's non-loopback address is refused.
 
 **SC-033 — Passkey management and re-verification**
-- **Status:** BLOCKED
-- **Rule:** Pending OD-009. No rule is set yet for listing or removing passkeys, or for a fresh passkey check before adding a passkey, creating an API token, or deleting an account.
-- **Enforcement:** Not decided. Would sit in the Auth module.
-- **Evidence:** FR-1.6, FR-1.8; SEC-008; THREAT_MODEL.md T-015.
-- **Verification:** Not defined until OD-009 is answered.
+- **Status:** ACTIVE
+- **Rule:** The Auth module MUST record on each session the time of its last successful passkey assertion (login or re-verification), and MUST reject adding a passkey, removing a passkey, creating an API token, and deleting the caller's own account unless that time is within the last 5 minutes. Re-verification MUST be a login ceremony under SC-011 and SC-012 that accepts only credentials of the session's own user and updates the existing session without issuing a new one. Passkey removal MUST act only on the caller's own credential, addressed by its opaque record ID, and MUST refuse to remove the last one, checking the count in the same transaction as the delete. The passkey list MUST return only the record ID, the added date, and the last-used date.
+- **Enforcement:** Auth module (DR-3); response schemas (SC-021).
+- **Evidence:** FR-1.13 to FR-1.15, FR-1.6, FR-1.8; SEC-008; THREAT_MODEL.md T-015. Resolves OD-009 *(proposed default)*; the 5-minute window is a project decision.
+- **Verification:** With a session whose last assertion is 6 minutes old, each of the four actions gets 403 with a re-verify error and changes nothing, and succeeds after re-verification; re-verifying with another user's passkey fails; removing the only passkey is refused; a removed passkey can no longer log in; user B cannot remove user A's passkey.
 
 **SC-034 — Redirect load**
-- **Status:** BLOCKED
-- **Rule:** Pending OD-010. No rule is set yet for bounding the cost of anonymous redirect requests. NFR-1.3 (redirects are not rate-limited) and FR-3.7 stay in force.
-- **Enforcement:** Not decided. Would sit in the Redirect handler or HTTP layer.
-- **Evidence:** FR-3.4, FR-3.7, NFR-1.3; SC-005 (`node:sqlite` is synchronous); THREAT_MODEL.md T-012.
-- **Verification:** Not defined until OD-010 is answered.
+- **Status:** ACTIVE
+- **Rule:** The redirect handler MUST resolve a code and count the click with exactly one indexed, prepared SQL statement per request and MUST perform no other write or lookup. Redirects stay unlimited (NFR-1.3); the remaining risk that a flood slows the single process is accepted for the localhost demo (NFR-1.5) and MUST be reconsidered with SC-032 before any hosting.
+- **Enforcement:** Redirect handler; Links module.
+- **Evidence:** FR-3.4, FR-3.7, NFR-1.3, NFR-1.5; SC-005, SC-020; THREAT_MODEL.md T-012. Resolves OD-010 *(proposed default)*.
+- **Verification:** A statement-count test shows one statement per redirect; 1,000 redirects in a minute all return 302 and an API call made during the burst still succeeds.
 
 ## Security Event Policy
 
@@ -279,11 +279,11 @@ The owner asked for these decisions (OD-004 to OD-007) to be answered as best as
 
 ## Open Security Decisions
 
-These decisions were raised by `THREAT_MODEL.md` and are for the owner. Rules marked BLOCKED wait on them.
+None open. OD-008 to OD-011 were raised by `THREAT_MODEL.md`; the owner asked for them to be answered as best as possible, so these are *(proposed default)* answers for the owner to review:
 
-- **OD-008 — Deployment beyond localhost.** Before shrink-182 is reachable by anyone outside the team: how are sign-up and link targets constrained (invitations, a warning page before leaving, an allow-list, or accepted as is), and what replaces the localhost-only choices (TLS and HSTS, proxy trust, the rate-limit key)? Blocks SC-032. Driven by T-009 and T-017.
-- **OD-009 — Passkey management.** Should a user be able to list and remove passkeys, and should adding a passkey, creating an API token, or deleting an account need a fresh passkey check? Today a session alone is enough and an unwanted passkey cannot be removed. Blocks SC-033. Driven by T-015.
-- **OD-010 — Redirect load.** Is unlimited anonymous redirect traffic, with one synchronous database write per request, accepted for the demo, or must it be bounded without storing visitor data? Blocks SC-034. Driven by T-012.
-- **OD-011 — Admin self-deletion.** FR-1.11 lets any logged-in user delete their own account, while SC-016's verification and SEC-049 say an admin cannot delete themself. Which holds on the admin's own account page? Blocks no rule; until answered, SC-016 applies to admin routes only. Raised by THREAT_MODEL.md conflict CF-001 and related to T-004.
+- **OD-008 — Deployment beyond localhost:** not supported. The server starts only on `http://localhost` (NFR-1.4, SC-032). Hosting needs a spec and threat-model revision first. Answers T-009 and T-017.
+- **OD-009 — Passkey management:** users can list and remove passkeys, except the last one, and sensitive account actions need a passkey check from the last 5 minutes (FR-1.13 to FR-1.15, SC-033). Answers T-015.
+- **OD-010 — Redirect load:** accepted for the localhost demo; the redirect is held to one database statement per request (NFR-1.5, SC-034). Answers T-012.
+- **OD-011 — Admin self-deletion:** not allowed by any route while the ID is in the admin configuration (FR-7.10, SC-016). Resolves THREAT_MODEL.md conflict CF-001 and supports T-004.
 
 Resolved and removed earlier: OD-001 (rate limits, SC-018, NFR-1.3), OD-004 to OD-007 (see [Security Event Policy](#security-event-policy)), OD-002 (passkey user verification is required, SC-011) and OD-003 (Node permission model not used in the demo, SC-024). The owner asked for these to be answered as best as possible, so all are *(proposed default)* answers for the owner to review.
