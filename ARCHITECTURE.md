@@ -8,7 +8,7 @@ Versions were checked on 2026-11-11 against the npm registry and the Node.js rel
 
 ## Required Architecture Inputs
 
-- **Requirements and design sources:** `REQUIREMENTS.md` (FR-1 to FR-7, NFR-1), `DESIGN.md` (DQ-1 deferred).
+- **Requirements and design sources:** `REQUIREMENTS.md` (FR-1 to FR-7, NFR-1), `DESIGN.md`.
 - **Target surfaces:** Web UI and JSON API. No background jobs.
 - **Runtime and deployment environment:** Node.js, run as one process on one host (NFR-1.2). The demo runs on a developer machine at `http://localhost`; a hosted environment is not required. *(proposed default, from AQ-3)*
 - **Server framework:** Fastify 5 (explicit choice).
@@ -16,7 +16,7 @@ Versions were checked on 2026-11-11 against the npm registry and the Node.js rel
 - **API style:** JSON over HTTP. One JSON API serves both the web UI (session cookie) and API clients (bearer API token). Short-link redirects are plain HTTP 302 responses.
 - **Authentication and session model:** Passkeys (WebAuthn) for sign-up and login (FR-1.1 to FR-1.7). Server-side sessions keyed by an opaque cookie, with 24-hour idle and 7-day absolute expiry (FR-1.10). Personal API tokens for the JSON API (FR-5.5 to FR-5.7).
 - **Authorization model:** Two roles, user and admin (FR-7.1). Admins are listed in deployment configuration (FR-7.2). Link ownership is checked on every link read, edit, and delete (FR-4.6).
-- **Data store and expected scale:** One embedded SQLite database file. Up to 100 users (NFR-1.1). Link count and traffic: UNKNOWN.
+- **Data store and expected scale:** One embedded SQLite database file. Up to 100 users (NFR-1.1). Link count and traffic are assumed to be team-scale (thousands of links, low request rates), which one SQLite file handles. *(proposed default)*
 - **Logging library or platform logger:** Fastify's built-in logger (pino). PROPOSED: it ships with Fastify, so nothing extra is needed.
 - **Security expectations:** Owned by `SECURITY.md`. This file only names the enforcement points.
 
@@ -32,6 +32,7 @@ Versions were checked on 2026-11-11 against the npm registry and the Node.js rel
 | `@simplewebauthn/browser` | 14.x (14.0.0) | FR-1.1, FR-1.2, FR-1.6. Wraps `navigator.credentials` and the base64url encoding the server library expects. | PROPOSED: matches the server library. |
 | `@fastify/cookie` | 11.x (11.1.5) | FR-1.9, FR-1.10 session cookie. Fastify core does not parse or set cookies. | PROPOSED |
 | `@fastify/static` | 10.x (10.1.10) | FR-5.1: serves the built React app and self-hosted fonts (DESIGN.md) from the same process. Fastify core does not serve files. | PROPOSED: keeps a single deployment (NFR-1.2). |
+| `@fastify/rate-limit` | latest stable 10.x line, verified at install | NFR-1.3. In-memory store; no Redis. | PROPOSED: Fastify's official plugin. It must pass the `AGENTS.md` dependency checks before it's added. |
 | Vite + `@vitejs/plugin-react` | 8.x (8.3.8) / 6.x (6.3.0) | Builds the React app (FR-5.1). Browsers cannot run JSX directly. | PROPOSED: the standard React build tool. |
 | TypeScript | 7.x (7.0.2) | Type-checking for the toolchain section. Development only. The server runs `.ts` files directly through Node 24's type stripping, so there is no server build step. *(proposed default, from AQ-4)* | CONFIRMED |
 | Vitest | 5.x (5.1.0) | Tests for business rules and API routes. Development only. `node:test` would also work. | PROPOSED: shares Vite's config and supports the React code. |
@@ -42,8 +43,8 @@ No router library, state library, ORM, or CSS framework is proposed. The UI has 
 
 | Component | Responsibility | Business rules enforced | Data owned | Requirement IDs | Status |
 |---|---|---|---|---|---|
-| Web client (React SPA) | Screens for sign-up, login, links, tokens, account, admin. Calls the JSON API. | None authoritative. It repeats validation only for friendly messages. | None (no browser storage of secrets) | FR-5.1, FR-5.5, DESIGN.md | SUPPORTED (DQ-1 deferred) |
-| HTTP layer (Fastify routes) | Routing, request schema validation, JSON error shape, static files, cookie handling | Request shape and size limits; uniform JSON errors | None | FR-5.2 to FR-5.4 | SUPPORTED |
+| Web client (React SPA) | Screens for sign-up, login, links, tokens, account, admin. Calls the JSON API. | None authoritative. It repeats validation only for friendly messages. | None (no browser storage of secrets) | FR-5.1, FR-5.5, DESIGN.md | SUPPORTED |
+| HTTP layer (Fastify routes) | Routing, request schema validation, JSON error shape, static files, cookie handling | Request shape and size limits; rate limits (NFR-1.3); uniform JSON errors | None | FR-5.2 to FR-5.4 | SUPPORTED |
 | Auth module | Passkey registration and login, sessions, logout, expiry, API tokens, caller identity | FR-1.3, FR-1.4, FR-1.8 (no recovery path), FR-1.10, FR-5.6, FR-5.7 | Users, passkey credentials, sessions, API tokens | FR-1.1 to FR-1.10, FR-5.5 to FR-5.8 | SUPPORTED |
 | Links module | Create, list, edit, delete links; code generation; URL rules; ownership | FR-2.4 to FR-2.11, FR-4.3, FR-4.6, FR-4.9 to FR-4.12 | Short links, retired short codes | FR-2.x, FR-4.x | SUPPORTED |
 | Redirect handler | Resolve a short code, count the click, return 302 or not-found | FR-3.3 to FR-3.8; no visitor data stored | None (asks Links module to increment count) | FR-3.1 to FR-3.8 | SUPPORTED |
@@ -57,9 +58,9 @@ No router library, state library, ORM, or CSS framework is proposed. The UI has 
 1. **Sign up / log in (passkey):** Browser asks API for options → server creates a one-time challenge → browser runs WebAuthn → server verifies the response, then creates a user (sign-up) or finds the user (login) → server creates a session and sets the cookie. A failed check creates no session (FR-1.3).
 2. **Create a link:** Web UI (cookie) or API client (token) sends URL and title → HTTP layer validates the shape → Auth module resolves the caller → Links module applies URL rules, generates a 7-character code not already used or retired, and stores it with the owner → short URL returned.
 3. **Follow a short link:** Anonymous `GET /<code>` → Redirect handler looks up the code → if found, increments the click count and returns 302 to the target; otherwise returns not-found. Nothing about the visitor is stored (FR-3.5).
-4. **Manage own links:** List, edit, delete calls → Auth resolves caller → Links module filters or checks by owner. "Not owned" and "does not exist" give the same not-found result (DESIGN.md).
-5. **API tokens:** Created in the web UI (session only), shown once, stored only as a hash. API requests send the token as a bearer header; Auth module looks up the hash and rejects revoked or unknown tokens.
-6. **Admin actions:** Session caller → Auth checks whether the caller's internal user ID is in the configured admin list. The ID is shown on the user's own account page so the operator can copy it into config. *(proposed default, from AQ-5)* → Admin module calls Links or Account deletion.
+4. **Manage own links:** List, edit, delete calls → Auth resolves caller → Links module filters or checks by owner. "Not owned" and "does not exist" give the same not-found result (FR-4.13).
+5. **API tokens:** Created in the web UI (session only) and shown once (FR-5.5); storage and transport rules are in `SECURITY.md` SC-014. API requests send the token as a bearer header; Auth module looks up the hash and rejects revoked or unknown tokens.
+6. **Admin actions:** Session caller → Auth checks whether the caller's internal user ID is in the configured admin list. The ID is shown on the user's own account page (FR-7.7). → Admin module calls Links or Account deletion.
 
 ### Trust boundaries and enforcement points
 
@@ -169,22 +170,8 @@ sequenceDiagram
 
 ## Toolchain
 
-Commands assume npm, which ships with Node. Script names are PROPOSED and become real when `package.json` exists.
-
-| Check | Command | Notes |
-|---|---|---|
-| Install | `npm ci` | Uses the lockfile. `npm install` for the first install. |
-| Build | `npm run build` → `vite build` | Builds the React app into static files for `@fastify/static`. The server runs from TypeScript source with Node's type stripping. |
-| Type-check | `npm run typecheck` → `tsc --noEmit` | |
-| Test | `npm test` → `vitest run` | |
-| Dependency audit | `npm audit --audit-level=high` | Built into npm. |
-| Lint | N/A | Not required for a demo. Can be added later. |
-| Run | `npm start` → `node` on the server entry | |
-
-Note for local use: on this machine, `npm` failed with `EPERM` because `~/.npm` contains root-owned files. Fix with `sudo chown -R 503:20 ~/.npm` before installing.
+npm (ships with Node) is the package manager. Commands are owned by [`AGENTS.md` → Commands](AGENTS.md#commands); install rules are in [`SECURITY.md` SC-023](SECURITY.md).
 
 ## Open Questions
 
-Resolved and removed: AQ-1 (Node 24), AQ-2 (`node:sqlite`), AQ-3 (localhost demo, origin from config), AQ-4 (TypeScript), AQ-5 (admins listed by internal user ID). Their answers are recorded above as proposed defaults.
-
-- **AQ-6** *(deferred — revisit in steps 07 and 09; from OQ-15)* Rate limits and caps on open sign-up. If needed, `@fastify/rate-limit` would be the candidate package.
+None open. Resolved and removed: AQ-1 (Node 24), AQ-2 (`node:sqlite`), AQ-3 (localhost demo, origin from config), AQ-4 (TypeScript), AQ-5 (admins listed by internal user ID), AQ-6 (rate limits: NFR-1.3, `@fastify/rate-limit`). Their answers are recorded above as proposed defaults.

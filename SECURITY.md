@@ -2,24 +2,19 @@
 
 This file owns the implementation rules for writing shrink-182 securely. WHAT the system does is in `REQUIREMENTS.md`, how it looks is in `DESIGN.md`, and how it is built is in `ARCHITECTURE.md`. Rule IDs (`SC-###`) and decision IDs (`OD-###`) are permanent and are never renumbered or reused. This is a demo, so rules are kept to what the confirmed stack needs.
 
-> **Note on answers:** The owner asked for the open decisions to be answered as best as possible. OD-002 to OD-007 were answered with proposed defaults. OD-001 stays deferred to steps 07 and 09.
+> **Note on answers:** The owner asked for the open decisions to be answered as best as possible. OD-001 to OD-007 were answered with proposed defaults.
 
 ## Secure-Coding Inputs
 
-- **Documents read:** `REQUIREMENTS.md` (FR-1 to FR-7, NFR-1, OQ-15), `DESIGN.md` (security-relevant interactions, DQ-1), `ARCHITECTURE.md` (stack, components, TB-1 to TB-7, DR-1 to DR-8, AQ-6). No earlier `SECURITY.md` existed.
+- **Documents read:** `REQUIREMENTS.md` (FR-1 to FR-7, NFR-1), `DESIGN.md` (security-relevant interactions), `ARCHITECTURE.md` (stack, components, TB-1 to TB-7, DR-1 to DR-8). No earlier `SECURITY.md` existed.
 - **Owner notes:** demo, keep it simple; passkeys are the only authentication; two roles, user and admin. These match FR-1.4 and FR-7.1.
-- **Confirmed components and versions (from `ARCHITECTURE.md`):**
-  - Node.js 24.x LTS; `node:sqlite` (built in, release candidate).
-  - Fastify 5.x (5.12.8) with built-in pino logger; `@fastify/cookie` 11.x; `@fastify/static` 10.x.
-  - `@simplewebauthn/server` 14.x and `@simplewebauthn/browser` 14.x.
-  - React 19.x SPA built with Vite 8.x; TypeScript 7.x and Vitest 5.x (development only).
+- **Confirmed components and versions:** see [`ARCHITECTURE.md` → Stack](ARCHITECTURE.md#stack).
 - **Applicability decisions:**
-  - Applies: request and resource limits, event-loop blocking, input validation, output encoding, authentication (passkeys, API tokens), authorization (ownership, admin role), sessions, CSRF, errors, logging, dependencies, prototype pollution, unsafe code execution, security headers, open redirect (TB-7).
+  - Applies: request and resource limits, rate limits, event-loop blocking, input validation, output encoding, authentication (passkeys, API tokens), authorization (ownership, admin role), sessions, CSRF, errors, logging, dependencies, prototype pollution, unsafe code execution, security headers, open redirect (TB-7).
   - Runtime permissions: the Node permission model is not used for this localhost demo, to keep it simple (OD-003, proposed default). SC-024 covers file protection instead.
   - Not applicable: password storage (FR-1.4, no passwords); file uploads (FR-6.2); payments (FR-6.1); server-side rendering and SSR serialization (SPA only); outbound server requests / SSRF (no external integrations, and the redirect handler never fetches the target); account recovery (FR-1.8, none exists); `npm publish` hygiene (app is not published); HTTP/2 and proxy smuggling (no reverse proxy in the localhost demo, `trustProxy` stays `false`).
 - **Gaps and conflicts:**
-  - **Conflict:** Fastify's default request logging includes the client address, while FR-3.5 forbids storing visitor-identifying data on redirects. Resolved by SC-014 (requirement wins).
-  - **Gap:** rate limits and sign-up caps are deferred (OQ-15, AQ-6). SC-018 is BLOCKED on `OD-001`.
+  - **Conflict:** Fastify's default request logging includes the client address, while FR-3.5 forbids storing visitor-identifying data on redirects. Resolved by SC-019 (requirement wins).
   - **Gap:** the React cheat sheet is a draft with no published revision date; its guidance is used only where it agrees with the OWASP XSS and CSRF cheat sheets or React's own behavior.
   - Example packages in the guides (helmet, hpp, acl, DOMPurify, csurf-style middleware) are not approved dependencies and are not used.
 
@@ -143,7 +138,7 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Status:** ACTIVE
 - **Rule:** The Links module MUST filter or check by the caller's user ID on every link read, edit, and delete, returning the same not-found result for "missing" and "not yours"; the Admin module MUST check the caller's ID against the configured admin list on every admin action and MUST NOT accept a role from the client.
 - **Enforcement:** Links module (TB-3), Admin module entry (TB-4).
-- **Evidence:** FR-4.3, FR-4.6, FR-7.1 to FR-7.6; DESIGN.md "What errors reveal"; ARCHITECTURE.md TB-3, TB-4. S3 "Authentication and authorization"; S2 "Use access control lists".
+- **Evidence:** FR-4.3, FR-4.6, FR-4.13, FR-7.1 to FR-7.6; ARCHITECTURE.md TB-3, TB-4. S3 "Authentication and authorization"; S2 "Use access control lists".
 - **Verification:** User B's edit/delete of user A's link returns the same 404 body as a random code, and the link is unchanged; a non-admin calling an admin route gets 403; an admin cannot edit another user's link or delete themself.
 
 **SC-017 — Errors**
@@ -154,15 +149,15 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Verification:** A forced store error returns a generic 500 JSON body with no `stack` field; the log contains the stack.
 
 **SC-018 — Rate limits on sign-up, login, and API**
-- **Status:** BLOCKED — `OD-001`
-- **Rule:** The server MUST limit attempts on sign-up, login, and API calls per the limits decided in `OD-001`.
-- **Enforcement:** HTTP layer (candidate: `@fastify/rate-limit`, per AQ-6, not yet approved).
-- **Evidence:** S2 "Take precautions against brute-forcing"; REQUIREMENTS.md OQ-15; ARCHITECTURE.md AQ-6.
-- **Verification:** To be defined with the limits.
+- **Status:** ACTIVE
+- **Rule:** The HTTP layer MUST apply NFR-1.3 with `@fastify/rate-limit` using its in-memory store: sign-up and login routes (options and verify) keyed by the socket address, and API routes keyed by the SHA-256 token hash already computed for lookup. The address key MUST stay in memory only, MUST NOT be logged or written to the database, and MUST expire with the 1-minute window. The redirect handler MUST NOT be rate-limited. `trustProxy` stays `false`.
+- **Enforcement:** HTTP layer.
+- **Evidence:** NFR-1.3; FR-3.5; SC-019. S2 "Take precautions against brute-forcing". The limits and keys are project decisions (OD-001, resolved as a proposed default).
+- **Verification:** The 11th login-options request in a minute from one address gets 429 with a JSON error; the 61st API call with one token gets 429; 100 redirects in a minute all succeed; the logs and database contain no address.
 
 **SC-019 — Logging without visitor data or secrets**
 - **Status:** ACTIVE
-- **Rule:** The pino logger MUST use serializers that omit the client IP, `User-Agent`, `Cookie`, `Authorization`, and request bodies, and MUST NOT log session IDs, API tokens, WebAuthn challenges, or credential public keys.
+- **Rule:** The pino logger MUST use serializers that omit the client IP (the only in-memory use of it is SC-018), `User-Agent`, `Cookie`, `Authorization`, and request bodies, and MUST NOT log session IDs, API tokens, WebAuthn challenges, or credential public keys.
 - **Enforcement:** HTTP layer logger configuration.
 - **Evidence:** FR-3.5 (overrides Fastify's default request log fields); S2 "Perform application activity logging"; S3 "Keep sensitive data out of URLs".
 - **Verification:** Following a short link and calling the API with a token, then grepping the log, finds no IP, user agent, cookie, or token value. The never-log list in `SECURITY_EVENTS.md` also applies to security events (SC-025).
@@ -220,11 +215,4 @@ The owner asked for these decisions (OD-004 to OD-007) to be answered as best as
 
 ## Open Security Decisions
 
-- **OD-001 — Rate limits and sign-up cap**
-  - **Missing fact:** whether to limit sign-up, login, link creation, and API calls, and whether to cap accounts at 100 (NFR-1.1).
-  - **Settles it:** owner chooses limits (or none) in REQUIREMENTS.md OQ-15 / ARCHITECTURE.md AQ-6.
-  - **Affects:** SC-018.
-  - **Owner:** project owner (deferred to steps 07 and 09).
-
-
-Resolved and removed: OD-004 to OD-007 (see [Security Event Policy](#security-event-policy)), OD-002 (passkey user verification is required, SC-011) and OD-003 (Node permission model not used in the demo, SC-024). The owner asked for these to be answered as best as possible, so all are *(proposed default)* answers for the owner to review.
+None open. Resolved and removed: OD-001 (rate limits, SC-018, NFR-1.3), OD-004 to OD-007 (see [Security Event Policy](#security-event-policy)), OD-002 (passkey user verification is required, SC-011) and OD-003 (Node permission model not used in the demo, SC-024). The owner asked for these to be answered as best as possible, so all are *(proposed default)* answers for the owner to review.

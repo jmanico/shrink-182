@@ -298,7 +298,7 @@ The design is flat with no shadows. Depth comes from tone: the green mat panel s
 - **Signed-in state:**
   - Signed-in pages show the account bar with "Signed in" and a "Log out" button.
   - Signed-out pages show only "Sign in" and "Sign up".
-  - Which name or identifier to show for a user is UNKNOWN (DQ-1).
+  - Users are identified only as "Signed in" (FR-7.8). The admin user list shows each user's internal ID in the mono face, plus their sign-up date.
   - When a session expires (FR-1.10), the user is returned to sign-in with "Your session ended. Sign in again to continue."
 - **Destructive actions are confirmed in a dialog** that names the exact thing affected:
   - **Delete link:** "Delete shrink-182.example/k7Qm2Xa? It will stop working for everyone, and this code won't be reused." The buttons are "Delete link" (danger) and "Keep link". Focus starts on "Keep link".
@@ -306,8 +306,9 @@ The design is flat with no shadows. Depth comes from tone: the green mat panel s
   - **Delete account:** the dialog states the number of links that will be deleted, and that there is no recovery (FR-1.8, FR-1.11).
   - **Admin deleting another user's link or account:** the dialog also names the owner and is styled with the admin banner.
 - **What errors reveal:**
-  - A link that doesn't exist and a link the user doesn't own produce the same message, "Link not found". ASSUMPTION: this avoids confirming that another user's link exists (FR-4.6).
+  - A link that doesn't exist and a link the user doesn't own produce the same message, "Link not found" (FR-4.13).
   - A failed passkey sign-in says only "Sign-in didn't work. Try again with a passkey saved for shrink-182."
+  - When a limit is hit (NFR-1.3): "Too many tries. Wait a minute and try again."
   - Error messages never show internal details.
 - **User-supplied content** (titles and target URLs) is always shown as plain text, never as formatted or clickable rich content.
   - Target URLs in the list are shown as text, not live links. The full host is always visible, so lookalike domains can't hide.
@@ -326,4 +327,4 @@ The design is flat with no shadows. Depth comes from tone: the green mat panel s
 
 ## Open Questions
 
-- **DQ-1** *(deferred to steps 07 and 09: needs a requirements decision)* Users have no name or email in the requirements. What should identify a user in the account bar and in the admin's user list: a display name they choose at sign-up, an auto-generated handle, or just "Signed in" plus their sign-up date? Any of these adds stored data or behavior, so it belongs in `REQUIREMENTS.md` first. Until then, screens show only "Signed in".
+None open. DQ-1 (how users are identified) was resolved by FR-7.8. *(proposed default)*

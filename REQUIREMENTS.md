@@ -70,6 +70,7 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-4.10** An edited target URL or title MUST pass the same validation as on creation (FR-2.8 to FR-2.11). *(proposed default)*
 - **FR-4.11** Editing a link MUST NOT reset its click count. *(proposed default)*
 - **FR-4.12** After a link is deleted, its short link MUST respond as not found, and its short code MUST NOT ever be assigned to a new link. *(proposed default)*
+- **FR-4.13** When a user asks to view, edit, or delete a link that does not exist or that they do not own, the system MUST give the same not-found response in both cases, so it never confirms that another user's link exists. *(proposed default, moved from a DESIGN.md assumption)*
 
 ### Web UI and JSON API
 
@@ -95,12 +96,15 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-7.4** The system MUST allow an admin to delete any link. An admin MUST NOT be able to edit another user's link. *(proposed default)*
 - **FR-7.5** The system MUST allow an admin to list all user accounts and delete any user account other than their own. The deletion follows FR-1.11 and FR-5.8. *(proposed default)*
 - **FR-7.6** The system MUST reject admin actions from anyone who does not have the admin role.
+- **FR-7.7** The system MUST show a logged-in user their own internal user ID on their account page, so the operator can copy it into the admin configuration (FR-7.2). *(proposed default, moved from ARCHITECTURE.md AQ-5)*
+- **FR-7.8** Signed-in screens MUST identify the user only as "Signed in". The admin user list MUST show each user's internal user ID and sign-up date. Users have no display name or email. *(proposed default, resolves DQ-1)*
 
 ## Non-Functional Requirements
 
 - **NFR-1.1** The system MUST support up to 100 registered users.
 - **NFR-1.2** The system MUST run as a single deployment.
+- **NFR-1.3** The system MUST limit sign-up and login to 10 attempts per minute from one network address, and JSON API calls to 60 per minute per API token. A request over the limit MUST be refused with HTTP 429 and a JSON or on-screen message saying to wait and try again. Following short links MUST NOT be rate-limited. Sign-ups are not capped at a fixed number of accounts. *(proposed default, resolves OQ-15)*
 
 ## Open Questions
 
-- **OQ-15** *(deferred — revisit in steps 07 and 09)* Are there any non-functional targets, such as uptime, redirect speed, or rate limits on sign-up, login, link creation, and API calls? Given open sign-up (FR-1.5), should accounts be capped to stay within NFR-1.1?
+None open. OQ-15 was resolved by NFR-1.3; no uptime or redirect-speed targets are set for the demo. *(proposed default)*

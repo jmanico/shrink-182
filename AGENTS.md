@@ -41,8 +41,11 @@
 | Test | `npm test` → `vitest run` |
 | Dependency audit | `npm audit --audit-level=high` |
 | Lint | N/A — not required for a demo |
+| Run | `npm start` → `node` on the server entry (no `--inspect`, SC-024) |
 
-Script names are PROPOSED until `package.json` exists.
+Script names are PROPOSED until `package.json` exists. The server runs from TypeScript source with Node's type stripping, so `npm run build` only builds the React app.
+
+Local note: if `npm` fails with `EPERM`, `~/.npm` contains root-owned files; fix with `sudo chown -R 503:20 ~/.npm`.
 
 ## Spec updates
 
