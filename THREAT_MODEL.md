@@ -483,7 +483,7 @@ A Grim Prompter change review (`threat-model/2026-11-11-change/change-review.jso
 
 ## Remaining decisions answered on 2026-11-11
 
-These record the owner's decisions against the run's findings. The threats were not analyzed again. None of them changes a component, a trust boundary or a data flow, so no new threat-model run is needed.
+These record the owner's decisions against the run's findings. With the G-006, G-007 and G-021 rows, no decision or gap remains open. The threats were not analyzed again. None of them changes a component, a trust boundary or a data flow, so no new threat-model run is needed.
 
 | Item | Decision | Spec changes |
 |---|---|---|
@@ -493,4 +493,8 @@ These record the owner's decisions against the run's findings. The threats were 
 | G-010 | No rule. Discoverable credentials are left to the browser default, and login works either way because SC-012 looks credentials up by ID. | None |
 | G-011 | No rule. Browsers treat `http://localhost` as a secure context, which SC-013 already relies on; the UI is verified in Chrome. | None |
 | G-018 | No new rule for the demo. Expired sessions and challenges are rejected on use (SC-011, SC-013), and NFR-1.1 limits how much data there can be. Revisit with SC-032 before hosting. | None |
+| G-006 | Accepted for the demo: technology-specific details stay unverified by a secure-coding pack. SECURITY.md cites the Fastify, Node.js and SimpleWebAuthn sources directly (S1 to S6), and each implementation issue proves its controls by test. Supply a resolved pack before any hosting (SC-032). | None |
+| G-007 | Session-cookie API calls are limited to 60 per minute per session, keyed by the stored session hash; calls with an invalid session fall back to the address key. | REQUIREMENTS.md NFR-1.3; SECURITY.md SC-018 |
+| G-021 | Re-verification counts against the 10-per-minute sign-up and login limit per address. The 5-minute window belongs to the session, so it covers every place that session cookie is presented. | REQUIREMENTS.md NFR-1.3, FR-1.15; SECURITY.md SC-018, SC-033 |
+| G-001, G-019 | Not decisions. They close when the system is built and the verification in each implementation issue runs (GitHub epic #13). | None |
 | SEC-035 | No CSP report endpoint. The row stays `unavailable_signal` by owner decision, not while waiting for one. | SECURITY_EVENTS.md SEC-035 |

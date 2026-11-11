@@ -33,7 +33,7 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 - **FR-1.12** Deleting an account MUST be all-or-nothing. If any part fails, the account and its links, API tokens, and sessions MUST stay as they were. After a successful deletion, none of them may work. *(T-014)*
 - **FR-1.13** The system MUST show a logged-in user a list of the passkeys on their account, with the date each was added and the date it was last used. *(resolves OD-009, T-015)*
 - **FR-1.14** The system MUST allow a logged-in user to remove a passkey from their account, after which it MUST no longer be accepted for login. The system MUST refuse to remove the last remaining passkey, because there is no recovery path (FR-1.8). *(resolves OD-009, T-015)*
-- **FR-1.15** Before a user adds a passkey, removes a passkey, creates an API token, or deletes their own account, the system MUST require that the user authenticated with one of their passkeys within the last 5 minutes, and MUST ask them to do so again if not. *(resolves OD-009, T-015)*
+- **FR-1.15** Before a user adds a passkey, removes a passkey, creates an API token, or deletes their own account, the system MUST require that the user authenticated with one of their passkeys within the last 5 minutes, and MUST ask them to do so again if not. The 5-minute window belongs to the session, not to the browser. *(resolves OD-009, T-015; G-021)*
 
 ### Creating short links
 
@@ -113,7 +113,7 @@ This file owns WHAT the system must do. Requirement IDs are permanent and are ne
 
 - **NFR-1.1** The system MUST support up to 100 registered users.
 - **NFR-1.2** The system MUST run as a single deployment.
-- **NFR-1.3** The system MUST limit sign-up and login to 10 attempts per minute from one network address, and JSON API calls to 60 per minute per API token. JSON API calls that carry no valid API token MUST be limited to 60 per minute from one network address (T-011). A request over the limit MUST be refused with HTTP 429 and a JSON or on-screen message saying to wait and try again. Following short links MUST NOT be rate-limited. Sign-ups are not capped at a fixed number of accounts. *(resolves OQ-15)*
+- **NFR-1.3** The system MUST limit sign-up and login to 10 attempts per minute from one network address, and JSON API calls to 60 per minute per API token. JSON API calls made with a valid session cookie MUST be limited to 60 per minute per session (G-007). JSON API calls that carry no valid API token or session MUST be limited to 60 per minute from one network address (T-011). Passkey re-verification (FR-1.15) counts as login and shares the 10-per-minute limit for one network address (G-021). A request over the limit MUST be refused with HTTP 429 and a JSON or on-screen message saying to wait and try again. Following short links MUST NOT be rate-limited. Sign-ups are not capped at a fixed number of accounts. *(resolves OQ-15; G-007 and G-021 answered 2026-11-11)*
 - **NFR-1.4** The system MUST run only on a developer machine at `http://localhost` and MUST refuse to start with any other site origin. Making it reachable by other people is out of scope and needs these specifications and the threat model to be revised first. *(resolves OD-008, T-009, T-017)*
 - **NFR-1.5** Unlimited short-link traffic (NFR-1.3, FR-3.7) is accepted for the localhost demo, including the risk that a flood of requests slows the service. *(resolves OD-010, T-012)*
 
