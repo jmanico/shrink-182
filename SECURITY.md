@@ -2,7 +2,7 @@
 
 This file owns the implementation rules for writing shrink-182 securely. WHAT the system does is in `REQUIREMENTS.md`, how it looks is in `DESIGN.md`, and how it is built is in `ARCHITECTURE.md`. Rule IDs (`SC-###`) and decision IDs (`OD-###`) are permanent and are never renumbered or reused. This is a demo, so rules are kept to what the confirmed stack needs.
 
-> **Note on answers:** The owner asked for the open decisions to be answered as best as possible. OD-002 and OD-003 were answered with proposed defaults. OD-001 stays deferred to steps 07 and 09.
+> **Note on answers:** The owner asked for the open decisions to be answered as best as possible. OD-002 to OD-007 were answered with proposed defaults. OD-001 stays deferred to steps 07 and 09.
 
 ## Secure-Coding Inputs
 
@@ -165,7 +165,7 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Rule:** The pino logger MUST use serializers that omit the client IP, `User-Agent`, `Cookie`, `Authorization`, and request bodies, and MUST NOT log session IDs, API tokens, WebAuthn challenges, or credential public keys.
 - **Enforcement:** HTTP layer logger configuration.
 - **Evidence:** FR-3.5 (overrides Fastify's default request log fields); S2 "Perform application activity logging"; S3 "Keep sensitive data out of URLs".
-- **Verification:** Following a short link and calling the API with a token, then grepping the log, finds no IP, user agent, cookie, or token value.
+- **Verification:** Following a short link and calling the API with a token, then grepping the log, finds no IP, user agent, cookie, or token value. The never-log list in `SECURITY_EVENTS.md` also applies to security events (SC-025).
 
 **SC-020 — Redirect handler output**
 - **Status:** ACTIVE
@@ -202,6 +202,22 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Evidence:** ARCHITECTURE.md TB-6 ("file protection owned by SECURITY.md"). S1 "DNS rebinding" (inspector); S2 "Do not use dangerous functions" (unsafe `fs`). The Node permission model (S1, S2 "Permissions") is not used for this localhost demo (OD-003, resolved as a proposed default).
 - **Verification:** `GET /<db filename>` returns 404; `stat` shows mode 600; `npm start` has no `--inspect`.
 
+**SC-025 — Security events follow the ledger**
+- **Status:** ACTIVE
+- **Rule:** Security events MUST be emitted only through one helper that builds each record from the per-event allowlist in `SECURITY_EVENTS.md` (Event Contract), and MUST never throw into the request. They MUST be written as described in [Security Event Policy](#security-event-policy).
+- **Enforcement:** Event helper used by the Auth, Links, Admin, and Account deletion modules, and by the process entry point.
+- **Evidence:** `SECURITY_EVENTS.md`; Dread Ledger `7d38c75` event contract.
+- **Verification:** Contract tests per event: presence and absence, field allowlist, secret canaries, CR/LF and oversize input, and helper failure leaving the business result unchanged.
+
+## Security Event Policy
+
+The owner asked for these decisions (OD-004 to OD-007) to be answered as best as possible, so all four are *(proposed default)* answers for the owner to review.
+
+- **Destination and consumer (OD-004):** security events go to a separate local JSON-lines file (pino destination) with mode `0600`, outside the static-file root and separate from the diagnostic log. The consumer is the operator (project owner), who reviews the file by hand. There are no alerts, tickets, or chat forwarding.
+- **Retention (OD-005):** the file rotates at 10 MiB and keeps at most 5 files. Events are kept only while the demo checkout exists, and deleting the checkout disposes of them. There is no legal hold.
+- **Personal data (OD-006):** events may carry the opaque internal user ID as `actor_ref` and `target_ref`. They are kept after account deletion for attribution, but no other profile data is kept. No IP, user agent, or `session_audit_ref` is collected.
+- **Audit durability (OD-007):** `audit_required=true` for `account.deleted`, `link.deleted` (`action=admin`), `admin.read`, `config.loaded`, and `config.admins_loaded`. Writing them is best-effort and never blocks or rolls back the business change; losses are counted by `logging.health`. There is no transactional outbox. The 10 MiB × 5 rotation caps how long evidence survives.
+
 ## Open Security Decisions
 
 - **OD-001 — Rate limits and sign-up cap**
@@ -210,4 +226,5 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
   - **Affects:** SC-018.
   - **Owner:** project owner (deferred to steps 07 and 09).
 
-Resolved and removed: OD-002 (passkey user verification is required, SC-011) and OD-003 (Node permission model not used in the demo, SC-024). The owner asked for these to be answered as best as possible, so both are *(proposed default)* answers for the owner to review.
+
+Resolved and removed: OD-004 to OD-007 (see [Security Event Policy](#security-event-policy)), OD-002 (passkey user verification is required, SC-011) and OD-003 (Node permission model not used in the demo, SC-024). The owner asked for these to be answered as best as possible, so all are *(proposed default)* answers for the owner to review.
