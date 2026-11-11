@@ -47,12 +47,12 @@ No router library, state library, ORM, or CSS framework is proposed. The UI has 
 |---|---|---|---|---|---|
 | Web client (React SPA) | Screens for sign-up, login, links, tokens, account, admin. Calls the JSON API. | None authoritative. It repeats validation only for friendly messages. | None (no browser storage of secrets) | FR-5.1, FR-5.5, DESIGN.md | SUPPORTED |
 | HTTP layer (Fastify routes) | Routing, request schema validation, JSON error shape, static files, cookie handling | Request shape and size limits; rate limits (NFR-1.3); uniform JSON errors | None | FR-5.2 to FR-5.4 | SUPPORTED |
-| Auth module | Passkey registration and login, sessions, logout, expiry, API tokens, caller identity | FR-1.3, FR-1.4, FR-1.8 (no recovery path), FR-1.10, FR-5.6, FR-5.7 | Users (random, never-reused internal IDs: FR-7.9, T-004), passkey credentials, sessions, API tokens | FR-1.1 to FR-1.10, FR-5.5 to FR-5.9, FR-7.9 | SUPPORTED |
+| Auth module | Passkey registration, login, listing, removal, and re-verification before sensitive account actions (FR-1.13 to FR-1.15, T-015); sessions, logout, expiry, API tokens, caller identity | FR-1.3, FR-1.4, FR-1.8 (no recovery path), FR-1.10, FR-5.6, FR-5.7 | Users (random, never-reused internal IDs: FR-7.9, T-004), passkey credentials, sessions, API tokens | FR-1.1 to FR-1.10, FR-1.13 to FR-1.15, FR-5.5 to FR-5.9, FR-7.9 | SUPPORTED |
 | Links module | Create, list, edit, delete links; code generation; URL rules; ownership | FR-2.4 to FR-2.11, FR-4.3, FR-4.6, FR-4.9 to FR-4.12 | Short links, retired short codes | FR-2.x, FR-4.x | SUPPORTED |
 | Redirect handler | Resolve a short code, count the click, return 302 or not-found | FR-3.3 to FR-3.8; no visitor data stored | None (asks Links module to increment count) | FR-3.1 to FR-3.8 | SUPPORTED |
-| Admin module | List all links and users, delete any link, delete other users | FR-7.3 to FR-7.6; admin cannot edit others' links or delete self | None (uses Links and Auth modules) | FR-7.x | SUPPORTED |
+| Admin module | List all links and users, delete any link, delete other users | FR-7.3 to FR-7.6, FR-7.10; admin cannot edit others' links or delete self by any route | None (uses Links and Auth modules) | FR-7.x | SUPPORTED |
 | Account deletion | Delete a user with their links, tokens, and sessions in one SQLite transaction (FR-1.12, T-014) | FR-1.11, FR-1.12, FR-5.8, FR-4.12 (codes stay retired) | None (coordinates Auth and Links) | FR-1.11, FR-1.12, FR-5.8, FR-7.5 | SUPPORTED |
-| Configuration | Admin list (internal user IDs), site origin (also the WebAuthn relying-party ID), database path. Read from environment variables at startup. *(proposed default, from AQ-3 and AQ-5)* | FR-7.2; FR-2.10 needs the site's own domain | Deployment config | FR-7.2, FR-2.10 | SUPPORTED |
+| Configuration | Admin list (internal user IDs), site origin (also the WebAuthn relying-party ID), database path. Read from environment variables at startup. Refuses any origin other than `http://localhost` (NFR-1.4, SC-032; T-009, T-017). *(proposed default, from AQ-3 and AQ-5)* | FR-7.2; FR-2.10 needs the site's own domain | Deployment config | FR-7.2, FR-2.10 | SUPPORTED |
 | SQLite store | Durable storage | Unique short codes (FR-2.6), never-reused codes (FR-4.12) | All persistent data | NFR-1.1, NFR-1.2 | SUPPORTED |
 
 ### Main data flows
@@ -63,6 +63,7 @@ No router library, state library, ORM, or CSS framework is proposed. The UI has 
 4. **Manage own links:** List, edit, delete calls → Auth resolves caller → Links module filters or checks by owner. "Not owned" and "does not exist" give the same not-found result (FR-4.13).
 5. **API tokens:** Created in the web UI (session only) and shown once (FR-5.5); storage and transport rules are in `SECURITY.md` SC-014. API requests send the token as a bearer header; Auth module looks up the hash and rejects revoked or unknown tokens. Tokens work only on the link routes (FR-5.9, T-005).
 6. **Admin actions:** Session caller → Auth checks whether the caller's internal user ID is in the configured admin list. The ID is shown on the user's own account page (FR-7.7). → Admin module calls Links or Account deletion.
+7. **Sensitive account actions:** Adding or removing a passkey, creating an API token, or deleting one's own account → Auth checks that the session's last passkey assertion is at most 5 minutes old → if not, the browser runs a re-verification ceremony for the same user and retries (FR-1.15, SC-033; T-015). An admin's own account deletion is refused (FR-7.10).
 
 ### Trust boundaries and enforcement points
 
@@ -72,7 +73,7 @@ No router library, state library, ORM, or CSS framework is proposed. The UI has 
 - **TB-4 User → admin:** **Authorization** (role) is enforced in the Admin module entry point using the configured admin list. The list holds random, never-reused internal user IDs, so a later sign-up cannot inherit an admin entry (SC-027, T-004).
 - **TB-5 Server → browser (rendering):** user titles and URLs are output as plain text by React. Detailed output rules are owned by `SECURITY.md`.
 - **TB-6 Server → SQLite file:** trusted local store. Queries use bound parameters only. File protection is owned by `SECURITY.md`.
-- **TB-7 Redirect → external target:** the system sends visitors to user-supplied URLs. Only `http`/`https` targets that are not shrink-182's own domain, under any of its names, and that carry no username or password are allowed (FR-2.8, FR-2.10, FR-2.12; T-008, T-010). Exposure beyond localhost waits on SECURITY.md OD-008 (T-009, T-017).
+- **TB-7 Redirect → external target:** the system sends visitors to user-supplied URLs. Only `http`/`https` targets that are not shrink-182's own domain, under any of its names, and that carry no username or password are allowed (FR-2.8, FR-2.10, FR-2.12; T-008, T-010). The server runs only on localhost (NFR-1.4, SC-032; T-009, T-017).
 
 ### Route map and accepted credentials
 
@@ -84,7 +85,7 @@ Each surface accepts one kind of credential (SECURITY.md SC-028, from THREAT_MOD
 | SPA shell, signed-out page, static files | `/` and the static asset folder | None | No |
 | Sign-up and login (options, verify) | `/api/auth/` | None; ceremony cookie (SC-011) | Yes |
 | Links (create, list, edit, delete) | `/api/links` | Session cookie **or** bearer token, never both | Yes for cookie requests |
-| Account, passkeys, API tokens, logout | `/api/account`, `/api/tokens` | Session cookie only | Yes |
+| Account, passkeys, API tokens, logout | `/api/account`, `/api/tokens` | Session cookie only; a passkey check from the last 5 minutes for the actions in FR-1.15 | Yes |
 | Admin | `/api/admin/` | Session cookie only, plus the admin check (TB-4) | Yes |
 
 No SPA screen or static file may use a path that matches the short-code pattern `^[A-Za-z0-9]{7}$`. Every request must name the configured site host (SC-026).
