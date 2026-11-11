@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>shrink-182 design preview</title>
+<style>
+:root{
+  --primary:#1E5A43;--primary-strong:#15402F;--on-primary:#FFFFFF;--ink:#17242C;--slate:#4A5B63;--rule:#6B7D76;
+  --surface:#FFFFFF;--mat:#E9F1EC;--snip:#FFD23F;--snip-wash:#FFF8DC;--error:#A3201B;--error-wash:#FBEAE8;
+  --admin:#3D2C7A;--admin-wash:#ECE8F7;
+  --sans:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Atkinson Hyperlegible Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--surface);color:var(--ink);font:400 16px/1.5 var(--sans)}
+.page{max-width:760px;margin:0 auto;padding:0 16px 64px}
+h1{font-size:36px;line-height:1.15;letter-spacing:-.01em;margin:40px 0 8px}
+h2{font-size:24px;line-height:1.25;margin:56px 0 16px;padding-top:24px;border-top:1px solid var(--rule)}
+h3{font-size:18px;line-height:1.35;margin:24px 0 8px}
+p{margin:0 0 16px;max-width:65ch}
+.help{font-size:14px;color:var(--slate)}
+code,.code{font-family:var(--mono)}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+/* swatches */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;list-style:none;padding:0;margin:0}
+.swatch{font-size:14px}
+.chip{height:56px;border:1px solid var(--rule);border-radius:3px;margin-bottom:8px}
+.swatch b{display:block}
+.swatch span{color:var(--slate)}
+
+/* type */
+.scale p{margin:0 0 12px}
+.t-display{font-size:36px;font-weight:700;line-height:1.15}
+.t-headline{font-size:24px;font-weight:700}
+.t-title{font-size:18px;font-weight:700}
+.t-small{font-size:14px}
+.t-code-lg{font-family:var(--mono);font-size:24px;font-weight:700}
+.t-code{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--primary)}
+.t-count{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+
+/* buttons */
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:12px}
+.btn{font:700 14px/1.3 var(--sans);height:44px;padding:0 16px;border-radius:3px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-primary:hover,.btn-primary.is-hover{background:var(--primary-strong)}
+.btn-secondary{background:var(--surface);color:var(--primary);border-color:var(--rule)}
+.btn-secondary:hover,.btn-secondary.is-hover{border-color:var(--primary);background:var(--mat)}
+.btn-danger{background:var(--error);color:var(--on-primary)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.is-focus{outline:2px solid var(--primary);outline-offset:2px}
+.state{font-size:14px;color:var(--slate);margin:0 0 8px}
+
+/* inputs */
+.field{margin-bottom:16px}
+.field label{display:block;font:700 14px/1.3 var(--sans);margin-bottom:6px}
+.input{width:100%;font:400 16px/1.5 var(--sans);color:var(--ink);background:var(--surface);height:44px;padding:0 10px;border:1px solid var(--rule);border-radius:3px}
+.input.is-error{background:var(--error-wash);border:2px solid var(--error)}
+.err{color:var(--error);font-size:14px;margin-top:6px}
+
+/* mat */
+.mat{background-color:var(--mat);background-image:linear-gradient(rgba(107,125,118,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(107,125,118,.18) 1px,transparent 1px);background-size:24px 24px;border-radius:6px;padding:24px;margin:24px 0}
+.mat .field{margin-bottom:12px}
+.mat-url{display:flex;gap:8px}
+.mat-url .input{flex:1;min-width:0}
+.cut{position:relative;border-top:1px dashed var(--rule);margin:24px 0 20px}
+.cut svg{position:absolute;left:50%;top:-10px;margin-left:-10px;background:var(--mat);padding:0 2px}
+.result{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--snip-wash);border-left:4px solid var(--snip);border-radius:3px;padding:16px}
+.result .t-code-lg{flex:1;min-width:0;overflow-wrap:anywhere}
+.result small{display:block;width:100%;font-size:14px;color:var(--slate)}
+
+/* account bar */
+.bar{display:flex;align-items:center;justify-content:space-between;height:56px;font-size:14px;border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;color:var(--ink);text-decoration:none}
+.who{display:flex;align-items:center;gap:12px}
+.badge{background:var(--admin-wash);color:var(--admin);font-weight:700;padding:2px 6px;border-radius:3px}
+.admin-banner{background:var(--admin);color:var(--on-primary);font-weight:700;font-size:14px;padding:8px 16px}
+
+/* list */
+.list-head{display:flex;justify-content:space-between;align-items:baseline;margin-top:40px}
+.list-head h3{margin:0}
+.links{list-style:none;margin:8px 0 0;padding:0;border-top:1px solid var(--rule)}
+.link{display:grid;grid-template-columns:96px minmax(0,1fr) 88px auto;gap:4px 16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--rule)}
+.link .t-code{font-size:16px}
+.link .title{font-weight:700}
+.link .title.untitled{font-weight:400;color:var(--slate);font-style:italic}
+.link .target{font-size:14px;color:var(--slate);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link .target b{color:var(--ink);font-weight:700}
+.count{text-align:right}
+.count small{display:block;font-size:14px;font-weight:400;color:var(--slate)}
+.actions{display:flex;gap:8px}
+.actions .btn{height:36px;padding:0 12px}
+.empty{border:1px dashed var(--rule);border-radius:6px;padding:24px;color:var(--slate)}
+
+/* alert + dialog + token */
+.alert{background:var(--error-wash);border-left:4px solid var(--error);border-radius:3px;padding:16px}
+.alert b{color:var(--error)}
+.dialog-stage{background:rgba(23,36,44,.45);padding:32px 16px;border-radius:6px}
+.dialog{background:var(--surface);border:2px solid var(--ink);border-radius:6px;max-width:440px;margin:0 auto;padding:24px}
+.dialog h3{margin-top:0}
+.dialog.admin{border-color:var(--admin)}
+.dialog.admin .tag{display:inline-block;margin-bottom:8px}
+.token{background:var(--snip-wash);border-left:4px solid var(--snip);border-radius:3px;padding:16px}
+.token .code{display:block;font-size:16px;overflow-wrap:anywhere;margin:8px 0 12px}
+
+.screen{border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.screen .page{padding-bottom:32px}
+.logos{display:flex;gap:32px;align-items:flex-end}
+.logos figure{margin:0;font-size:14px;color:var(--slate)}
+
+@media (max-width:600px){
+  h1{font-size:30px}
+  .mat{padding:16px}
+  .mat-url{flex-direction:column}
+  .link{grid-template-columns:minmax(0,1fr) auto}
+  .link .t-code{grid-column:1/-1}
+  .link .meta{grid-column:1/-1}
+  .count{text-align:left}
+  .count small{display:inline;margin-left:4px}
+  .who .label{display:none}
+  .result .t-code-lg{font-size:20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>shrink-182 design preview</h1>
+  <p>All the small links. This page shows every token and component in <code>DESIGN.md</code>, and the home screen built from them.</p>
+
+  <h2>Logo</h2>
+  <div class="logos">
+    <figure><svg width="128" height="128" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#1E5A43"/><path d="M5 12.5h13.5l-3 7H5z" fill="#FFFFFF"/><path d="M20.5 12.5H27v7h-9.5z" fill="#FFD23F"/></svg><figcaption>128 px</figcaption></figure>
+    <figure><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#1E5A43"/><path d="M5 12.5h13.5l-3 7H5z" fill="#FFFFFF"/><path d="M20.5 12.5H27v7h-9.5z" fill="#FFD23F"/></svg><figcaption>32 px</figcaption></figure>
+    <figure><svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#1E5A43"/><path d="M5 12.5h13.5l-3 7H5z" fill="#FFFFFF"/><path d="M20.5 12.5H27v7h-9.5z" fill="#FFD23F"/></svg><figcaption>16 px</figcaption></figure>
+  </div>
+
+  <h2>Palette</h2>
+  <ul class="swatches">
+    <li class="swatch"><div class="chip" style="background:#1E5A43"></div><b>Mat green</b><span>primary #1E5A43</span></li>
+    <li class="swatch"><div class="chip" style="background:#15402F"></div><b>Deep mat</b><span>primary-strong #15402F</span></li>
+    <li class="swatch"><div class="chip" style="background:#17242C"></div><b>Ink</b><span>ink #17242C</span></li>
+    <li class="swatch"><div class="chip" style="background:#4A5B63"></div><b>Slate</b><span>slate #4A5B63</span></li>
+    <li class="swatch"><div class="chip" style="background:#6B7D76"></div><b>Rule</b><span>rule #6B7D76</span></li>
+    <li class="swatch"><div class="chip" style="background:#FFFFFF"></div><b>Surface</b><span>surface #FFFFFF</span></li>
+    <li class="swatch"><div class="chip" style="background:#E9F1EC"></div><b>Mat</b><span>mat #E9F1EC</span></li>
+    <li class="swatch"><div class="chip" style="background:#FFD23F"></div><b>Snip yellow</b><span>snip #FFD23F</span></li>
+    <li class="swatch"><div class="chip" style="background:#FFF8DC"></div><b>Snip wash</b><span>snip-wash #FFF8DC</span></li>
+    <li class="swatch"><div class="chip" style="background:#A3201B"></div><b>Error</b><span>error #A3201B</span></li>
+    <li class="swatch"><div class="chip" style="background:#FBEAE8"></div><b>Error wash</b><span>error-wash #FBEAE8</span></li>
+    <li class="swatch"><div class="chip" style="background:#3D2C7A"></div><b>Admin violet</b><span>admin #3D2C7A</span></li>
+    <li class="swatch"><div class="chip" style="background:#ECE8F7"></div><b>Admin wash</b><span>admin-wash #ECE8F7</span></li>
+  </ul>
+
+  <h2>Type scale</h2>
+  <div class="scale">
+    <p class="t-display">Display 36 · Your links</p>
+    <p class="t-headline">Headline 24 · Delete this link?</p>
+    <p class="t-title">Title 18 · Q3 planning doc</p>
+    <p>Body 16 · Paste a long URL and shrink-182 makes a short one you can share with anyone.</p>
+    <p class="t-small">Body small 14 · Titles can be up to 200 characters.</p>
+    <p class="t-code-lg">shrink-182.example/k7Qm2Xa</p>
+    <p class="t-code">Il1O0 · k7Qm2Xa · B8lIo0Z</p>
+    <p class="t-count">1,204 clicks</p>
+  </div>
+
+  <h2>Components</h2>
+  <h3>Buttons</h3>
+  <p class="state">Default, hover, focus, and disabled states.</p>
+  <div class="row">
+    <button class="btn btn-primary" type="button">Shorten link</button>
+    <button class="btn btn-primary is-hover" type="button">Shorten link</button>
+    <button class="btn btn-primary is-focus" type="button">Shorten link</button>
+    <button class="btn btn-primary" type="button" disabled>Shorten link</button>
+  </div>
+  <div class="row">
+    <button class="btn btn-secondary" type="button">Copy</button>
+    <button class="btn btn-secondary is-hover" type="button">Copied</button>
+    <button class="btn btn-secondary is-focus" type="button">Edit</button>
+    <button class="btn btn-secondary" type="button" disabled>Edit</button>
+  </div>
+  <div class="row">
+    <button class="btn btn-danger" type="button">Delete link</button>
+    <button class="btn btn-danger is-focus" type="button">Delete account</button>
+  </div>
+
+  <h3>Input fields</h3>
+  <div class="field"><label for="i1">Long URL</label><input id="i1" class="input" value="https://docs.example.com/drive/folders/2026/planning/q3-plan"></div>
+  <div class="field"><label for="i2">Title (optional)</label><input id="i2" class="input is-focus" value=""><div class="help">Up to 200 characters.</div></div>
+  <div class="field"><label for="i3">Long URL</label><input id="i3" class="input is-error" value="ftp://files.example.com/build.zip" aria-invalid="true" aria-describedby="e3"><div class="err" id="e3">⚠ Use a link that starts with http:// or https://</div></div>
+
+  <h3>Alert</h3>
+  <div class="alert" role="alert"><b>⚠ Link not found.</b> Check the address, or go back to your links.</div>
+
+  <h3>Empty list</h3>
+  <div class="empty">No links yet. Paste a long URL above to make your first one.</div>
+
+  <h3>Delete confirmation</h3>
+  <div class="dialog-stage">
+    <div class="dialog" role="dialog" aria-labelledby="d1">
+      <h3 id="d1">Delete this link?</h3>
+      <p><span class="code">shrink-182.example/k7Qm2Xa</span> will stop working for everyone, and this code won't be reused.</p>
+      <div class="row"><button class="btn btn-secondary is-focus" type="button">Keep link</button><button class="btn btn-danger" type="button">Delete link</button></div>
+    </div>
+  </div>
+
+  <h3>Admin confirmation</h3>
+  <div class="dialog-stage">
+    <div class="dialog admin" role="dialog" aria-labelledby="d2">
+      <span class="badge tag">Admin</span>
+      <h3 id="d2">Delete another user's account?</h3>
+      <p>This deletes the account and all 9 of its links. Those short links will stop working. There is no recovery.</p>
+      <div class="row"><button class="btn btn-secondary is-focus" type="button">Keep account</button><button class="btn btn-danger" type="button">Delete account</button></div>
+    </div>
+  </div>
+
+  <h3>Admin banner and account bar</h3>
+  <div class="screen">
+    <div class="admin-banner">Admin view: you're seeing every user's links</div>
+    <div class="page" style="padding-bottom:0"><div class="bar" style="border-bottom:0">
+      <span class="brand">shrink-182</span>
+      <span class="who"><span class="badge">Admin</span><span class="label">Signed in</span><button class="btn btn-secondary" type="button">Log out</button></span>
+    </div></div>
+  </div>
+
+  <h3>API token reveal</h3>
+  <div class="token">
+    <b>New API token</b>
+    <span class="code">s182_7fQx2LmA9vKd0RtWz4bNc8YhE1</span>
+    <div class="row" style="margin:0"><button class="btn btn-secondary" type="button">Copy</button><span class="help">You won't see this token again. Store it now.</span></div>
+  </div>
+
+  <h2>Home screen: your links</h2>
+</div>
+
+<div class="page">
+  <div class="screen">
+    <div class="page">
+      <header class="bar">
+        <a class="brand" href="#"><svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#1E5A43"/><path d="M5 12.5h13.5l-3 7H5z" fill="#FFFFFF"/><path d="M20.5 12.5H27v7h-9.5z" fill="#FFD23F"/></svg>shrink-182</a>
+        <span class="who"><span class="label">Signed in</span><button class="btn btn-secondary" type="button">Log out</button></span>
+      </header>
+
+      <section class="mat" aria-labelledby="mk">
+        <h1 id="mk" style="margin:0 0 16px;font-size:24px">Shorten a link</h1>
+        <div class="field"><label for="u">Long URL</label>
+          <div class="mat-url"><input id="u" class="input" value="https://docs.example.com/drive/folders/2026/planning/q3-plan?usp=sharing"><button class="btn btn-primary" type="button">Shorten link</button></div>
+        </div>
+        <div class="field"><label for="t">Title (optional)</label><input id="t" class="input" value="Q3 planning doc"></div>
+        <div class="cut" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="5" cy="6" r="3" fill="none" stroke="#6B7D76" stroke-width="1.6"/><circle cx="5" cy="14" r="3" fill="none" stroke="#6B7D76" stroke-width="1.6"/><path d="M7.5 7.5 18 15M7.5 12.5 18 5" stroke="#6B7D76" stroke-width="1.6"/></svg></div>
+        <div class="result" role="status">
+          <small>Link shortened</small>
+          <span class="t-code-lg">shrink-182.example/k7Qm2Xa</span>
+          <button class="btn btn-secondary" type="button">Copy</button>
+        </div>
+      </section>
+
+      <div class="list-head"><h3>Your links</h3><span class="help">4 links</span></div>
+      <ul class="links">
+        <li class="link">
+          <span class="t-code">k7Qm2Xa</span>
+          <span class="meta"><span class="title">Q3 planning doc</span><br><span class="target"><b>docs.example.com</b>/drive/…/q3-plan?usp=sharing</span></span>
+          <span class="t-count count">0<small>clicks</small></span>
+          <span class="actions"><button class="btn btn-secondary" type="button">Edit</button><button class="btn btn-secondary" type="button">Delete</button></span>
+        </li>
+        <li class="link">
+          <span class="t-code">Rb4lIo9</span>
+          <span class="meta"><span class="title">Onboarding checklist</span><br><span class="target"><b>wiki.example.com</b>/team/handbook/…/first-week</span></span>
+          <span class="t-count count">214<small>clicks</small></span>
+          <span class="actions"><button class="btn btn-secondary" type="button">Edit</button><button class="btn btn-secondary" type="button">Delete</button></span>
+        </li>
+        <li class="link">
+          <span class="t-code">Z0eWq8T</span>
+          <span class="meta"><span class="title untitled">Untitled</span><br><span class="target"><b>github.com</b>/example-org/snip/pull/1</span></span>
+          <span class="t-count count">37<small>clicks</small></span>
+          <span class="actions"><button class="btn btn-secondary" type="button">Edit</button><button class="btn btn-secondary" type="button">Delete</button></span>
+        </li>
+        <li class="link">
+          <span class="t-code">pX3nH5c</span>
+          <span class="meta"><span class="title">Friday demo &lt;b&gt;slides&lt;/b&gt;</span><br><span class="target"><b>slides.example.com</b>/d/…/present</span></span>
+          <span class="t-count count">1,204<small>clicks</small></span>
+          <span class="actions"><button class="btn btn-secondary" type="button">Edit</button><button class="btn btn-secondary" type="button">Delete</button></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>
