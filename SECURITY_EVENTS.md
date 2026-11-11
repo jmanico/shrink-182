@@ -26,7 +26,7 @@ This file is the security event ledger the build has to satisfy. It records whic
 | `timestamp` | string, ISO 8601 UTC with ms, 24 chars | Server clock at the decision point | pino `timestamp: isoTime` |
 | `service` | string, `"shrink-182"` | Constant | |
 | `environment` | string, ≤ 16 chars, enum `local` \| `test` | Configuration at startup (SC-022) | Not request input |
-| `level` | pino level | Event catalog | Proposed mapping: `info` = success or attempt, `warn` = denied or failure, `error` = unknown outcome or producer fault. Not tied to wave or confidence. Pending owner approval. |
+| `level` | pino level | Event catalog | `info` = success or attempt, `warn` = denied or failure, `error` = unknown outcome or producer fault. Not tied to wave or confidence. *(proposed default)* |
 | `outcome` | enum: `success`, `failure`, `denied`, `attempted`, `rolled_back`, `unknown` | Code at the authoritative decision or commit | Meanings as in Dread Ledger: login rejection = `failure`, ownership or role rejection = `denied`, a mutation is `success` only after the SQLite commit |
 | `security_relevant` | boolean, `true` | Constant | |
 | `audit_required` | boolean | Event catalog | Set per event by [policy](SECURITY.md#security-event-policy). Never chosen by a caller and never defaulted to `false`. |
@@ -41,7 +41,7 @@ This file is the security event ledger the build has to satisfy. It records whic
 | `target_ref` | string, ≤ 64 chars: a 7-char short code, or an internal user ID | Links or Auth module, after the record is loaded *by the caller's own permission*. A denied request never triggers a lookup only to enrich the event. |
 | `target_kind` | enum: `link`, `user`, `api_token`, `passkey`, `session` | Event catalog |
 | `action` | enum per event, ≤ 32 chars | Event catalog |
-| `reason_code` | enum per event, ≤ 48 chars (for example `challenge_expired`, `origin_mismatch`, `uv_missing`, `counter_regressed`, `unknown_credential`, `token_revoked`, `not_found_or_not_owned`, `not_admin`, `url_scheme`, `url_too_long`, `url_self_domain`, `title_too_long`, `schema_violation`, `fetch_site_cross`, `content_type`) | Code at the decision point. Never an exception message. |
+| `reason_code` | enum per event, ≤ 48 chars (for example `challenge_expired`, `origin_mismatch`, `uv_missing`, `counter_regressed`, `unknown_credential`, `token_revoked`, `not_found_or_not_owned`, `not_admin`, `url_scheme`, `url_too_long`, `url_self_domain`, `title_too_long`, `schema_violation`, `fetch_site_cross`, `content_type`, `rate_limited`) | Code at the decision point. Never an exception message. |
 | `token_record_ref` | string, ≤ 64 chars | The API token's own opaque row ID. Never the token value or its hash. |
 | `credential_record_ref` | string, ≤ 64 chars | The passkey record's own opaque row ID. Never the WebAuthn credential ID, public key, or a hash of them. |
 | `route_template` | string, ≤ 64 chars, e.g. `/api/links/:code` | Fastify `routeOptions.url`. Never the raw URL. |
@@ -70,13 +70,13 @@ Including in errors, pino serializers, fallbacks, and test fixtures:
 
 ## Ledger
 
-Disposition rules: `missing` = applicable to the specs but not yet built and verified; `not_applicable` = the specs show the feature is absent (with the change that would reopen it); `unavailable_signal` = applicability or signal is uncertain, needs a detector that does not exist, or sits outside the app boundary. **Consumer:** none is defined yet. The consumer is the operator reading the local security event file ([policy](SECURITY.md#security-event-policy)). Waves: 0 foundation, 1 critical, 2 identity and access, 3 validation and abuse, 4 context.
+Disposition rules: `missing` = applicable to the specs but not yet built and verified; `not_applicable` = the specs show the feature is absent (with the change that would reopen it); `unavailable_signal` = applicability or signal is uncertain, needs a detector that does not exist, or sits outside the app boundary. **Consumer:** the operator reading the local security event file ([policy](SECURITY.md#security-event-policy)). Waves: 0 foundation, 1 critical, 2 identity and access, 3 validation and abuse, 4 context.
 
 | ID | Disposition | Trigger (requirement / component) | Proposed event and fields | Consumer | Wave |
 |---|---|---|---|---|---|
 | SEC-001 | missing | FR-1.2, FR-1.3, FR-1.7, FR-5.7 / Auth module (passkey login verify, bearer token check) | `auth.login` (success, failure): `actor_ref` (success only), `actor_kind`, `actor_provenance`, `credential_record_ref` (success only), `reason_code`, `request_id`. `auth.api_token_rejected`: see SEC-026. | Operator ([policy](SECURITY.md#security-event-policy)) | 2 |
 | SEC-002 | unavailable_signal | Auth module | No lockout or reset exists (FR-1.8). "Success after repeated failures" needs a correlation detector that does not exist. | Operator ([policy](SECURITY.md#security-event-policy)) | 2 |
-| SEC-003 | unavailable_signal | Auth module, HTTP layer | No passwords (FR-1.4). There is no spraying or enumeration detector. Rate limits are blocked on OD-001 (SC-018). | Operator ([policy](SECURITY.md#security-event-policy)) | 3 |
+| SEC-003 | unavailable_signal | Auth module, HTTP layer | No passwords (FR-1.4). There is no spraying or enumeration detector. Throttled attempts are recorded by SEC-040 `rate_limited`. | Operator ([policy](SECURITY.md#security-event-policy)) | 3 |
 | SEC-004 | not_applicable | Auth module | No lockout, suspension, or disable state exists. Deleted accounts are removed (FR-1.11), so a later attempt shows up as a SEC-001 `unknown_credential` failure. Reopen if suspension is added. | — | — |
 | SEC-005 | not_applicable | FR-1.4, FR-1.8 | No passwords and no recovery. Reopen if either is added. | — | — |
 | SEC-006 | not_applicable | FR-1.2, SC-011 | A passkey with required user verification is the only factor. There is no separate MFA challenge or push. Reopen if a second factor is added. | — | — |
@@ -110,10 +110,10 @@ Disposition rules: `missing` = applicable to the specs but not yet built and ver
 | SEC-034 | missing | SC-015 / HTTP `onRequest` hook | `csrf.rejected` (denied): `route_template`, `reason_code` (`fetch_site_cross` \| `origin_mismatch` \| `content_type`), `request_id`. No header values. | Operator ([policy](SECURITY.md#security-event-policy)) | 3 |
 | SEC-035 | unavailable_signal | SC-010 | CSP has no `report-to` endpoint. Adding one would be a new collection point, which needs an owner decision. | — | — |
 | SEC-036 | not_applicable | SECURITY.md applicability (no outbound requests) | The server never fetches a target. Reopen if link previews or URL checks that fetch are added. | — | — |
-| SEC-037 | missing | SC-001, SC-002, SC-007 / Fastify | `request.rejected` (denied): `reason_code` (`body_too_large` \| `bad_json` \| `method_not_allowed` \| `timeout`), `route_template` where matched. Smuggling: not_applicable (no proxy, `trustProxy=false`). | Operator ([policy](SECURITY.md#security-event-policy)) | 3 |
+| SEC-037 | missing | SC-001, SC-002, SC-007 / Fastify | `request.rejected` (denied): `reason_code` (`body_too_large` \| `bad_json` \| `method_not_allowed` \| `timeout` \| `rate_limited`), `route_template` where matched. Smuggling: not_applicable (no proxy, `trustProxy=false`). | Operator ([policy](SECURITY.md#security-event-policy)) | 3 |
 | SEC-038 | not_applicable | FR-6.2 | No file uploads. | — | — |
 | SEC-039 | unavailable_signal | FR-3.3, FR-3.5 / Redirect handler | Short-code guessing produces 404s that cannot be attributed (FR-3.5), and no enumeration detector exists. See SEC-APP-001. | — | — |
-| SEC-040 | missing | SC-001 (size and timeout); SC-018 (blocked on OD-001) | Size and timeout: `request.rejected` (SEC-037, shared). Rate-limit subcase: unavailable_signal until OD-001 is decided. | Operator ([policy](SECURITY.md#security-event-policy)) | 3 |
+| SEC-040 | missing | SC-001 (size and timeout); SC-018, NFR-1.3 (rate limits) | `request.rejected` (SEC-037, shared) for size and timeout, and with `reason_code=rate_limited` and `route_template` for SC-018 refusals. No address or token value. | Operator ([policy](SECURITY.md#security-event-policy)) | 3 |
 | SEC-041 | missing | FR-7.3, FR-7.5 / Admin module | `admin.read` (success): `actor_ref`, `actor_kind=admin`, `action` (`list_links` \| `list_users`), `count`. Denied attempts: `authz.denied`. A user listing their own links is not a sensitive read. | Operator ([policy](SECURITY.md#security-event-policy)) | 1 |
 | SEC-042 | unavailable_signal | FR-7.3 | Admin list-all is bulk by design (SEC-041). There is no volume detector. | — | — |
 | SEC-043 | missing | FR-2.3, FR-4.4, FR-4.5, FR-7.4 / Links module | `link.created`, `link.updated` (`action`: `title` \| `target` \| `both`), `link.deleted` (`action`: `owner` \| `admin` \| `account_deleted`): `actor_ref`, `actor_kind`, `actor_provenance`, `target_ref` (short code), `outcome` after commit. No URL or title. | Operator ([policy](SECURITY.md#security-event-policy)) | 4 (admin deletes: 1) |
@@ -126,7 +126,7 @@ Disposition rules: `missing` = applicable to the specs but not yet built and ver
 | SEC-050 | unavailable_signal | FR-2.6, FR-4.12 | No idempotency keys and no replay detector. Code collisions are SEC-APP-002. | — | — |
 | SEC-051 | not_applicable | FR-6.1 | No payments. | — | — |
 | SEC-052 | missing | FR-1.11, FR-5.8, FR-7.4, FR-7.5 / Account deletion, Admin | `account.deleted` (success, rolled_back): `actor_ref`, `actor_kind`, `target_ref` (deleted user ID, per [policy](SECURITY.md#security-event-policy)), `action` (`self` \| `admin`), `count` (links removed), plus `api_token.revoked` and `session.ended` with `action=account_deleted`. Admin link delete: `link.deleted` `action=admin`. | Operator ([policy](SECURITY.md#security-event-policy)) | 1 |
-| SEC-053 | unavailable_signal | SC-018 | No fraud controls. Limits are blocked on OD-001. | — | — |
+| SEC-053 | unavailable_signal | SC-018 | No fraud controls. Generic throttling is SEC-040. | — | — |
 | SEC-054 | missing | SC-011, SC-012 / Auth | WebAuthn signature or attestation failures: `auth.login` / `auth.passkey_registered` failure with `reason_code=signature_invalid` (shared event). | Operator ([policy](SECURITY.md#security-event-policy)) | 2 |
 | SEC-055 | not_applicable | ARCHITECTURE | The app manages no keys. Passkey public keys are user credentials (SEC-008). | — | — |
 | SEC-056 | not_applicable | ARCHITECTURE | No key management service. | — | — |
@@ -162,4 +162,4 @@ Disposition rules: `missing` = applicable to the specs but not yet built and ver
 
 ## Open Decisions
 
-OD-004 to OD-007 are resolved; the answers are in [SECURITY.md → Security Event Policy](SECURITY.md#security-event-policy). Still deferred to steps 07 and 09: [OD-001](SECURITY.md#open-security-decisions) (rate limits, which affects SEC-003, SEC-040, and SEC-053).
+None open. OD-004 to OD-007 are answered in [SECURITY.md → Security Event Policy](SECURITY.md#security-event-policy). OD-001 (rate limits) is answered by SC-018, which feeds SEC-040.
