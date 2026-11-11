@@ -2,7 +2,7 @@
 
 This file owns the implementation rules for writing shrink-182 securely. WHAT the system does is in `REQUIREMENTS.md`, how it looks is in `DESIGN.md`, and how it is built is in `ARCHITECTURE.md`. Rule IDs (`SC-###`) and decision IDs (`OD-###`) are permanent and are never renumbered or reused. This is a demo, so rules are kept to what the confirmed stack needs.
 
-> **Note on answers:** The owner asked for the open decisions to be answered as best as possible. OD-001 to OD-007 were answered with proposed defaults.
+> **Note on answers:** Every answer once marked as a proposed default was confirmed by the owner on 2026-11-11 and is now a decision.
 
 ## Secure-Coding Inputs
 
@@ -12,7 +12,7 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Confirmed components and versions:** see [`ARCHITECTURE.md` → Stack](ARCHITECTURE.md#stack).
 - **Applicability decisions:**
   - Applies: request and resource limits, rate limits, event-loop blocking, input validation, output encoding, authentication (passkeys, API tokens), authorization (ownership, admin role), sessions, CSRF, errors, logging, dependencies, prototype pollution, unsafe code execution, security headers, open redirect (TB-7).
-  - Runtime permissions: the Node permission model is not used for this localhost demo, to keep it simple (OD-003, proposed default). SC-024 covers file protection instead.
+  - Runtime permissions: the Node permission model is not used for this localhost demo, to keep it simple (OD-003). SC-024 covers file protection instead.
   - Not applicable: password storage (FR-1.4, no passwords); file uploads (FR-6.2); payments (FR-6.1); server-side rendering and SSR serialization (SPA only); outbound server requests / SSRF (no external integrations, and the redirect handler never fetches the target); account recovery (FR-1.8, none exists); `npm publish` hygiene (app is not published); HTTP/2 and proxy smuggling (no reverse proxy in the localhost demo, `trustProxy` stays `false`).
 - **Gaps and conflicts:**
   - **Conflict:** Fastify's default request logging includes the client address, while FR-3.5 forbids storing visitor-identifying data on redirects. Resolved by SC-019 (requirement wins).
@@ -104,7 +104,7 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Status:** ACTIVE
 - **Rule:** The Auth module MUST verify every registration and login with `@simplewebauthn/server`, passing a server-stored single-use challenge (expiring after 5 minutes), `expectedOrigin` and `expectedRPID` from configuration, and `requireUserVerification: true` (with `userVerification: 'required'` in the options sent to the browser), and MUST create no user or session when verification fails. Each challenge MUST be bound to the browser that requested it through a short-lived `__Host-ceremony` cookie (`HttpOnly`, `Secure`, `SameSite=Strict`, `Path=/`) holding a random ceremony ID, stored hashed with the challenge; the verify step MUST delete the stored challenge before it verifies the response, so a challenge is used at most once even under concurrent requests (T-002).
 - **Enforcement:** Auth module (DR-6).
-- **Evidence:** FR-1.1 to FR-1.3, FR-1.7; ARCHITECTURE.md data flow 1 and Configuration. S6 Registration and Authentication. The 5-minute expiry and required user verification are project decisions (OD-002, resolved as a proposed default). Challenge binding and delete-before-verify are project decisions from THREAT_MODEL.md T-002.
+- **Evidence:** FR-1.1 to FR-1.3, FR-1.7; ARCHITECTURE.md data flow 1 and Configuration. S6 Registration and Authentication. The 5-minute expiry and required user verification are project decisions (OD-002). Challenge binding and delete-before-verify are project decisions from THREAT_MODEL.md T-002.
 - **Verification:** Replaying a used challenge, using a wrong origin, an expired challenge, or an assertion without the user-verified flag returns the generic failure and creates no session row. A verify request without the matching ceremony cookie fails, and of two simultaneous verify requests for one challenge at most one succeeds.
 
 **SC-012 — Passkey credential binding and counter**
@@ -153,7 +153,7 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Status:** ACTIVE
 - **Rule:** The HTTP layer MUST apply NFR-1.3 with `@fastify/rate-limit` using its in-memory store: sign-up and login routes (options and verify) keyed by the socket address, and API routes keyed by the SHA-256 token hash of a token that matched a stored, unrevoked token. An API request with a missing, unknown, or revoked token MUST be keyed by the socket address instead, at 60 per minute (T-011). The address key MUST stay in memory only, MUST NOT be logged or written to the database, and MUST expire with the 1-minute window. The redirect handler MUST NOT be rate-limited. `trustProxy` stays `false`.
 - **Enforcement:** HTTP layer.
-- **Evidence:** NFR-1.3; FR-3.5; SC-019; THREAT_MODEL.md T-003, T-011. S2 "Take precautions against brute-forcing". The limits and keys are project decisions (OD-001, resolved as a proposed default).
+- **Evidence:** NFR-1.3; FR-3.5; SC-019; THREAT_MODEL.md T-003, T-011. S2 "Take precautions against brute-forcing". The limits and keys are project decisions (OD-001).
 - **Verification:** The 11th login-options request in a minute from one address gets 429 with a JSON error; the 61st API call with one token gets 429; the 61st API call in a minute using a different random token each time gets 429; 100 redirects in a minute all succeed; the logs and database contain no address.
 
 **SC-019 — Logging without visitor data or secrets**
@@ -195,14 +195,14 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Status:** ACTIVE
 - **Rule:** The SQLite file MUST live outside the static-file root and be created with mode `0600`; the server MUST NOT be started with `--inspect` outside local debugging.
 - **Enforcement:** Store startup; `npm start` script.
-- **Evidence:** ARCHITECTURE.md TB-6 ("file protection owned by SECURITY.md"). S1 "DNS rebinding" (inspector); S2 "Do not use dangerous functions" (unsafe `fs`). The Node permission model (S1, S2 "Permissions") is not used for this localhost demo (OD-003, resolved as a proposed default).
+- **Evidence:** ARCHITECTURE.md TB-6 ("file protection owned by SECURITY.md"). S1 "DNS rebinding" (inspector); S2 "Do not use dangerous functions" (unsafe `fs`). The Node permission model (S1, S2 "Permissions") is not used for this localhost demo (OD-003).
 - **Verification:** `GET /<db filename>` returns 404; `stat` shows mode 600; `npm start` has no `--inspect`.
 
 **SC-025 — Security events follow the ledger**
 - **Status:** ACTIVE
 - **Rule:** Security events MUST be emitted only through one helper that builds each record from the per-event allowlist in `SECURITY_EVENTS.md` (Event Contract), and MUST never throw into the request. For records that carry no `actor_ref`, the helper MUST write at most 60 per minute for each event name whose outcome is `denied` or `failure`, count the rest, and report the count in `logging.health` (T-011). Records with an `actor_ref` and events with `audit_required=true` MUST NOT be suppressed, so anonymous noise cannot hide an identified caller's actions (T-018). They MUST be written as described in [Security Event Policy](#security-event-policy).
 - **Enforcement:** Event helper used by the Auth, Links, Admin, and Account deletion modules, and by the process entry point.
-- **Evidence:** `SECURITY_EVENTS.md`; Dread Ledger `7d38c75` event contract; THREAT_MODEL.md T-011, T-018. The ceiling of 60 is a project decision *(proposed default)*.
+- **Evidence:** `SECURITY_EVENTS.md`; Dread Ledger `7d38c75` event contract; THREAT_MODEL.md T-011, T-018. The ceiling of 60 is a project decision.
 - **Verification:** Contract tests per event: presence and absence, field allowlist, secret canaries, CR/LF and oversize input, and helper failure leaving the business result unchanged. 500 rejected API calls in a minute produce at most 60 `auth.api_token_rejected` records and a `logging.health` record with `suppressed` ≥ 440; an `authz.denied` by a signed-in user in that same minute is still written.
 
 **SC-026 — Host header check**
@@ -251,26 +251,26 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 - **Status:** ACTIVE
 - **Rule:** Configuration MUST refuse to start unless the configured site origin is `http://localhost` with a port, and the server MUST listen only on the loopback interface. Hosting the system for other people is out of scope; it requires revising these rules (TLS and HSTS, proxy trust, the rate-limit key, sign-up and target constraints) and the threat model first.
 - **Enforcement:** Configuration at startup; Fastify `listen` host.
-- **Evidence:** NFR-1.4; SC-010 (no HSTS), SC-013 (`Secure` on localhost), SC-018 (socket-address key, `trustProxy` false); FR-1.5; THREAT_MODEL.md T-009, T-017. Resolves OD-008 *(proposed default)*.
+- **Evidence:** NFR-1.4; SC-010 (no HSTS), SC-013 (`Secure` on localhost), SC-018 (socket-address key, `trustProxy` false); FR-1.5; THREAT_MODEL.md T-009, T-017. Resolves OD-008.
 - **Verification:** Starting with a non-localhost origin exits with an error and emits `config.loaded` with `reason_code=origin_not_local`; a connection to the machine's non-loopback address is refused.
 
 **SC-033 — Passkey management and re-verification**
 - **Status:** ACTIVE
 - **Rule:** The Auth module MUST record on each session the time of its last successful passkey assertion (login or re-verification), and MUST reject adding a passkey, removing a passkey, creating an API token, and deleting the caller's own account unless that time is within the last 5 minutes. Re-verification MUST be a login ceremony under SC-011 and SC-012 that accepts only credentials of the session's own user and updates the existing session without issuing a new one. Passkey removal MUST act only on the caller's own credential, addressed by its opaque record ID, and MUST refuse to remove the last one, checking the count in the same transaction as the delete. The passkey list MUST return only the record ID, the added date, and the last-used date.
 - **Enforcement:** Auth module (DR-3); response schemas (SC-021).
-- **Evidence:** FR-1.13 to FR-1.15, FR-1.6, FR-1.8; SEC-008; THREAT_MODEL.md T-015. Resolves OD-009 *(proposed default)*; the 5-minute window is a project decision.
+- **Evidence:** FR-1.13 to FR-1.15, FR-1.6, FR-1.8; SEC-008; THREAT_MODEL.md T-015. Resolves OD-009; the 5-minute window is a project decision.
 - **Verification:** With a session whose last assertion is 6 minutes old, each of the four actions gets 403 with a re-verify error and changes nothing, and succeeds after re-verification; re-verifying with another user's passkey fails; removing the only passkey is refused; a removed passkey can no longer log in; user B cannot remove user A's passkey.
 
 **SC-034 — Redirect load**
 - **Status:** ACTIVE
 - **Rule:** The redirect handler MUST resolve a code and count the click with exactly one indexed, prepared SQL statement per request and MUST perform no other write or lookup. Redirects stay unlimited (NFR-1.3); the remaining risk that a flood slows the single process is accepted for the localhost demo (NFR-1.5) and MUST be reconsidered with SC-032 before any hosting.
 - **Enforcement:** Redirect handler; Links module.
-- **Evidence:** FR-3.4, FR-3.7, NFR-1.3, NFR-1.5; SC-005, SC-020; THREAT_MODEL.md T-012. Resolves OD-010 *(proposed default)*.
+- **Evidence:** FR-3.4, FR-3.7, NFR-1.3, NFR-1.5; SC-005, SC-020; THREAT_MODEL.md T-012. Resolves OD-010.
 - **Verification:** A statement-count test shows one statement per redirect; 1,000 redirects in a minute all return 302 and an API call made during the burst still succeeds.
 
 ## Security Event Policy
 
-The owner asked for these decisions (OD-004 to OD-007) to be answered as best as possible, so all four are *(proposed default)* answers for the owner to review.
+The owner asked for these decisions (OD-004 to OD-007) to be answered and the owner confirmed them on 2026-11-11.
 
 - **Destination and consumer (OD-004):** security events go to a separate local JSON-lines file (pino destination) with mode `0600`, outside the static-file root and separate from the diagnostic log. The consumer is the operator (project owner), who reviews the file by hand. There are no alerts, tickets, or chat forwarding.
 - **Retention (OD-005):** the file rotates at 10 MiB and keeps at most 5 files. Events are kept only while the demo checkout exists, and deleting the checkout disposes of them. There is no legal hold.
@@ -279,11 +279,11 @@ The owner asked for these decisions (OD-004 to OD-007) to be answered as best as
 
 ## Open Security Decisions
 
-None open. OD-008 to OD-011 were raised by `THREAT_MODEL.md`; the owner asked for them to be answered as best as possible, so these are *(proposed default)* answers for the owner to review:
+None open. OD-008 to OD-011 were raised by `THREAT_MODEL.md`; the owner confirmed these answers on 2026-11-11:
 
 - **OD-008 — Deployment beyond localhost:** not supported. The server starts only on `http://localhost` (NFR-1.4, SC-032). Hosting needs a spec and threat-model revision first. Answers T-009 and T-017.
 - **OD-009 — Passkey management:** users can list and remove passkeys, except the last one, and sensitive account actions need a passkey check from the last 5 minutes (FR-1.13 to FR-1.15, SC-033). Answers T-015.
 - **OD-010 — Redirect load:** accepted for the localhost demo; the redirect is held to one database statement per request (NFR-1.5, SC-034). Answers T-012.
 - **OD-011 — Admin self-deletion:** not allowed by any route while the ID is in the admin configuration (FR-7.10, SC-016). Resolves THREAT_MODEL.md conflict CF-001 and supports T-004.
 
-Resolved and removed earlier: OD-001 (rate limits, SC-018, NFR-1.3), OD-004 to OD-007 (see [Security Event Policy](#security-event-policy)), OD-002 (passkey user verification is required, SC-011) and OD-003 (Node permission model not used in the demo, SC-024). The owner asked for these to be answered as best as possible, so all are *(proposed default)* answers for the owner to review.
+Resolved and removed earlier: OD-001 (rate limits, SC-018, NFR-1.3), OD-004 to OD-007 (see [Security Event Policy](#security-event-policy)), OD-002 (passkey user verification is required, SC-011) and OD-003 (Node permission model not used in the demo, SC-024). The owner confirmed these answers on 2026-11-11.

@@ -199,7 +199,7 @@ components:
 
 **The one bold element** is the *cut*. The create form sits on a green mat with a faint 24 px grid, and a dashed cut line separates the long URL from the result. The new short link appears below the line on a marker-yellow strip. Everything else stays quiet: white pages, ink text, left-aligned single column, no decorative motion.
 
-**Answers.** The owner asked for the design questions to be answered as best as possible. Those answers are marked *(proposed default)*.
+**Answers.** The owner confirmed the design answers on 2026-11-11.
 
 **Voice.** Plain, sentence case, active verbs. The action is named "Shorten link", and its confirmation says "Link shortened". Errors say what happened and how to fix it, and never apologize. Product tagline: *All the small links.*
 
@@ -229,7 +229,7 @@ All text, component, and focus pairs above meet WCAG 2.2 AA. Color is never the 
 - **Atkinson Hyperlegible Mono** is used only where a person must read or retype exact characters: short codes, short URLs, and API tokens.
 - **Click counts** use tabular figures so the counts line up down the list.
 - **Line length:** body text stays under 75 characters.
-- **Font hosting:** shrink-182 serves both Atkinson Hyperlegible families itself, so pages make no requests to font services. They are licensed under the SIL Open Font License. The fallback stack is the system UI font, and `ui-monospace` for codes. *(proposed default)*
+- **Font hosting:** shrink-182 serves both Atkinson Hyperlegible families itself, so pages make no requests to font services. They are licensed under the SIL Open Font License. The fallback stack is the system UI font, and `ui-monospace` for codes.
 
 ## Layout
 
@@ -256,8 +256,8 @@ k7Qm2Xa   Q3 planning doc            214 clicks  Edit Delete
 - **Wide screens:** link rows show code, title and target, count, and actions in a row.
 - **Below 600 px:** each row stacks code, then title, then target, then a line with the count and actions.
 
-- **Theme:** light only. There is no dark theme in the first version. *(proposed default)*
-- **Signed-out root:** a visitor at the site root sees the logo, the line "All the small links.", one sentence on what shrink-182 does, and two buttons: "Sign in with passkey" (primary) and "Sign up" (secondary). *(proposed default)*
+- **Theme:** light only. There is no dark theme in the first version.
+- **Signed-out root:** a visitor at the site root sees the logo, the line "All the small links.", one sentence on what shrink-182 does, and two buttons: "Sign in with passkey" (primary) and "Sign up" (secondary).
 
 ## Elevation & Depth
 
@@ -332,4 +332,4 @@ The design is flat with no shadows. Depth comes from tone: the green mat panel s
 
 ## Open Questions
 
-None open. DQ-1 (how users are identified) was resolved by FR-7.8. *(proposed default)*
+None open. DQ-1 (how users are identified) was resolved by FR-7.8.

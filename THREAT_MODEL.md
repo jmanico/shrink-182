@@ -439,23 +439,23 @@ This section was added after the run finished. It records where each finding wen
 | T-006 | SECURITY.md SC-016 (evidence). No new rule; the designed control stands. |
 | T-007 | SECURITY.md SC-009 (evidence); DESIGN.md user-supplied content. No new rule. |
 | T-008 | REQUIREMENTS.md FR-2.12, FR-2.13, FR-2.14; SECURITY.md SC-003; ARCHITECTURE.md data flow 2, TB-7; DESIGN.md input errors and user-supplied content; SECURITY_EVENTS.md SEC-031. |
-| T-009 | SECURITY.md SC-032 (BLOCKED), OD-008; ARCHITECTURE.md TB-7. |
+| T-009 | SECURITY.md SC-032 (ACTIVE), OD-008; ARCHITECTURE.md TB-7. |
 | T-010 | REQUIREMENTS.md FR-2.10; SECURITY.md SC-003; ARCHITECTURE.md TB-7; DESIGN.md input errors. |
 | T-011 | REQUIREMENTS.md NFR-1.3; SECURITY.md SC-018, SC-025; SECURITY_EVENTS.md event contract (Volume), SEC-026, SEC-086. |
-| T-012 | SECURITY.md SC-034 (BLOCKED), OD-010. |
+| T-012 | SECURITY.md SC-034 (ACTIVE), OD-010. |
 | T-013 | SECURITY.md SC-029. |
 | T-014 | REQUIREMENTS.md FR-1.12; SECURITY.md SC-030; ARCHITECTURE.md Account deletion row, DR-5. |
-| T-015 | SECURITY.md SC-033 (BLOCKED), OD-009. |
+| T-015 | SECURITY.md SC-033 (ACTIVE), OD-009. |
 | T-016 | SECURITY.md SC-031. |
-| T-017 | SECURITY.md SC-026, SC-032 (BLOCKED), OD-008; SECURITY_EVENTS.md SEC-062. |
-| CF-001 | SECURITY.md OD-011 (open). |
+| T-017 | SECURITY.md SC-026, SC-032 (ACTIVE), OD-008; SECURITY_EVENTS.md SEC-062. |
+| CF-001 | SECURITY.md OD-011 (answered). |
 | CF-002 | SECURITY.md SC-015 wording. |
 
 Not folded in: G-010 (discoverable credentials), G-011 (browser behavior on localhost) and G-018 (cleanup and caps) are gaps with no threat that requires a rule yet. DEC-001 (a rating scale) and DEC-006 (a separate audit file) remain suggestions.
 
 ## Owner decisions answered after the run
 
-OD-008 to OD-011 were answered as proposed defaults for the owner to review. The run's JSON still shows these threats and the conflict as open, with decisions DEC-002 to DEC-005 proposed; the next change review should reconcile them.
+OD-008 to OD-011 were answered, and the owner confirmed them on 2026-11-11. The run's JSON still shows these threats and the conflict as open, with decisions DEC-002 to DEC-005 proposed; the next change review should reconcile them.
 
 | Decision | Answer | Spec changes | Threats |
 |---|---|---|---|
@@ -480,3 +480,17 @@ A Grim Prompter change review (`threat-model/2026-11-11-change/change-review.jso
 - **Confidence:** medium. Design hypothesis; nothing is implemented.
 - **Treatment (TR-018), folded in after the review:** SECURITY.md SC-025 and the SECURITY_EVENTS.md Volume rule now suppress only records with no identified actor.
 - **Verification:** V-018, not run.
+
+## Remaining decisions answered on 2026-11-11
+
+These record the owner's decisions against the run's findings. The threats were not analyzed again. None of them changes a component, a trust boundary or a data flow, so no new threat-model run is needed.
+
+| Item | Decision | Spec changes |
+|---|---|---|
+| DEC-001 | Adopted as the rating scale for later change reviews. Impact is low, medium or high as proposed; preconditions are few, some or many. No ratings are calculated now. | None |
+| DEC-002 to DEC-005 | Settled by OD-008 to OD-011 (table above). | See above |
+| DEC-006 | Declined. Audit-required events stay in the single security event file under OD-004 and OD-005 (10 MiB × 5). For a localhost demo, a second file and retention scheme is not worth the extra code. Reconsider before any hosting (SC-032). | None |
+| G-010 | No rule. Discoverable credentials are left to the browser default, and login works either way because SC-012 looks credentials up by ID. | None |
+| G-011 | No rule. Browsers treat `http://localhost` as a secure context, which SC-013 already relies on; the UI is verified in Chrome. | None |
+| G-018 | No new rule for the demo. Expired sessions and challenges are rejected on use (SC-011, SC-013), and NFR-1.1 limits how much data there can be. Revisit with SC-032 before hosting. | None |
+| SEC-035 | No CSP report endpoint. The row stays `unavailable_signal` by owner decision, not while waiting for one. | SECURITY_EVENTS.md SEC-035 |
