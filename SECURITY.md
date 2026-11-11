@@ -131,7 +131,7 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 **SC-015 — CSRF for cookie-authenticated requests**
 - **Status:** ACTIVE
 - **Rule:** For every non-GET route authenticated by the session cookie, and for the sign-up and login routes (options and verify), the server MUST reject the request unless `Sec-Fetch-Site` is `same-origin` (or, when absent, `Origin` exactly equals the configured site origin) and `Content-Type` is `application/json`. The check MUST run before rate-limit counting (SC-018), so a rejected request does not use up the allowance. No GET route MAY change state, except that following a short link increases its click count (FR-3.4).
-- **Enforcement:** HTTP layer `onRequest` hook, before the rate limiter and the Auth module. Bearer-token routes are exempt because they never accept the cookie (SC-028).
+- **Enforcement:** HTTP layer `onRequest` hook, before the rate limiter and the Auth module. A request is exempt only when it is authenticated by a bearer token and carries no session cookie (SC-028); a link-route request that carries the cookie is always checked (T-001).
 - **Evidence:** ARCHITECTURE.md TB-2; THREAT_MODEL.md T-001, T-002, T-003 and conflict CF-002. S4 Fetch Metadata, Verify Origin, SameSite, Disallowing simple requests; S2 "Use anti-CSRF tokens" (don't rely on SameSite alone). No CORS is enabled, so cross-origin scripts cannot send JSON with credentials.
 - **Verification:** A POST with `Sec-Fetch-Site: cross-site`, with `Origin: null`, or with `Content-Type: text/plain` gets 403 and changes nothing; the same request from the SPA succeeds. The same three requests to a login or sign-up route get 403, and 20 of them in a minute do not cause a 429 for a following same-origin login.
 
@@ -200,10 +200,10 @@ This file owns the implementation rules for writing shrink-182 securely. WHAT th
 
 **SC-025 — Security events follow the ledger**
 - **Status:** ACTIVE
-- **Rule:** Security events MUST be emitted only through one helper that builds each record from the per-event allowlist in `SECURITY_EVENTS.md` (Event Contract), and MUST never throw into the request. The helper MUST write at most 60 records per minute for each event name whose outcome is `denied` or `failure`, count the rest, and report the count in `logging.health` (T-011). Events with `audit_required=true` MUST NOT be suppressed. They MUST be written as described in [Security Event Policy](#security-event-policy).
+- **Rule:** Security events MUST be emitted only through one helper that builds each record from the per-event allowlist in `SECURITY_EVENTS.md` (Event Contract), and MUST never throw into the request. For records that carry no `actor_ref`, the helper MUST write at most 60 per minute for each event name whose outcome is `denied` or `failure`, count the rest, and report the count in `logging.health` (T-011). Records with an `actor_ref` and events with `audit_required=true` MUST NOT be suppressed, so anonymous noise cannot hide an identified caller's actions (T-018). They MUST be written as described in [Security Event Policy](#security-event-policy).
 - **Enforcement:** Event helper used by the Auth, Links, Admin, and Account deletion modules, and by the process entry point.
-- **Evidence:** `SECURITY_EVENTS.md`; Dread Ledger `7d38c75` event contract; THREAT_MODEL.md T-011. The ceiling of 60 is a project decision *(proposed default)*.
-- **Verification:** Contract tests per event: presence and absence, field allowlist, secret canaries, CR/LF and oversize input, and helper failure leaving the business result unchanged. 500 rejected API calls in a minute produce at most 60 `auth.api_token_rejected` records and a `logging.health` record with `suppressed` ≥ 440.
+- **Evidence:** `SECURITY_EVENTS.md`; Dread Ledger `7d38c75` event contract; THREAT_MODEL.md T-011, T-018. The ceiling of 60 is a project decision *(proposed default)*.
+- **Verification:** Contract tests per event: presence and absence, field allowlist, secret canaries, CR/LF and oversize input, and helper failure leaving the business result unchanged. 500 rejected API calls in a minute produce at most 60 `auth.api_token_rejected` records and a `logging.health` record with `suppressed` ≥ 440; an `authz.denied` by a signed-in user in that same minute is still written.
 
 **SC-026 — Host header check**
 - **Status:** ACTIVE

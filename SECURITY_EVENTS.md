@@ -54,7 +54,7 @@ This file is the security event ledger the build has to satisfy. It records whic
 
 **Size:** every encoded event is ≤ 2 KiB. If optional context would exceed that, the helper drops the optional fields and sets `context_status`. It never truncates the envelope or the serialized JSON.
 
-**Volume:** for each event name, the helper writes at most 60 records per minute whose outcome is `denied` or `failure`. Further ones are counted, not written, and the count is reported as `suppressed` in `logging.health` (SEC-086). Events with `audit_required=true` are never suppressed. This keeps an anonymous caller from rotating audit evidence out of the file (SC-025, T-011).
+**Volume:** for each event name, the helper writes at most 60 records per minute that have no `actor_ref` and whose outcome is `denied` or `failure`. Further ones are counted, not written, and the count is reported as `suppressed` in `logging.health` (SEC-086). Records with an `actor_ref` and events with `audit_required=true` are never suppressed (T-018). This keeps an anonymous caller from rotating audit evidence out of the file (SC-025, T-011).
 
 **Failure:** the helper never throws into the request. Encoding failures increment a bounded in-process counter, reported as described in SEC-086. They are never re-logged recursively. Audit failure policy: best-effort with counted loss ([policy](SECURITY.md#security-event-policy)).
 
